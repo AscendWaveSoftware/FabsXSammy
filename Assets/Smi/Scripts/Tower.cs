@@ -59,7 +59,7 @@ public class Tower : MonoBehaviour
     {
         if (m_currentTarget != null)
         {
-            GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity);
+            GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
             Projectile projectile = projectileSpawn.GetComponent<Projectile>();
             projectile.SeekTarget(m_currentTarget.transform);
         }

@@ -5,6 +5,7 @@ public class MinionAI : MonoBehaviour
 {
     private NavMeshAgent m_agent;
     private Transform m_currentTarget;
+
     public string m_enemyMinionTag = "EnemyMinion";
     public string m_turretTag = "EnemyTower";
     public float m_stopDistance = 2.0f;
@@ -93,5 +94,4 @@ public class MinionAI : MonoBehaviour
         }
         return closesObject;
     }
-
 }

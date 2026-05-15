@@ -1,10 +1,16 @@
-using System;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     public float m_speed = 10f;
     private Transform m_target;
+
+    private Stats m_towerStats;
+
+    private void Start()
+    {
+        m_towerStats = GetComponentInParent<Stats>();
+    }
 
     public void SeekTarget(Transform _target)
     {
@@ -32,6 +38,9 @@ public class Projectile : MonoBehaviour
 
     private void HitTarget()
     {
+        Stats targetStats = m_target.gameObject.GetComponent<Stats>();
+        targetStats?.TakeDamage(m_target.gameObject, m_towerStats._stats.m_damage);
+
         Destroy(gameObject);
     }
 
@@ -39,8 +48,8 @@ public class Projectile : MonoBehaviour
     {
         if (_other.gameObject == m_target.gameObject)
         {
-            Destroy(m_target.gameObject);
             HitTarget();
+            Destroy(gameObject);
         }
     }
 }
