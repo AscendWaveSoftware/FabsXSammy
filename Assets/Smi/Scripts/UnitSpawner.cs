@@ -17,6 +17,6 @@ public class UnitSpawner : MonoBehaviour
 
     public void SpawnUnit(GameObject _unit)
     {
-        Instantiate(_unit, transform.position, Quaternion.identity);
+        Instantiate(_unit, transform.position, Quaternion.identity, this.transform);
     }
 }

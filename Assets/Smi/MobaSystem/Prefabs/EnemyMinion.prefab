@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.523159, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.05638326, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -172,7 +172,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2793129159238671992}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e892a48e17d5060439f4a8eb2b455cb4, type: 3}
   m_Name: 
@@ -331,11 +331,11 @@ GameObject:
   - component: {fileID: 5441476659607227071}
   - component: {fileID: 3396507607150314121}
   - component: {fileID: 3631403305993523408}
-  - component: {fileID: 4321346095519791505}
-  - component: {fileID: 1933229767489902900}
+  - component: {fileID: 8712509823497295379}
+  - component: {fileID: 8652359796942660164}
   m_Layer: 0
-  m_Name: Ally
-  m_TagString: AllyMinion
+  m_Name: EnemyMinion
+  m_TagString: EnemyMinion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -389,7 +389,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4e60adcc09fec0b4080d94a587bcebfc, type: 2}
+  - {fileID: 2100000, guid: 6cdbc3bfd4fd4584294d1573aaba0e2c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -468,11 +468,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fafdf1f964dd64990d5748a50cffcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinionAI
-  m_enemyMinionTag: EnemyMinion
-  m_turretTag: EnemyTower
-  m_stopDistance: 2
-  m_detectRange: 5
-  m_targetSwitchInterval: 2
+  m_currentTarget: {fileID: 0}
+  m_stats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
 --- !u!54 &3631403305993523408
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -500,7 +497,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4321346095519791505
+--- !u!114 &8712509823497295379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -509,13 +506,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5534292133629273596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db7db9f7962f6894ba2447d885be5161, type: 3}
+  m_Script: {fileID: 11500000, guid: 1126fa5de0f7d764baad97589c4d1f0b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Stats
-  _stats: {fileID: 11400000, guid: cd992adf3093079448c16ae6deb0b898, type: 2}
-  m_health: 100
-  m_damageDuration: 0.2
---- !u!114 &1933229767489902900
+  m_EditorClassIdentifier: Assembly-CSharp::MinionCombat
+  m_minonStats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
+--- !u!114 &8652359796942660164
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -524,10 +519,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5534292133629273596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7db52d2610fff347a20b85bd135d683, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d675da9608def84a9a1410a9242af92, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthUI
+  m_EditorClassIdentifier: Assembly-CSharp::Health
   m_healthSlider: {fileID: 7267069616177546413}
+  m_damageDuration: 0.2
+  m_currentHealth: 100
 --- !u!1 &8409943441310314169
 GameObject:
   m_ObjectHideFlags: 0

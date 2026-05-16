@@ -10,7 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59c0df47a170ee24fa4f3f63ed165f47, type: 3}
-  m_Name: Allies
+  m_Name: AllyMinion
   m_EditorClassIdentifier: Assembly-CSharp::MinonStats
   m_health: 100
-  m_damage: 25
+  m_attackDamage: 10
+  m_attackCooldown: 1
+  m_enemyMinionTag: EnemyMinion
+  m_enemyTowerTag: EnemyTower
+  m_stopDistance: 3
+  m_detectRange: 10
+  m_targetSwitchInterval: 0.5

@@ -1,22 +1,22 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+[RequireComponent(typeof(MinionCombat))]
+[RequireComponent(typeof(Health))]
 public class MinionAI : MonoBehaviour
 {
-    private NavMeshAgent m_agent;
-    private Transform m_currentTarget;
+    public Transform m_currentTarget;
+    [SerializeField] public MinionStats m_stats;
 
-    public string m_enemyMinionTag = "EnemyMinion";
-    public string m_turretTag = "EnemyTower";
-    public float m_stopDistance = 2.0f;
-    public float m_detectRange = 5.0f;
-    public float m_targetSwitchInterval = 2.0f;
+    private NavMeshAgent m_agent;
+    private Health m_health;
 
     private float m_timeSinceLastTarget = 0;
 
-    void Start()
+    void Awake()
     {
         m_agent = GetComponent<NavMeshAgent>();
+        m_health = GetComponent<Health>();
+        m_health.m_currentHealth = m_stats.m_health;
         FindAndSetTarget();
     }
 
@@ -24,7 +24,7 @@ public class MinionAI : MonoBehaviour
     {
         m_timeSinceLastTarget += Time.deltaTime;
 
-        if (m_timeSinceLastTarget >= m_targetSwitchInterval)
+        if (m_timeSinceLastTarget >= m_stats.m_targetSwitchInterval)
         {
             FindAndSetTarget();
             m_timeSinceLastTarget = 0.0f;
@@ -33,7 +33,7 @@ public class MinionAI : MonoBehaviour
         if (m_currentTarget != null)
         {
             Vector3 directionToTarget = m_currentTarget.position - transform.position;
-            Vector3 stopPosition = m_currentTarget.position - directionToTarget.normalized * m_stopDistance;
+            Vector3 stopPosition = m_currentTarget.position - directionToTarget.normalized * m_stats.m_stopDistance;
 
             m_agent.SetDestination(stopPosition);
         }
@@ -41,18 +41,16 @@ public class MinionAI : MonoBehaviour
 
     private void FindAndSetTarget()
     {
-        GameObject[] enemyMinions = GameObject.FindGameObjectsWithTag(m_enemyMinionTag);
-        Transform closestEnemy = GetClosesObjectInRadius(enemyMinions, m_detectRange);
+        GameObject[] enemyMinions = GameObject.FindGameObjectsWithTag(m_stats.m_enemyMinionTag);
+        Transform closestEnemy = GetClosesObjectInRadius(enemyMinions, m_stats.m_detectRange);
 
         if (closestEnemy != null)
-        {
             m_currentTarget = closestEnemy;
-        }
 
         else
         {
-            GameObject[] turrets = GameObject.FindGameObjectsWithTag(m_turretTag);
-            m_currentTarget = GetClosestObject(turrets);
+            GameObject[] tower = GameObject.FindGameObjectsWithTag(m_stats.m_enemyTowerTag);
+            m_currentTarget = GetClosestObject(tower);
         }
     }
 

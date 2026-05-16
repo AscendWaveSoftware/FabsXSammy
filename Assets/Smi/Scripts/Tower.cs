@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float m_attackRange = 5f;
-    public float m_attackCooldown = 2f;
+    [SerializeField] private TowerStats m_towerStats;
+
     public GameObject m_projectilePrefab;
     public Transform m_spawnPoint;
     public LineRenderer m_lineRenderer;
 
     private float m_nextAttackTime = 0;
     private GameObject m_currentTarget;
+    private Health m_health;
+
+    private void Start()
+    {
+        m_health = GetComponent<Health>();
+        m_health.m_currentHealth = m_towerStats.m_health;
+    }
 
     void Update()
     {
-        if (m_currentTarget == null || Vector3.Distance(transform.position, m_currentTarget.transform.position) > m_attackRange)
+        if (m_currentTarget == null || Vector3.Distance(transform.position, m_currentTarget.transform.position) > m_towerStats.m_attackRange)
         {
             FindNewTarget();
         }
@@ -23,18 +30,18 @@ public class Tower : MonoBehaviour
         if (Time.time >= m_nextAttackTime)
         {
             AttackCurrentTarget();
-            m_nextAttackTime = Time.time + m_attackCooldown;
+            m_nextAttackTime = Time.time + m_towerStats.m_attackCooldown;
         }
     }
     private void FindNewTarget()
     {
-        GameObject[] minions = GameObject.FindGameObjectsWithTag("AllyMinion");
+        GameObject[] minions = GameObject.FindGameObjectsWithTag(m_towerStats.m_enemyMinionTag);
         float closestDistance = float.MaxValue;
 
         foreach (GameObject minion in minions)
         {
             float dist = Vector3.Distance(transform.position, minion.transform.position);
-            if (dist <= m_attackRange && dist < closestDistance)
+            if (dist <= m_towerStats.m_attackRange && dist < closestDistance)
             {
                 closestDistance = dist;
                 m_currentTarget = minion;
@@ -61,6 +68,8 @@ public class Tower : MonoBehaviour
         {
             GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
             Projectile projectile = projectileSpawn.GetComponent<Projectile>();
+            projectile.m_damage = m_towerStats.m_damage;
+            projectile.m_speed = m_towerStats.m_projectileSpeed;
             projectile.SeekTarget(m_currentTarget.transform);
         }
     }
