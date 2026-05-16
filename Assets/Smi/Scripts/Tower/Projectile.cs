@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour
         {
             _other.gameObject.TryGetComponent<IDamageable>(out var target);
             target.TakeDamage(m_damage);
-            Destroy(gameObject);
         }
+        Destroy(gameObject);
     }
 }

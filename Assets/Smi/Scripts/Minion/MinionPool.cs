@@ -26,6 +26,8 @@ public class MinionPool : MonoBehaviour
     public void ReturnMinion(GameObject _minion)
     {
         _minion.SetActive(false);
+        _minion.transform.position = transform.position;
+        _minion.transform.rotation = transform.rotation;
         m_spawnPool.Enqueue(_minion);
     }
     void Update()
@@ -33,9 +35,7 @@ public class MinionPool : MonoBehaviour
         m_timer += Time.deltaTime;
         if (m_timer >= 5)
         {
-            GameObject minion = GetMinion();
-            minion.transform.position = transform.position;
-            minion.transform.rotation = transform.rotation;
+            GetMinion();
             m_timer = 0f;
         }
     }
