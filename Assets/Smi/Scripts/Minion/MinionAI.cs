@@ -12,11 +12,12 @@ public class MinionAI : MonoBehaviour
 
     private float m_timeSinceLastTarget = 0;
 
-    void Awake()
+    void OnEnable()
     {
         m_agent = GetComponent<NavMeshAgent>();
         m_health = GetComponent<Health>();
         m_health.m_currentHealth = m_stats.m_health;
+        m_agent.speed = m_stats.m_moveSpeed;
         FindAndSetTarget();
     }
 

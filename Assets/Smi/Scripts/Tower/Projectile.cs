@@ -26,7 +26,7 @@ public class Projectile : MonoBehaviour
         transform.Translate(dir.normalized * dist, Space.World);
     }
 
-    private void OnCollisionEnter(Collision _other)
+    private void OnTriggerEnter(Collider _other)
     {
         if (_other.gameObject == m_target.gameObject)
         {

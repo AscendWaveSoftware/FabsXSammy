@@ -1,18 +1,20 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour, IDamageable
 {
     [SerializeField] private Slider m_healthSlider;
+
     public float m_damageDuration;
     public float m_currentHealth;
+    public MinionPool m_minionPool;
 
     private float m_targetHealth;
     private Coroutine m_damageCoroutine;
 
 
-    private void Awake()
+    private void OnEnable()
     {
         m_targetHealth = m_currentHealth;
         m_healthSlider = GetComponentInChildren<Slider>();
@@ -29,7 +31,6 @@ public class Health : MonoBehaviour, IDamageable
     public void UpdateSlider(float _value)
     {
         m_healthSlider.value = m_currentHealth;
-
     }
 
     public void StartLerpHealth()
@@ -66,11 +67,16 @@ public class Health : MonoBehaviour, IDamageable
 
         if (m_targetHealth <= 0)
         {
-            Destroy(this.gameObject);
+            if (this.gameObject.tag == "EnemyTower" || this.gameObject.tag == "AllyTower")
+                Destroy(this.gameObject);
+
+            else
+                m_minionPool.ReturnMinion(this.gameObject);
         }
         else if (m_damageCoroutine == null)
         {
             StartLerpHealth();
         }
     }
+
 }
