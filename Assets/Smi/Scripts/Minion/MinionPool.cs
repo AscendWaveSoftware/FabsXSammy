@@ -9,13 +9,13 @@ public class MinionPool : MonoBehaviour
 
     private Queue<GameObject> m_spawnPool = new Queue<GameObject>();
 
-    public GameObject GetMinion()
+    public GameObject GetMinion(GameObject _unit)
     {
         if (m_spawnPool.Count > 0)
         {
-            GameObject minion = m_spawnPool.Dequeue();
-            minion.SetActive(true);
-            return minion;
+             _unit = m_spawnPool.Dequeue();
+            _unit.SetActive(true);
+            return _unit;
         }
         var health = m_minionPrefab.GetComponent<Health>();
         health.m_minionPool = this;
@@ -34,7 +34,7 @@ public class MinionPool : MonoBehaviour
         m_timer += Time.deltaTime;
         if (m_timer >= m_spawnTime)
         {
-            GetMinion();
+            GetMinion(m_minionPrefab);
             m_timer = 0f;
         }
     }
