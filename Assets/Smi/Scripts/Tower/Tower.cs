@@ -21,9 +21,7 @@ public class Tower : MonoBehaviour
     void Update()
     {
         if (m_currentTarget == null || Vector3.Distance(transform.position, m_currentTarget.transform.position) > m_towerStats.m_attackRange)
-        {
             FindNewTarget();
-        }
 
         UpdateLineToCurrentTarget();
 
@@ -66,11 +64,17 @@ public class Tower : MonoBehaviour
     {
         if (m_currentTarget != null)
         {
-            GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
-            Projectile projectile = projectileSpawn.GetComponent<Projectile>();
-            projectile.m_damage = m_towerStats.m_damage;
-            projectile.m_speed = m_towerStats.m_projectileSpeed;
-            projectile.SeekTarget(m_currentTarget.transform);
+            if (m_currentTarget.GetComponent<Health>().m_destroyed == true)
+                m_currentTarget = null;
+
+            else
+            {
+                GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
+                Projectile projectile = projectileSpawn.GetComponent<Projectile>();
+                projectile.m_damage = m_towerStats.m_damage;
+                projectile.m_speed = m_towerStats.m_projectileSpeed;
+                projectile.SeekTarget(m_currentTarget.transform);
+            }
         }
     }
 }

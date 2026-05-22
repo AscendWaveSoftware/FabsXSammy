@@ -9,6 +9,7 @@ public class Health : MonoBehaviour, IDamageable
     public float m_damageDuration;
     public float m_currentHealth;
     public MinionPool m_minionPool;
+    public bool m_destroyed = false;
 
     private float m_targetHealth;
     private Coroutine m_damageCoroutine;
@@ -16,6 +17,7 @@ public class Health : MonoBehaviour, IDamageable
 
     private void OnEnable()
     {
+        m_destroyed = false;
         m_targetHealth = m_currentHealth;
         m_healthSlider = GetComponentInChildren<Slider>();
 
@@ -79,4 +81,8 @@ public class Health : MonoBehaviour, IDamageable
         }
     }
 
+    private void OnDisable()
+    {
+        m_destroyed = true;
+    }
 }

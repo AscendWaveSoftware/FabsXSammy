@@ -4,8 +4,7 @@ using System.Collections.Generic;
 public class MinionPool : MonoBehaviour
 {
     public GameObject m_minionPrefab;
-    public float m_moveSpeed;
-    public float m_spawnInterval, m_spawnDelay;   
+    [SerializeField] float m_spawnTime = 5f;
     private float m_timer;
 
     private Queue<GameObject> m_spawnPool = new Queue<GameObject>();
@@ -33,7 +32,7 @@ public class MinionPool : MonoBehaviour
     void Update()
     {
         m_timer += Time.deltaTime;
-        if (m_timer >= 5)
+        if (m_timer >= m_spawnTime)
         {
             GetMinion();
             m_timer = 0f;
