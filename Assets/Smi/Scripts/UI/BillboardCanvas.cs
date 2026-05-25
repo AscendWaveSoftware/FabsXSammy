@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class BillboardCanvas : MonoBehaviour
 {
-    Transform m_camera;
+    GameObject m_camera;
     void Start()
     {
-        m_camera = Camera.main.transform;
+        m_camera = GameObject.FindWithTag("TowerCamera");
     }
 
     void LateUpdate()
     {
-        transform.LookAt(transform.position + m_camera.rotation * -Vector3.forward, m_camera.rotation * Vector3.up);
+        transform.LookAt(transform.position + m_camera.gameObject.transform.rotation * -Vector3.forward, m_camera.gameObject.transform.rotation * Vector3.up);
     }
 }

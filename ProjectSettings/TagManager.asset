@@ -8,6 +8,7 @@ TagManager:
   - EnemyTower
   - AllyMinion
   - AllyTower
+  - TowerCamera
   layers:
   - Default
   - TransparentFX
