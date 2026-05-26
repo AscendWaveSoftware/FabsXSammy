@@ -9,11 +9,12 @@ TagManager:
   - AllyMinion
   - AllyTower
   - TowerCamera
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
   - 
