@@ -32,11 +32,10 @@ public class DebugKey : MonoBehaviour
         if (Keyboard.current.cKey.wasPressedThisFrame)
             ChangeCamera();
 
-        // currentGold ist nicht public, deshalb kein if-check hier.
-        if (Keyboard.current.eKey.wasPressedThisFrame && unitSpawner != null)
+        if (Keyboard.current.eKey.wasPressedThisFrame && unitSpawner != null && playerResources.CurrentScrap >= 15)
         {
                 unitSpawner.GetMinion(unitSpawner.m_minionPrefab);
-                playerResources.DecreaseGold(25, Resources.GOLD);
+                playerResources.DecreaseScrap(25, Resources.SCRAP);
         }
     }
 
