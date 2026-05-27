@@ -34,8 +34,8 @@ public class DebugKey : MonoBehaviour
 
         if (Keyboard.current.eKey.wasPressedThisFrame && unitSpawner != null && playerResources.CurrentScrap >= 15)
         {
-                unitSpawner.GetMinion(unitSpawner.m_minionPrefab);
                 playerResources.DecreaseScrap(25, Resources.SCRAP);
+                unitSpawner.GetMinion(unitSpawner.m_minionPrefab);
         }
     }
 
