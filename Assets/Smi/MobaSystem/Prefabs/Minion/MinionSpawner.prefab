@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 998222350489506477}
   - component: {fileID: 8017294844647576227}
   - component: {fileID: 6116174097360715492}
-  - component: {fileID: 7847450090664578647}
+  - component: {fileID: 7322266047489781688}
   m_Layer: 0
   m_Name: MinionSpawner
   m_TagString: Untagged
@@ -92,7 +92,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7847450090664578647
+--- !u!114 &7322266047489781688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,10 +101,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 78309134478955696}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b1dd537e9dff42448798148d3677924, type: 3}
+  m_Script: {fileID: 11500000, guid: 386dd4a2c62232f45bb32af8164ac804, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitSpawner
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryUnitSpawner
   m_minionPrefab: {fileID: 5534292133629273596, guid: 553dbf64668ae5643b61107dbea4f4a8, type: 3}
+  m_spawnTime: 5
 --- !u!1 &8932266124377883048
 GameObject:
   m_ObjectHideFlags: 0

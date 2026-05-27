@@ -8,7 +8,7 @@ public class Health : MonoBehaviour, IDamageable
 
     public float m_damageDuration;
     public float m_currentHealth;
-    public MinionPool m_minionPool;
+    public FactoryUnitSpawner m_minionPool;
     public bool m_destroyed = false;
 
     private float m_targetHealth;

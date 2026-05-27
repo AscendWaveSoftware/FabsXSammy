@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class MinionPool : MonoBehaviour
+public class FactoryUnitSpawner : MonoBehaviour
 {
     public GameObject m_minionPrefab;
     [SerializeField] float m_spawnTime = 5f;
+    [SerializeField] bool m_isAlly = false;
     private float m_timer;
 
     private Queue<GameObject> m_spawnPool = new Queue<GameObject>();
@@ -31,11 +32,14 @@ public class MinionPool : MonoBehaviour
     }
     void Update()
     {
-        m_timer += Time.deltaTime;
-        if (m_timer >= m_spawnTime)
+        if (!m_isAlly)
         {
-            GetMinion(m_minionPrefab);
-            m_timer = 0f;
+            m_timer += Time.deltaTime;
+            if (m_timer >= m_spawnTime)
+            {
+                GetMinion(m_minionPrefab);
+                m_timer = 0f;
+            }
         }
     }
 }

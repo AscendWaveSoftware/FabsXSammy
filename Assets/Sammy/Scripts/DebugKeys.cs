@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class DebugKey : MonoBehaviour
 {
     [SerializeField] private PlayerResources playerResources;
+    [SerializeField] private FactoryUnitSpawner unitSpawner;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject towerCamera;
 
@@ -11,7 +12,7 @@ public class DebugKey : MonoBehaviour
 
     private void Start()
     {
-        
+
     }
 
     void Update()
@@ -30,13 +31,20 @@ public class DebugKey : MonoBehaviour
 
         if (Keyboard.current.cKey.wasPressedThisFrame)
             ChangeCamera();
+
+        // currentGold ist nicht public, deshalb kein if-check hier.
+        if (Keyboard.current.eKey.wasPressedThisFrame && unitSpawner != null)
+        {
+                unitSpawner.GetMinion(unitSpawner.m_minionPrefab);
+                playerResources.DecreaseGold(25, Resources.GOLD);
+        }
     }
 
     void ChangeCamera()
     {
-            playerCameraActive = !playerCameraActive;
+        playerCameraActive = !playerCameraActive;
 
-            SetCameraState(playerCameraActive);
+        SetCameraState(playerCameraActive);
     }
 
     void SetCameraState(bool _playerCameraActive)

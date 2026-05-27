@@ -3402,6 +3402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DebugKey
   playerResources: {fileID: 1960080971}
+  unitSpawner: {fileID: 1963110405}
   playerCamera: {fileID: 318167362}
   towerCamera: {fileID: 2100056049}
 --- !u!4 &1580580262
@@ -3499,6 +3500,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7322266047489781688, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
+      propertyPath: m_spawnTime
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322266047489781688, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
+      propertyPath: m_minionPrefab
+      value: 
+      objectReference: {fileID: 5534292133629273596, guid: 83e1ed713c3f6cc4fa7d339c7074cf2f, type: 3}
     - target: {fileID: 7847450090664578647, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
       propertyPath: m_spawnTime
       value: 15
@@ -4045,6 +4054,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7322266047489781688, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
+      propertyPath: m_isAlly
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7847450090664578647, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
       propertyPath: m_spawnTime
       value: 15
@@ -4063,6 +4076,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 998222350489506477, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
   m_PrefabInstance: {fileID: 1963110400}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1963110405 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7322266047489781688, guid: 3358166f431e13a43a7a084e82e12aed, type: 3}
+  m_PrefabInstance: {fileID: 1963110400}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 386dd4a2c62232f45bb32af8164ac804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryUnitSpawner
 --- !u!1001 &1964949067
 PrefabInstance:
   m_ObjectHideFlags: 0
