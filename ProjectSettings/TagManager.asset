@@ -10,6 +10,7 @@ TagManager:
   - AllyTower
   - TowerCamera
   - Enemy
+  - PlayerCamera
   layers:
   - Default
   - TransparentFX

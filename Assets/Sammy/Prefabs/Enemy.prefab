@@ -127,6 +127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950981810604898557}
   - component: {fileID: 1233514483524198460}
+  - component: {fileID: 8830547243122099352}
   m_Layer: 3
   m_Name: Visual
   m_TagString: Untagged
@@ -208,3 +209,15 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8830547243122099352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515173049387706918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a7dbf66c2360d24fba22583e9f1581a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBillboard
