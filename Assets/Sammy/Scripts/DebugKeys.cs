@@ -4,6 +4,15 @@ using UnityEngine.InputSystem;
 public class DebugKey : MonoBehaviour
 {
     [SerializeField] private PlayerResources playerResources;
+    [SerializeField] private GameObject playerCamera;
+    [SerializeField] private GameObject towerCamera;
+
+    private bool playerCameraActive = true;
+
+    private void Start()
+    {
+        
+    }
 
     void Update()
     {
@@ -18,5 +27,24 @@ public class DebugKey : MonoBehaviour
 
         if (Keyboard.current.bKey.wasPressedThisFrame)
             playerResources.DecreaseScrap(25, Resources.SCRAP);
+
+        if (Keyboard.current.cKey.wasPressedThisFrame)
+            ChangeCamera();
+    }
+
+    void ChangeCamera()
+    {
+            playerCameraActive = !playerCameraActive;
+
+            SetCameraState(playerCameraActive);
+    }
+
+    void SetCameraState(bool _playerCameraActive)
+    {
+        if (playerCamera != null)
+            playerCamera.gameObject.SetActive(_playerCameraActive);
+
+        if (towerCamera != null)
+            towerCamera.gameObject.SetActive(!_playerCameraActive);
     }
 }
