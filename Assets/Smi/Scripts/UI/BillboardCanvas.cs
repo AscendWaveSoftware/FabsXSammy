@@ -10,6 +10,9 @@ public class BillboardCanvas : MonoBehaviour
 
     void LateUpdate()
     {
-        transform.LookAt(transform.position + m_camera.gameObject.transform.rotation * -Vector3.forward, m_camera.gameObject.transform.rotation * Vector3.up);
+        if (m_camera == null)
+            return;
+        else
+            transform.LookAt(transform.position + m_camera.gameObject.transform.rotation * -Vector3.forward, m_camera.gameObject.transform.rotation * Vector3.up);
     }
 }
