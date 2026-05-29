@@ -3,6 +3,7 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     [SerializeField] private TowerStats m_towerStats;
+    [SerializeField] private GameObject m_towerTurret;
 
     public GameObject m_projectilePrefab;
     public Transform m_spawnPoint;
@@ -24,11 +25,19 @@ public class Tower : MonoBehaviour
             FindNewTarget();
 
         UpdateLineToCurrentTarget();
-
-        if (Time.time >= m_nextAttackTime)
+        if (m_currentTarget != null)
         {
-            AttackCurrentTarget();
-            m_nextAttackTime = Time.time + m_towerStats.m_attackCooldown;
+            Vector3 targetPos = m_currentTarget.transform.position;
+            targetPos.y = m_towerTurret.transform.position.y;
+
+            m_towerTurret.transform.LookAt(targetPos);
+
+            if (Time.time >= m_nextAttackTime)
+            {
+                AttackCurrentTarget();
+                m_nextAttackTime = Time.time + m_towerStats.m_attackCooldown;
+            }
+
         }
     }
     private void FindNewTarget()
@@ -62,19 +71,16 @@ public class Tower : MonoBehaviour
 
     private void AttackCurrentTarget()
     {
-        if (m_currentTarget != null)
-        {
-            if (m_currentTarget.GetComponent<Health>().m_destroyed == true)
-                m_currentTarget = null;
+        if (m_currentTarget.GetComponent<Health>().m_destroyed == true)
+            m_currentTarget = null;
 
-            else
-            {
-                GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
-                Projectile projectile = projectileSpawn.GetComponent<Projectile>();
-                projectile.m_damage = m_towerStats.m_damage;
-                projectile.m_speed = m_towerStats.m_projectileSpeed;
-                projectile.SeekTarget(m_currentTarget.transform);
-            }
+        else
+        {
+            GameObject projectileSpawn = Instantiate(m_projectilePrefab, m_spawnPoint.position, Quaternion.identity, this.transform);
+            Projectile projectile = projectileSpawn.GetComponent<Projectile>();
+            projectile.m_damage = m_towerStats.m_damage;
+            projectile.m_speed = m_towerStats.m_projectileSpeed;
+            projectile.SeekTarget(m_currentTarget.transform);
         }
     }
 }

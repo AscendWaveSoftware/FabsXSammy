@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,11 +18,18 @@ public class Health : MonoBehaviour, IDamageable
 
     private void OnEnable()
     {
-        m_destroyed = false;
+        StartCoroutine(MinionAlive());
+
         m_targetHealth = m_currentHealth;
         m_healthSlider = GetComponentInChildren<Slider>();
 
         StartSlider(m_targetHealth);
+    }
+
+    IEnumerator MinionAlive()
+    {
+        yield return new WaitForSeconds(5);
+        m_destroyed = false;
     }
 
     public void StartSlider(float _maxValue)
