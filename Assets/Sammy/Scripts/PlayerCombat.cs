@@ -6,7 +6,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Combat Settings")]
     [SerializeField] private int attackDamage = 25;
     [SerializeField] private float attackRange = 1.5f;
-    [SerializeField] private float attackCooldown = 0.4f;
+    //[SerializeField] private float attackCooldown = 0.4f;
 
     [Header("Hit Detection")]
     [SerializeField] private LayerMask enemyLayer;
