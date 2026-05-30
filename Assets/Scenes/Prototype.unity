@@ -4376,7 +4376,7 @@ GameObject:
   - component: {fileID: 2100056050}
   m_Layer: 0
   m_Name: TowerCamera
-  m_TagString: Untagged
+  m_TagString: TowerCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
