@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 public class DebugKey : MonoBehaviour
 {
     [SerializeField] private PlayerResources playerResources;
-    [SerializeField] private FactoryUnitSpawner unitSpawner;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject towerCamera;
 
@@ -31,12 +30,6 @@ public class DebugKey : MonoBehaviour
 
         if (Keyboard.current.cKey.wasPressedThisFrame)
             ChangeCamera();
-
-        if (Keyboard.current.eKey.wasPressedThisFrame && unitSpawner != null && playerResources.CurrentScrap >= 15)
-        {
-                playerResources.DecreaseScrap(25, Resources.SCRAP);
-                unitSpawner.GetMinion(unitSpawner.m_minionPrefab);
-        }
     }
 
     void ChangeCamera()

@@ -578,7 +578,7 @@ GameObject:
   - component: {fileID: 604710866144336547}
   m_Layer: 0
   m_Name: EnemyTower
-  m_TagString: EnemyTower
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -612,11 +612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7484673fc422fbb43b8a64bef5ddb4e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  m_towerStats: {fileID: 11400000, guid: 11fd8680b19a917448fb035171fc8135, type: 2}
-  m_towerTurret: {fileID: 2113206958150612312}
-  m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
-  m_spawnPoint: {fileID: 6191723089511654027}
-  m_lineRenderer: {fileID: 7782910819537764507}
+  m_team: 1
 --- !u!114 &5744581369184674103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,7 +625,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d675da9608def84a9a1410a9242af92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  m_healthSlider: {fileID: 69824111161688813}
   m_damageDuration: 0.25
   m_currentHealth: 200
   m_minionPool: {fileID: 0}
@@ -770,11 +765,6 @@ PrefabInstance:
       addedObject: {fileID: 6191723089511654027}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b14b8a01ffee0c49ab8e078f270847a, type: 3}
---- !u!1 &2113206958150612312 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5301968824340974995, guid: 3b14b8a01ffee0c49ab8e078f270847a, type: 3}
-  m_PrefabInstance: {fileID: 6109130722289219787}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6002532473081437984 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3b14b8a01ffee0c49ab8e078f270847a, type: 3}

@@ -1,23 +1,27 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Health : MonoBehaviour, IDamageable
 {
-    [SerializeField] private Slider m_healthSlider;
+    private Slider m_healthSlider;
 
     public float m_damageDuration;
     public float m_currentHealth;
-    public FactoryUnitSpawner m_minionPool;
-    public bool m_destroyed = false;
+    public SpawnManager m_minionPool;
+    public bool m_destroyed = true;
 
     private float m_targetHealth;
     private Coroutine m_damageCoroutine;
 
+    private AI_Minion m_minion;
+    bool isMinion => m_minion != null;
+
 
     private void OnEnable()
     {
+        m_minion = GetComponent<AI_Minion>();
+
         StartCoroutine(MinionAlive());
 
         m_targetHealth = m_currentHealth;
@@ -28,7 +32,7 @@ public class Health : MonoBehaviour, IDamageable
 
     IEnumerator MinionAlive()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         m_destroyed = false;
     }
 
@@ -72,25 +76,19 @@ public class Health : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-
+        Debug.Log(this);
         m_targetHealth -= damage;
 
         if (m_targetHealth <= 0)
         {
-            if (this.gameObject.tag == "EnemyTower" || this.gameObject.tag == "AllyTower")
-                Destroy(this.gameObject);
-
+            if (isMinion)
+                m_minionPool.ReturnMinion(gameObject);
             else
-                m_minionPool.ReturnMinion(this.gameObject);
+                Destroy(gameObject);
         }
         else if (m_damageCoroutine == null)
         {
             StartLerpHealth();
         }
-    }
-
-    private void OnDisable()
-    {
-        m_destroyed = true;
     }
 }

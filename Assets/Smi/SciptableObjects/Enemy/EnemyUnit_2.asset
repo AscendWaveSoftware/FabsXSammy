@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: EnemyUnit_2
   m_EditorClassIdentifier: Assembly-CSharp::MinionStats
   m_health: 100
+  m_moveSpeed: 5
   m_attackDamage: 10
   m_attackCooldown: 1
+  m_team: 1
   m_enemyMinionTag: AllyMinion
   m_enemyTowerTag: AllyTower
   m_stopDistance: 3

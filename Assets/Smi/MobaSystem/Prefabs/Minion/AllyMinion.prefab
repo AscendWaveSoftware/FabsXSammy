@@ -329,13 +329,13 @@ GameObject:
   - component: {fileID: 7837321214208417225}
   - component: {fileID: 7028760312407495936}
   - component: {fileID: 5441476659607227071}
-  - component: {fileID: 3396507607150314121}
   - component: {fileID: 3631403305993523408}
   - component: {fileID: 8712509823497295379}
   - component: {fileID: 8652359796942660164}
+  - component: {fileID: 1638943076894369285}
   m_Layer: 0
   m_Name: AllyMinion
-  m_TagString: AllyMinion
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -456,20 +456,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3396507607150314121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5534292133629273596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7fafdf1f964dd64990d5748a50cffcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinionAI
-  m_currentTarget: {fileID: 0}
-  m_stats: {fileID: 11400000, guid: cd992adf3093079448c16ae6deb0b898, type: 2}
 --- !u!54 &3631403305993523408
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -522,9 +508,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d675da9608def84a9a1410a9242af92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  m_healthSlider: {fileID: 7267069616177546413}
   m_damageDuration: 0.2
   m_currentHealth: 100
+  m_minionPool: {fileID: 0}
+  m_destroyed: 0
+--- !u!114 &1638943076894369285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5534292133629273596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ef2a4ca670cea4f955bfdeb933c351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AI_Minion
+  m_currentTarget: {fileID: 0}
+  m_stats: {fileID: 11400000, guid: cd992adf3093079448c16ae6deb0b898, type: 2}
 --- !u!1 &8409943441310314169
 GameObject:
   m_ObjectHideFlags: 0

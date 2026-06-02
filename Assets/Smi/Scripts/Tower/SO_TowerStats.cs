@@ -8,6 +8,8 @@ public class TowerStats : ScriptableObject
     public float m_attackRange;
     public float m_attackCooldown;
 
+    public Team m_team;
+
     public float m_health;
 
     public string m_enemyMinionTag = "EnemyMinion";

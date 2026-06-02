@@ -6,11 +6,11 @@ public class MinionCombat : MonoBehaviour
     private float m_lastAttackTime;
     private bool m_isAttacking = false;
 
-    private MinionAI m_minionAI;
+    private AI_Minion m_minionAI;
 
     private void Start()
     {
-        m_minionAI = GetComponent<MinionAI>();
+        m_minionAI = GetComponent<AI_Minion>();
         m_minonStats = m_minionAI.m_stats;
     }
 
@@ -37,11 +37,11 @@ public class MinionCombat : MonoBehaviour
     {
         m_lastAttackTime = Time.time;
         m_isAttacking = true;
+        m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
+        target.TakeDamage(m_minonStats.m_attackDamage);
 
-        if (m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyMinionTag) || m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyTowerTag))
-        {
-            m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
-            target.TakeDamage(m_minonStats.m_attackDamage);
-        }
+        // if (m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyMinionTag) || m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyTowerTag))
+        // {
+        // }
     }
 }

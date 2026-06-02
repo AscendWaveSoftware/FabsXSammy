@@ -4,10 +4,6 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - EnemyMinion
-  - EnemyTower
-  - AllyMinion
-  - AllyTower
   - TowerCamera
   - Enemy
   - PlayerCamera

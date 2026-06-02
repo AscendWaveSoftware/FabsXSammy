@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8017294844647576227}
   - component: {fileID: 6116174097360715492}
   - component: {fileID: 7322266047489781688}
+  - component: {fileID: 4640107087769237941}
   m_Layer: 0
   m_Name: MinionSpawner
   m_TagString: Untagged
@@ -104,8 +105,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 386dd4a2c62232f45bb32af8164ac804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FactoryUnitSpawner
-  m_minionPrefab: {fileID: 5534292133629273596, guid: 553dbf64668ae5643b61107dbea4f4a8, type: 3}
-  m_spawnTime: 5
+--- !u!114 &4640107087769237941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78309134478955696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &8932266124377883048
 GameObject:
   m_ObjectHideFlags: 0

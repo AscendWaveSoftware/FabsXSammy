@@ -8,13 +8,12 @@ public class EnemyBillboard : MonoBehaviour
 
     private void Start()
     {
-        if (CameraReferences.Instance == null)
-            return;
+        GameObject cameraObject = GameObject.FindWithTag(cameraTag);
 
-        m_cameraTransform = CameraReferences.Instance.PlayerCameraTransform;
-
-        if(m_cameraTransform == null)
-            Debug.LogWarning("PlayerCameraTransform is not assigned in CameraReferences.");
+        if(cameraObject != null)
+            m_cameraTransform = cameraObject.transform;
+        else
+            Debug.LogWarning($"No camera found with tag: {cameraTag}");
     }
 
     private void LateUpdate()

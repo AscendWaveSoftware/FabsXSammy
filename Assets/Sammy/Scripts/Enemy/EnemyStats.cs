@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class EnemyStats : MonoBehaviour
@@ -19,27 +18,18 @@ public class EnemyStats : MonoBehaviour
     public int MaxHealth => maxHealth;
     public bool IsDead => m_isDead;
 
-    public event Action<int, int> OnHealthChanged;
-
     private void Awake()
     {
         m_currentHealth = maxHealth;
     }
 
-    private void Start()
-    {
-        OnHealthChanged?.Invoke(m_currentHealth, maxHealth);
-    }
-
     public void TakeDamage(int _damageAmount, PlayerResources _playerResources)
     {
         if (m_isDead) return;
+
         if (_damageAmount <= 0) return;
 
         m_currentHealth -= _damageAmount;
-        m_currentHealth = Mathf.Clamp(m_currentHealth, 0, maxHealth);
-
-        OnHealthChanged?.Invoke(m_currentHealth, maxHealth);
 
         if (m_currentHealth <= 0)
             Die(_playerResources);
