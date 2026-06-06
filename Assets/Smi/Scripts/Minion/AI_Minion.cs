@@ -6,10 +6,9 @@ using UnityEngine.AI;
 public class AI_Minion : MonoBehaviour
 {
     public Transform m_currentTarget;
-    [SerializeField] public MinionStats m_stats;
+    [SerializeField] public SO_MinionStats m_stats;
 
     private NavMeshAgent m_agent;
-    private Health m_health;
 
     private float m_timeSinceLastTarget = 0;
     private float m_destinationUpdateTimer;
@@ -18,9 +17,7 @@ public class AI_Minion : MonoBehaviour
     private void OnEnable()
     {
         m_agent = GetComponent<NavMeshAgent>();
-        m_health = GetComponent<Health>();
 
-        m_health.m_currentHealth = m_stats.m_health;
         m_agent.speed = m_stats.m_moveSpeed;
 
         if (m_stats.m_team == Team.Blue)

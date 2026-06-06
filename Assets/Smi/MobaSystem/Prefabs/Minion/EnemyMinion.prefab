@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3576034141919135113}
   - component: {fileID: 3914832247264889455}
   - component: {fileID: 6477029121030553363}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 8635280383646425207}
   - component: {fileID: 7267069616177546413}
   - component: {fileID: 3599156863447073923}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,8 +102,8 @@ RectTransform:
   m_GameObject: {fileID: 2793129159238671992}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.03, y: 0.1, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2491754712142674982}
   - {fileID: 22226905726000618}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 4984767389891177136}
   - component: {fileID: 4077681161950461908}
   - component: {fileID: 2541178851609839041}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22226905726000618}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 8712509823497295379}
   - component: {fileID: 8652359796942660164}
   - component: {fileID: 5696860879703509311}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyMinion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5534292133629273596}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: c669ee2422ce18d41a6a412f46ffa997, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -481,7 +481,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &8712509823497295379
 MonoBehaviour:
@@ -509,9 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   m_damageDuration: 0.2
-  m_currentHealth: 100
-  m_minionPool: {fileID: 0}
-  m_destroyed: 0
+  m_targetHealth: 100
 --- !u!114 &5696860879703509311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,7 +535,7 @@ GameObject:
   - component: {fileID: 2491754712142674982}
   - component: {fileID: 3468092411100171191}
   - component: {fileID: 5918343081325179266}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}

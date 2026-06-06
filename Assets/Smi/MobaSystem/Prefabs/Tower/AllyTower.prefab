@@ -316,8 +316,8 @@ RectTransform:
   m_GameObject: {fileID: 6720957162798213020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.03, y: 0.1, z: 0.03}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1462623507015536907}
   - {fileID: 1519479611853213806}
@@ -582,9 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   m_damageDuration: 0.25
-  m_currentHealth: 200
-  m_minionPool: {fileID: 0}
-  m_destroyed: 0
+  m_targetHealth: 500
 --- !u!136 &1340911198442316107
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -5,13 +5,6 @@ public class Tower : MonoBehaviour
 {
     public Team m_team;
 
-    private Health m_health;
-
-    private void Awake()
-    {
-        m_health = GetComponent<Health>();
-    }
-
     private void OnEnable()
     {
         RegisterTower();

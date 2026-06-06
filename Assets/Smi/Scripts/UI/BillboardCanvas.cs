@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class BillboardCanvas : MonoBehaviour
 {
-    GameObject m_camera;
-    void Start()
-    {
-        m_camera = GameObject.FindWithTag("TowerCamera");
-    }
+    private Transform m_camera;
 
     void LateUpdate()
     {
-        if (m_camera == null)
+
+        GameObject camObj = GameObject.FindGameObjectWithTag("TowerCamera");
+
+        if (camObj == null || !camObj.activeInHierarchy)
             return;
-        else
-            transform.LookAt(transform.position + m_camera.gameObject.transform.rotation * -Vector3.forward, m_camera.gameObject.transform.rotation * Vector3.up);
+
+        transform.forward = camObj.transform.forward;
+
     }
 }

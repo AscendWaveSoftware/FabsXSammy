@@ -1,7 +1,7 @@
 using UnityEngine;
 public class MinionCombat : MonoBehaviour
 {
-    [SerializeField] private MinionStats m_minonStats;
+    [SerializeField] private SO_MinionStats m_minonStats;
 
     private float m_lastAttackTime;
     private bool m_isAttacking = false;
@@ -39,9 +39,5 @@ public class MinionCombat : MonoBehaviour
         m_isAttacking = true;
         m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
         target.TakeDamage(m_minonStats.m_attackDamage);
-
-        // if (m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyMinionTag) || m_minionAI.m_currentTarget.CompareTag(m_minonStats.m_enemyTowerTag))
-        // {
-        // }
     }
 }

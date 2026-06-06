@@ -8,10 +8,8 @@ public class AI_Player : MonoBehaviour
     private float m_timer;
     [SerializeField] SpawnManager m_unitSpawner;
 
-
     void Update()
     {
-
         m_timer += Time.deltaTime;
         if (m_timer >= m_spawnTime)
         {

@@ -17,5 +17,5 @@ MonoBehaviour:
   m_attackRange: 10
   m_attackCooldown: 2
   m_team: 1
-  m_health: 300
+  m_health: 500
   m_enemyMinionTag: AllyMinion

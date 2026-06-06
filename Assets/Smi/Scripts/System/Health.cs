@@ -4,16 +4,16 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour, IDamageable
 {
-    private Slider m_healthSlider;
 
+    public bool m_destroyed { get; private set; }
+    public float m_currentHealth { get; private set; }
     public float m_damageDuration;
-    public float m_currentHealth;
-    public SpawnManager m_minionPool;
-    public bool m_destroyed = true;
 
-    private float m_targetHealth;
+    [SerializeField] private float m_targetHealth;
+    private Slider m_healthSlider;
     private Coroutine m_damageCoroutine;
 
+    private IMinionPool m_minionPool;
     private AI_Minion m_minion;
     bool isMinion => m_minion != null;
 
@@ -22,12 +22,18 @@ public class Health : MonoBehaviour, IDamageable
     {
         m_minion = GetComponent<AI_Minion>();
 
-        StartCoroutine(MinionAlive());
+        if (m_damageCoroutine != null)
+        {
+            StopCoroutine(m_damageCoroutine);
+            m_damageCoroutine = null;
+        }
 
-        m_targetHealth = m_currentHealth;
-        m_healthSlider = GetComponentInChildren<Slider>();
+        m_healthSlider = GetComponentInChildren<Slider>(true);
 
+        ResetHealth();
         StartSlider(m_targetHealth);
+
+        StartCoroutine(MinionAlive());
     }
 
     IEnumerator MinionAlive()
@@ -74,21 +80,49 @@ public class Health : MonoBehaviour, IDamageable
         m_damageCoroutine = null;
     }
 
+    public void SetPool(IMinionPool pool)
+    {
+        m_minionPool = pool;
+    }
+
     public void TakeDamage(float damage)
     {
-        Debug.Log(this);
-        m_targetHealth -= damage;
+        if (!gameObject.activeInHierarchy)
+            return;
 
-        if (m_targetHealth <= 0)
+        m_currentHealth -= damage;
+        m_currentHealth = Mathf.Max(m_currentHealth, 0);
+
+        UpdateSlider(m_currentHealth);
+
+        if (m_currentHealth <= 0)
         {
             if (isMinion)
-                m_minionPool.ReturnMinion(gameObject);
+                m_minionPool.Return(gameObject);
             else
                 Destroy(gameObject);
         }
-        else if (m_damageCoroutine == null)
+    }
+
+    private void ResetHealth()
+    {
+        m_currentHealth = m_targetHealth;
+
+        if (m_healthSlider != null)
         {
-            StartLerpHealth();
+            m_healthSlider.maxValue = m_currentHealth;
+            m_healthSlider.value = m_currentHealth;
+        }
+
+        m_destroyed = false;
+    }
+
+    private void OnDisable()
+    {
+        if (m_damageCoroutine != null)
+        {
+            StopCoroutine(m_damageCoroutine);
+            m_damageCoroutine = null;
         }
     }
 }
