@@ -76,4 +76,24 @@ public class PlayerResources : MonoBehaviour
             ResourceType = _resourceType
         });
     }
+
+    public void ResetResources()
+    {
+        currentGold = 0;
+        currentScrap = 0;
+
+        OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
+        {
+            Amount = 0,
+            CurrentResourceAmount = currentGold,
+            ResourceType = Resources.GOLD
+        });
+
+        OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
+        {
+            Amount = 0,
+            CurrentResourceAmount = currentScrap,
+            ResourceType = Resources.SCRAP
+        });
+    }
 }
