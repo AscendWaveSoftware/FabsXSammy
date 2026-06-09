@@ -4,16 +4,16 @@ using UnityEngine.InputSystem;
 public class PlayerCombat : MonoBehaviour
 {
     [Header("Combat Settings")]
-    [SerializeField] private int attackDamage = 25;
-    [SerializeField] private float attackRange = 1.5f;
+    [SerializeField] private int m_attackDamage = 25;
+    [SerializeField] private float m_attackRange = 1.5f;
     //[SerializeField] private float attackCooldown = 0.4f;
 
     [Header("Hit Detection")]
-    [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private Transform attackPoint;
+    [SerializeField] private LayerMask m_enemyLayer;
+    [SerializeField] private Transform m_attackPoint;
 
     [Header("References")]
-    [SerializeField] private PlayerResources playerResources;
+    [SerializeField] private PlayerResources m_playerResources;
 
     private float m_nextAttackTime;
 
@@ -25,18 +25,25 @@ public class PlayerCombat : MonoBehaviour
         TryAttack();
     }
 
+    public void AddDamage(int _amount)
+    {
+        if (_amount <= 0) return;
+
+        m_attackDamage += _amount;
+    }
+
     private void TryAttack()
     {
-        if(attackPoint == null)
+        if(m_attackPoint == null)
         {
             Debug.LogWarning("No attack point assigned to PlayerCombat.");
             return;
         }
 
         Collider[] hitEnemies = Physics.OverlapSphere(
-                attackPoint.position,
-                attackRange,
-                enemyLayer
+                m_attackPoint.position,
+                m_attackRange,
+                m_enemyLayer
         );
 
         if(hitEnemies.Length == 0){
@@ -51,15 +58,15 @@ public class PlayerCombat : MonoBehaviour
             if (enemyStats == null)
                 continue;
 
-            enemyStats.TakeDamage(attackDamage, playerResources);
+            enemyStats.TakeDamage(m_attackDamage, m_playerResources);
         }
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (attackPoint == null)
+        if (m_attackPoint == null)
             return;
 
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireSphere(m_attackPoint.position, m_attackRange);
     }
 }

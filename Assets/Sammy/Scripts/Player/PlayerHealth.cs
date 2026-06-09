@@ -62,6 +62,16 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
     }
 
+    public void AddMaxHealth(int _amount)
+    {
+        if (_amount <= 0) return;
+
+        m_maxHealth += _amount;
+        m_currentHealth += _amount;
+
+        OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
+    }
+
     private void Die()
     {
         if (!IsAlive) return;

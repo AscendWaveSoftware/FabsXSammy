@@ -8,7 +8,7 @@ public class EnemyStats : MonoBehaviour
     [SerializeField] private int attackDamage = 10;
 
     [Header("Reward")]
-    [SerializeField] private int goldReward = 10;
+    [SerializeField] private int xpReward = 25;
     [SerializeField] private int scrapReward = 5;
 
     private int m_currentHealth;
@@ -64,8 +64,10 @@ public class EnemyStats : MonoBehaviour
             return;
         }
 
-        if (goldReward > 0)
-            _playerResources.AddGold(goldReward, Resources.GOLD);
+        PlayerExperience playerExperience = _playerResources.GetComponent<PlayerExperience>();
+
+        if (playerExperience != null && xpReward > 0)
+            playerExperience.AddXP(xpReward);
 
         if (scrapReward > 0)
             _playerResources.AddScrap(scrapReward, Resources.SCRAP);

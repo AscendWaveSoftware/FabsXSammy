@@ -4,10 +4,8 @@ using System;
 public class PlayerResources : MonoBehaviour
 {
     [Header("Resources")]
-    [SerializeField] private int currentGold;
     [SerializeField] private int currentScrap;
 
-    public int CurrentGold => currentGold;
     public int CurrentScrap => currentScrap;
 
     //Events
@@ -15,25 +13,18 @@ public class PlayerResources : MonoBehaviour
 
     private void Start()
     {
-        currentGold = 0;
         currentScrap = 0;
-    }
-
-    public void AddGold(int _amount, Resources _resourceType)
-    {
-        if (_amount <= 0) return;
-
-        currentGold += _amount;
 
         OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
         {
-            Amount = _amount,
-            CurrentResourceAmount = currentGold,
-            ResourceType = _resourceType
+            Amount = 0,
+            CurrentResourceAmount = currentScrap,
+            ResourceType = Resources.SCRAP
         });
     }
 
-    public void AddScrap(int _amount, Resources _resourceType)
+
+    public void AddScrap(int _amount, Resources _resourceType = Resources.SCRAP)
     {
         if (_amount <= 0) return;
 
@@ -47,22 +38,7 @@ public class PlayerResources : MonoBehaviour
         });
     }
 
-    public void DecreaseGold(int _amount, Resources _resourceType)
-    {
-        if (_amount <= 0) return;
-        if (currentGold - _amount < 0) return;
-
-        currentGold -= _amount;
-
-        OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
-        {
-            Amount = -_amount,
-            CurrentResourceAmount = currentGold,
-            ResourceType = _resourceType
-        });
-    }
-
-    public void DecreaseScrap(int _amount, Resources _resourceType)
+    public void DecreaseScrap(int _amount, Resources _resourceType = Resources.SCRAP)
     {
         if (_amount <= 0) return;
         if (currentScrap - _amount < 0) return;
@@ -79,15 +55,7 @@ public class PlayerResources : MonoBehaviour
 
     public void ResetResources()
     {
-        currentGold = 0;
         currentScrap = 0;
-
-        OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
-        {
-            Amount = 0,
-            CurrentResourceAmount = currentGold,
-            ResourceType = Resources.GOLD
-        });
 
         OnResourceChanged?.Invoke(this, new ResourceChangedEventArgs
         {

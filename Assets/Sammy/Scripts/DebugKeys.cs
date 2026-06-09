@@ -16,11 +16,6 @@ public class DebugKey : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.nKey.wasPressedThisFrame)
-            playerResources.AddGold(25, Resources.GOLD);
-
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-            playerResources.DecreaseGold(25, Resources.GOLD);
 
         if (Keyboard.current.vKey.wasPressedThisFrame)
             playerResources.AddScrap(25, Resources.SCRAP);

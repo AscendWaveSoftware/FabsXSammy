@@ -48,6 +48,11 @@ public class PlayerMovementHandler : MonoBehaviour
         m_moveSpeed = _newSpeed;
     }
 
+    public void AddMoveSpeedBonus(float _bonus)
+    {
+        m_moveSpeed += _bonus;
+    }
+
     private void Movement()
     {
         Vector3 localInput = new Vector3(m_Velocity.x, 0f, m_Velocity.y).normalized;
