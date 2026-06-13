@@ -828,7 +828,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba5d7c70a84b4d4596818f3b0053eb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerResources
-  currentGold: 0
   currentScrap: 0
 --- !u!4 &1309285213
 Transform:

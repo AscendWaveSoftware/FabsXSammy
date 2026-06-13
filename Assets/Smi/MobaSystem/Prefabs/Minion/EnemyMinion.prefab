@@ -85,7 +85,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8635280383646425207}
   - component: {fileID: 7267069616177546413}
-  - component: {fileID: 3599156863447073923}
   m_Layer: 6
   m_Name: Slider
   m_TagString: Untagged
@@ -165,18 +164,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3599156863447073923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2793129159238671992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e892a48e17d5060439f4a8eb2b455cb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BillboardCanvas
 --- !u!1 &3646738287601926539
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +176,7 @@ GameObject:
   - component: {fileID: 4984767389891177136}
   - component: {fileID: 4077681161950461908}
   - component: {fileID: 2541178851609839041}
+  - component: {fileID: 6003272674644070835}
   m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
@@ -280,6 +268,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6003272674644070835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3646738287601926539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e892a48e17d5060439f4a8eb2b455cb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BillboardCanvas
 --- !u!1 &4954612449895706073
 GameObject:
   m_ObjectHideFlags: 0

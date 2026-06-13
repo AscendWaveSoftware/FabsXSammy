@@ -90,6 +90,7 @@ public class Turret : MonoBehaviour
         targetPos.y = transform.position.y;
 
         transform.LookAt(targetPos);
+        transform.Rotate(0f, -90f, 0f);
     }
 
     private void UpdateLineToCurrentTarget()
