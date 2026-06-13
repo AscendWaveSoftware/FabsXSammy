@@ -16,7 +16,7 @@ public class SpawnManager : MonoBehaviour
             return _unit;
         }
 
-        var health = _unit.GetComponent<Health>();
+        var health = _unit.GetComponent<MOBA_Health>();
       //  health.m_minionPool = this;
         return Instantiate(_unit, m_spawners[m_spawnID].transform.position, Quaternion.identity, this.transform);
     }

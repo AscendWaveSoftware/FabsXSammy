@@ -2,5 +2,6 @@ using UnityEngine;
 
 public interface IMinionPool
 {
-    void Return(GameObject obj);
+    GameObject GetMinion(GameObject prefab);
+    void Return(GameObject obj, GameObject prefab);
 }

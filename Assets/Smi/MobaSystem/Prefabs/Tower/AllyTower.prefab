@@ -573,9 +573,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4033012988948579617}
-  - component: {fileID: 5744581369184674103}
   - component: {fileID: 1340911198442316107}
   - component: {fileID: 2720883750146283067}
+  - component: {fileID: 20550910480243925}
   m_Layer: 0
   m_Name: AllyTower
   m_TagString: Untagged
@@ -593,27 +593,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2775532168238523326}
   - {fileID: 7830137368803598000}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5744581369184674103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8506117788327061100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d675da9608def84a9a1410a9242af92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  m_damageDuration: 0.25
-  m_targetHealth: 500
 --- !u!136 &1340911198442316107
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -650,6 +636,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   m_team: 0
+--- !u!114 &20550910480243925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8506117788327061100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 974917895536c7d45bfdeff3594074dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
+  m_damageDuration: 0.25
+  m_targetHealth: 500
 --- !u!1001 &7719316056567822683
 PrefabInstance:
   m_ObjectHideFlags: 0

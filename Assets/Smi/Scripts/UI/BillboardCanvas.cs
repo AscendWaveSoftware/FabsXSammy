@@ -17,12 +17,11 @@ public class BillboardCanvas : MonoBehaviour
 
         if (camObj == null || !camObj.activeInHierarchy)
         {
-
             slider.gameObject.SetActive(false);
             return;
         }
 
-        else
+        else if (slider != null)
         {
             slider.transform.forward = camObj.transform.forward;
             slider.gameObject.SetActive(true);

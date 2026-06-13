@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.05638326, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.523159, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 4984767389891177136}
   - component: {fileID: 4077681161950461908}
   - component: {fileID: 2541178851609839041}
-  - component: {fileID: 6003272674644070835}
+  - component: {fileID: 2342881893804659044}
   m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
@@ -268,7 +268,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6003272674644070835
+--- !u!114 &2342881893804659044
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,10 +331,10 @@ GameObject:
   - component: {fileID: 5441476659607227071}
   - component: {fileID: 3631403305993523408}
   - component: {fileID: 8712509823497295379}
-  - component: {fileID: 5696860879703509311}
+  - component: {fileID: 1638943076894369285}
   - component: {fileID: 8604600594981403041}
   m_Layer: 6
-  m_Name: EnemyMinion
+  m_Name: AllyMinion2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,9 +349,9 @@ Transform:
   m_GameObject: {fileID: 5534292133629273596}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -8, y: 1, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3083007440071136618}
   m_Father: {fileID: 0}
@@ -389,7 +389,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6cdbc3bfd4fd4584294d1573aaba0e2c, type: 2}
+  - {fileID: 2100000, guid: 4e60adcc09fec0b4080d94a587bcebfc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -495,8 +495,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1126fa5de0f7d764baad97589c4d1f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinionCombat
-  m_minonStats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
---- !u!114 &5696860879703509311
+  m_minonStats: {fileID: 11400000, guid: 07f94ae1282741d47a37a263a5af5360, type: 2}
+--- !u!114 &1638943076894369285
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -509,7 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI_Minion
   m_currentTarget: {fileID: 0}
-  m_stats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
+  m_stats: {fileID: 11400000, guid: 07f94ae1282741d47a37a263a5af5360, type: 2}
 --- !u!114 &8604600594981403041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.25
-  m_targetHealth: 100
+  m_targetHealth: 250
 --- !u!1 &8409943441310314169
 GameObject:
   m_ObjectHideFlags: 0

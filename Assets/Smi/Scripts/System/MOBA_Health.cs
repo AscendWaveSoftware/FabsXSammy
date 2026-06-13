@@ -1,25 +1,27 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Health : MonoBehaviour, IDamageable
+public class MOBA_Health : MonoBehaviour, IDamageable
 {
-
     public bool m_destroyed { get; private set; }
     public float m_currentHealth { get; private set; }
     public float m_damageDuration;
 
     [SerializeField] private float m_targetHealth;
+
     private Slider m_healthSlider;
     private Coroutine m_damageCoroutine;
 
     private IMinionPool m_minionPool;
-    private AI_Minion m_minion;
-    bool isMinion => m_minion != null;
+    private GameObject m_prefab;
 
+    private AI_Minion m_minion;
+    private bool isMinion => m_minionPool != null;
 
     private void OnEnable()
     {
+        m_destroyed = true;
         m_minion = GetComponent<AI_Minion>();
 
         if (m_damageCoroutine != null)
@@ -42,13 +44,13 @@ public class Health : MonoBehaviour, IDamageable
         m_destroyed = false;
     }
 
-    public void StartSlider(float _maxValue)
+    public void StartSlider(float maxValue)
     {
-        m_healthSlider.maxValue = _maxValue;
-        m_healthSlider.value = _maxValue;
+        m_healthSlider.maxValue = maxValue;
+        m_healthSlider.value = maxValue;
     }
 
-    public void UpdateSlider(float _value)
+    public void UpdateSlider(float value)
     {
         m_healthSlider.value = m_currentHealth;
     }
@@ -80,9 +82,10 @@ public class Health : MonoBehaviour, IDamageable
         m_damageCoroutine = null;
     }
 
-    public void SetPool(IMinionPool pool)
+    public void SetPool(IMinionPool pool, GameObject prefab)
     {
         m_minionPool = pool;
+        m_prefab = prefab;
     }
 
     public void TakeDamage(float damage)
@@ -97,8 +100,8 @@ public class Health : MonoBehaviour, IDamageable
 
         if (m_currentHealth <= 0)
         {
-            if (isMinion)
-                m_minionPool.Return(gameObject);
+            if (m_minionPool != null)
+                m_minionPool.Return(gameObject, m_prefab); // 🔥 wichtig
             else
                 Destroy(gameObject);
         }
@@ -113,8 +116,6 @@ public class Health : MonoBehaviour, IDamageable
             m_healthSlider.maxValue = m_currentHealth;
             m_healthSlider.value = m_currentHealth;
         }
-
-        m_destroyed = false;
     }
 
     private void OnDisable()

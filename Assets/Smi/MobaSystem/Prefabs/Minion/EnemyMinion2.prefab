@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 5696860879703509311}
   - component: {fileID: 8604600594981403041}
   m_Layer: 6
-  m_Name: EnemyMinion
+  m_Name: EnemyMinion2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,9 +349,9 @@ Transform:
   m_GameObject: {fileID: 5534292133629273596}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -8, y: 1, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3083007440071136618}
   m_Father: {fileID: 0}
@@ -495,7 +495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1126fa5de0f7d764baad97589c4d1f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinionCombat
-  m_minonStats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
+  m_minonStats: {fileID: 11400000, guid: d61257833097bc74bb76f31ed5023b3d, type: 2}
 --- !u!114 &5696860879703509311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,7 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AI_Minion
   m_currentTarget: {fileID: 0}
-  m_stats: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
+  m_stats: {fileID: 11400000, guid: d61257833097bc74bb76f31ed5023b3d, type: 2}
 --- !u!114 &8604600594981403041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.25
-  m_targetHealth: 100
+  m_targetHealth: 250
 --- !u!1 &8409943441310314169
 GameObject:
   m_ObjectHideFlags: 0

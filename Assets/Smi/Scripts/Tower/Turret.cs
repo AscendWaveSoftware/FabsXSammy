@@ -113,7 +113,7 @@ public class Turret : MonoBehaviour
         if (m_currentTarget == null)
             return;
 
-        Health health = m_currentTarget.GetComponent<Health>();
+        MOBA_Health health = m_currentTarget.GetComponent<MOBA_Health>();
 
         if (health != null && health.m_destroyed)
         {
@@ -121,17 +121,20 @@ public class Turret : MonoBehaviour
             return;
         }
 
-        GameObject projectileObj =
-            Instantiate(
-                m_projectilePrefab,
-                m_projectileSpawnPoint.position,
-                Quaternion.identity
-            );
+        else
+        {
+            GameObject projectileObj =
+             Instantiate(
+                 m_projectilePrefab,
+                 m_projectileSpawnPoint.position,
+                 Quaternion.identity
+             );
 
-        Projectile projectile = projectileObj.GetComponent<Projectile>();
+            Projectile projectile = projectileObj.GetComponent<Projectile>();
 
-        projectile.m_damage = m_towerStats.m_damage;
-        projectile.m_speed = m_towerStats.m_projectileSpeed;
-        projectile.SeekTarget(m_currentTarget.transform);
+            projectile.m_damage = m_towerStats.m_damage;
+            projectile.m_speed = m_towerStats.m_projectileSpeed;
+            projectile.SeekTarget(m_currentTarget.transform);
+        }
     }
 }

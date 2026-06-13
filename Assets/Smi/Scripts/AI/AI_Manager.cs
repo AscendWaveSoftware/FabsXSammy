@@ -10,6 +10,7 @@ public class AI_Manager : MonoBehaviour
     [Header("Spawn Timing")]
     [SerializeField] private float m_minSpawnTime = 5f;
     [SerializeField] private float m_maxSpawnTime = 15f;
+    [SerializeField] private float m_randomUnitSpawnTime = 25f;
 
     private float m_checkTime;
 
@@ -23,16 +24,26 @@ public class AI_Manager : MonoBehaviour
 
     int cost;
     int current;
+    int unit;
 
     private bool m_isSpawning = false;
-
-    private Coroutine m_spawnCoroutine;
 
     private void Start()
     {
         m_playerResources = FindAnyObjectByType<PlayerResources>();
 
         cost = m_prices.m_PriceForUnit1;
+
+        StartCoroutine(RandomSpawn());
+    }
+
+    private IEnumerator RandomSpawn()
+    {
+
+            yield return new WaitForSeconds(m_randomUnitSpawnTime);
+
+            SpawnMinion();
+
     }
 
     private void Update()
@@ -57,7 +68,6 @@ public class AI_Manager : MonoBehaviour
         if (currentThreshold > m_lastThreshold)
         {
             int diff = currentThreshold - m_lastThreshold;
-
             m_pendingUnits += diff;
             m_lastThreshold = currentThreshold;
         }
@@ -79,11 +89,18 @@ public class AI_Manager : MonoBehaviour
         m_isSpawning = true;
 
         yield return new WaitForSeconds(m_checkTime);
-        for (int i = 0; i < m_pendingUnits; i++)
-        {
-            SpawnMinion();
-            m_pendingUnits--;
-        }
+
+        int groupSize = Random.value < 0.5f ? 3 : 5;
+        int bigUnits = m_pendingUnits / groupSize;
+        int smallUnits = m_pendingUnits % groupSize;
+
+        for (int i = 0; i < bigUnits; i++)
+            factory.GetMinion(m_units[1]);
+
+        for (int i = 0; i < smallUnits; i++)
+            factory.GetMinion(m_units[0]);
+
+        m_pendingUnits = 0;
 
         m_checkTime = Random.Range(m_minSpawnTime, m_maxSpawnTime);
         m_isSpawning = false;
@@ -94,6 +111,6 @@ public class AI_Manager : MonoBehaviour
         if (factory == null || m_units.Length == 0)
             return;
 
-        factory.GetMinion(m_units[0]);
+        factory.GetMinion(m_units[unit]);
     }
 }

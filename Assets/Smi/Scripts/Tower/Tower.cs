@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(MOBA_Health))]
 public class Tower : MonoBehaviour
 {
     public Team m_team;

@@ -174,8 +174,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1171384612527714937}
   - component: {fileID: 7517560261858270348}
-  - component: {fileID: 2794016986756279774}
   - component: {fileID: 7175599418590396377}
+  - component: {fileID: 7124952478596879520}
   m_Layer: 0
   m_Name: EnemyFactory
   m_TagString: Untagged
@@ -214,20 +214,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   m_stats: {fileID: 11400000, guid: b97d435f23e6839438166091ad9b920f, type: 2}
---- !u!114 &2794016986756279774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878547187031522997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d675da9608def84a9a1410a9242af92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  m_damageDuration: 0.2
-  m_targetHealth: 1000
 --- !u!114 &7175599418590396377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,6 +234,20 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &7124952478596879520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878547187031522997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 974917895536c7d45bfdeff3594074dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
+  m_damageDuration: 0.2
+  m_targetHealth: 1000
 --- !u!1 &4165877348489307806
 GameObject:
   m_ObjectHideFlags: 0

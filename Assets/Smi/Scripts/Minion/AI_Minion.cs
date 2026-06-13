@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 [RequireComponent(typeof(MinionCombat))]
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(MOBA_Health))]
 public class AI_Minion : MonoBehaviour
 {
     public Transform m_currentTarget;

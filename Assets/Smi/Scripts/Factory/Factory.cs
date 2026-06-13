@@ -1,11 +1,12 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(MOBA_Health))]
 public class Factory : MonoBehaviour, IMinionPool
-
 {
-    private Queue<GameObject> m_spawnPool = new Queue<GameObject>();
+    private Dictionary<GameObject, Queue<GameObject>> m_spawnPools =
+        new Dictionary<GameObject, Queue<GameObject>>();
+
     [SerializeField] private SO_FactoryStats m_stats;
 
     private void OnEnable()
@@ -31,31 +32,52 @@ public class Factory : MonoBehaviour, IMinionPool
             EntityManager.RedFactory = this;
     }
 
-    public GameObject GetMinion(GameObject _minionPrefab)
+    public GameObject GetMinion(GameObject minionPrefab)
     {
-        if (m_spawnPool.Count > 0)
+        Queue<GameObject> pool = GetPool(minionPrefab);
+
+        if (pool.Count > 0)
         {
-            GameObject minion = m_spawnPool.Dequeue();
+            GameObject minion = pool.Dequeue();
             minion.SetActive(true);
             return minion;
         }
 
-        GameObject newMinon = Instantiate(_minionPrefab, transform.position, Quaternion.identity, transform);
+        GameObject newMinion = Instantiate(
+            minionPrefab,
+            transform.position,
+            Quaternion.identity,
+            transform
+        );
 
-        var health = newMinon.GetComponent<Health>();
+        var health = newMinion.GetComponent<MOBA_Health>();
         if (health != null)
         {
-            health.SetPool(this);
+            health.SetPool(this, minionPrefab);
         }
 
-        return newMinon;
+        return newMinion;
     }
 
-    public void Return(GameObject _minion)
+    public void Return(GameObject minion, GameObject prefab)
     {
-        _minion.SetActive(false);
-        _minion.transform.position = transform.position;
-        _minion.transform.rotation = transform.rotation;
-        m_spawnPool.Enqueue(_minion);
+        minion.SetActive(false);
+
+        minion.transform.position = transform.position;
+        minion.transform.rotation = transform.rotation;
+        minion.transform.SetParent(transform);
+
+        GetPool(prefab).Enqueue(minion);
+    }
+
+    private Queue<GameObject> GetPool(GameObject prefab)
+    {
+        if (!m_spawnPools.TryGetValue(prefab, out Queue<GameObject> pool))
+        {
+            pool = new Queue<GameObject>();
+            m_spawnPools[prefab] = pool;
+        }
+
+        return pool;
     }
 }
