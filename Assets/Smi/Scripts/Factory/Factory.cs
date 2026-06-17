@@ -8,15 +8,20 @@ public class Factory : MonoBehaviour, IMinionPool
         new Dictionary<GameObject, Queue<GameObject>>();
 
     [SerializeField] private SO_FactoryStats m_stats;
+    private float m_currentHealth;
 
     private void OnEnable()
     {
         RegisterFactory();
     }
 
-    private void OnDestroy()
+    private void Start()
     {
-        LoseState();
+        if (m_stats != null && MOBA_Manager.Instance != null)
+        {
+            m_currentHealth = m_stats.m_targetHealth;
+            MOBA_Manager.Instance.SetSlider(m_currentHealth, m_stats.m_isEnemyBuilding);
+        }
     }
 
     private void LoseState()
@@ -80,4 +85,10 @@ public class Factory : MonoBehaviour, IMinionPool
 
         return pool;
     }
+
+    private void OnDestroy()
+    {
+        LoseState();
+    }
+
 }

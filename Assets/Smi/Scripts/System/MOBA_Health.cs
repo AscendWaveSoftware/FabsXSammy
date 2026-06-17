@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,8 @@ public class MOBA_Health : MonoBehaviour, IDamageable
     public float m_currentHealth { get; private set; }
     public float m_damageDuration;
 
-    [SerializeField] private float m_targetHealth;
+    [SerializeField] private HealthData m_data;
+    private float m_targetHealth;
 
     private Slider m_healthSlider;
     private Coroutine m_damageCoroutine;
@@ -16,13 +18,14 @@ public class MOBA_Health : MonoBehaviour, IDamageable
     private IMinionPool m_minionPool;
     private GameObject m_prefab;
 
-    private AI_Minion m_minion;
-    private bool isMinion => m_minionPool != null;
+    AI_Minion m_aiMinion;
 
     private void OnEnable()
     {
+        m_targetHealth = m_data.m_targetHealth;
         m_destroyed = true;
-        m_minion = GetComponent<AI_Minion>();
+
+        m_aiMinion = GetComponent<AI_Minion>();
 
         if (m_damageCoroutine != null)
         {
@@ -37,6 +40,7 @@ public class MOBA_Health : MonoBehaviour, IDamageable
 
         StartCoroutine(MinionAlive());
     }
+
 
     IEnumerator MinionAlive()
     {
@@ -80,6 +84,8 @@ public class MOBA_Health : MonoBehaviour, IDamageable
         UpdateSlider(m_currentHealth);
 
         m_damageCoroutine = null;
+
+
     }
 
     public void SetPool(IMinionPool pool, GameObject prefab)
@@ -88,12 +94,12 @@ public class MOBA_Health : MonoBehaviour, IDamageable
         m_prefab = prefab;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float _damage)
     {
         if (!gameObject.activeInHierarchy)
             return;
 
-        m_currentHealth -= damage;
+        m_currentHealth -= _damage;
         m_currentHealth = Mathf.Max(m_currentHealth, 0);
 
         UpdateSlider(m_currentHealth);
@@ -101,10 +107,13 @@ public class MOBA_Health : MonoBehaviour, IDamageable
         if (m_currentHealth <= 0)
         {
             if (m_minionPool != null)
-                m_minionPool.Return(gameObject, m_prefab); // 🔥 wichtig
+                m_minionPool.Return(gameObject, m_prefab);
             else
                 Destroy(gameObject);
         }
+
+        if (!m_aiMinion)
+            MOBA_Manager.Instance.OnDamage(_damage, m_data.m_isEnemyBuilding);
     }
 
     private void ResetHealth()

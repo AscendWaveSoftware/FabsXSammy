@@ -895,7 +895,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.2
-  m_targetHealth: 1000
+  m_data: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
 --- !u!1 &4366946021081738894
 GameObject:
   m_ObjectHideFlags: 0
@@ -1786,7 +1786,7 @@ Transform:
   m_GameObject: {fileID: 9087033542382792315}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16, y: 0, z: 0}
+  m_LocalPosition: {x: -18, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1857,7 +1857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1969,7 +1969,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9134481945901771282}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2108,7 +2108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2184,7 +2184,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2786642321823661984}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2359,7 +2359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalPosition.y

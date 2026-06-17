@@ -4,15 +4,22 @@ using UnityEngine;
 public class Tower : MonoBehaviour
 {
     public Team m_team;
+    [SerializeField] private SO_TowerStats m_towerStats;
+
+    private float currentHealth;
 
     private void OnEnable()
     {
         RegisterTower();
     }
 
-    private void OnDisable()
+    private void Start()
     {
-        UnregisterTower();
+        if (m_towerStats != null && MOBA_Manager.Instance != null)
+        {
+            currentHealth = m_towerStats.m_targetHealth;
+            MOBA_Manager.Instance.SetSlider(currentHealth, m_towerStats.m_isEnemyBuilding);
+        }
     }
 
     private void RegisterTower()
@@ -29,5 +36,10 @@ public class Tower : MonoBehaviour
             EntityManager.BlueTowers.Remove(this);
         else
             EntityManager.RedTowers.Remove(this);
+    }
+
+    private void OnDisable()
+    {
+        UnregisterTower();
     }
 }

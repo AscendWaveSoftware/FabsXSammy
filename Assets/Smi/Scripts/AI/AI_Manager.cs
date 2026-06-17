@@ -10,7 +10,7 @@ public class AI_Manager : MonoBehaviour
     [Header("Spawn Timing")]
     [SerializeField] private float m_minSpawnTime = 5f;
     [SerializeField] private float m_maxSpawnTime = 15f;
-    [SerializeField] private float m_randomUnitSpawnTime = 25f;
+    [SerializeField] private float m_randomUnitSpawnTime = 60f;
 
     private float m_checkTime;
 
@@ -21,6 +21,8 @@ public class AI_Manager : MonoBehaviour
     [Header("AI State")]
     [SerializeField] private int m_pendingUnits = 0;
     private int m_lastThreshold = 0;
+    private float aiTimer = 0f;
+    private const float AI_INTERVAL = 0.5f;
 
     int cost;
     int current;
@@ -31,7 +33,6 @@ public class AI_Manager : MonoBehaviour
     private void Start()
     {
         m_playerResources = FindAnyObjectByType<PlayerResources>();
-
         cost = m_prices.m_PriceForUnit1;
 
         StartCoroutine(RandomSpawn());
@@ -40,18 +41,22 @@ public class AI_Manager : MonoBehaviour
     private IEnumerator RandomSpawn()
     {
 
-            yield return new WaitForSeconds(m_randomUnitSpawnTime);
+        yield return new WaitForSeconds(m_randomUnitSpawnTime);
 
-            SpawnMinion();
+        SpawnMinion();
 
     }
 
-    private void Update()
+    void Update()
     {
-        CheckScrap();
-        HandleSpawning();
+        aiTimer += Time.deltaTime;
+        if (aiTimer >= AI_INTERVAL)
+        {
+            CheckScrap();
+            HandleSpawning();
+            aiTimer = 0f;
+        }
     }
-
 
     private void CheckScrap()
     {

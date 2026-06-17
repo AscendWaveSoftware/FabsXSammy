@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TowerCombat", menuName = "Scriptable Objects/TowerCombat")]
-public class TowerStats : ScriptableObject
+public class SO_TowerStats : HealthData
 {
     public Team m_team;
     public float m_damage;

@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class Turret : MonoBehaviour
 {
-    [SerializeField] private TowerStats m_towerStats;
+    [SerializeField] private SO_TowerStats m_towerStats;
 
     public GameObject m_projectilePrefab;
     public Transform m_projectileSpawnPoint;

@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.25
-  m_targetHealth: 100
+  m_data: {fileID: 11400000, guid: e1cdb653ad7ca394f9da1dfac0ae94ef, type: 2}
 --- !u!1 &8409943441310314169
 GameObject:
   m_ObjectHideFlags: 0

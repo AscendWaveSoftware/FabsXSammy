@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f551f7e309296e448af831591cf4d2dd, type: 3}
   m_Name: AllyFactory
   m_EditorClassIdentifier: Assembly-CSharp::SO_FactoryStats
+  m_targetHealth: 1000
+  m_isEnemyBuilding: 0
   m_team: 0
-  m_minions: []
-  m_health: 1000

@@ -582,6 +582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   m_team: 1
+  m_towerStats: {fileID: 11400000, guid: 11fd8680b19a917448fb035171fc8135, type: 2}
 --- !u!65 &604710866144336547
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -616,7 +617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.25
-  m_targetHealth: 500
+  m_data: {fileID: 11400000, guid: 11fd8680b19a917448fb035171fc8135, type: 2}
 --- !u!1 &8919479893962195614
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,7 +775,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1722953182239472285}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

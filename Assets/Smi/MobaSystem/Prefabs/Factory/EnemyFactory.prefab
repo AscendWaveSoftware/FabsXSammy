@@ -247,7 +247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
   m_damageDuration: 0.2
-  m_targetHealth: 1000
+  m_data: {fileID: 11400000, guid: b97d435f23e6839438166091ad9b920f, type: 2}
 --- !u!1 &4165877348489307806
 GameObject:
   m_ObjectHideFlags: 0
@@ -559,7 +559,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalPosition.y
@@ -567,7 +567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7c0ac5584fe56bd469afeb3efa288e08, type: 3}
       propertyPath: m_LocalRotation.w
@@ -644,7 +644,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.y
@@ -756,7 +756,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7558568247480437730}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -895,7 +895,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db010be7e83d6db4eb726b0b17078bea, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1007,7 +1007,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9147949764532633460}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
