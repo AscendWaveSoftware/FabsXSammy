@@ -121,7 +121,7 @@ public class Turret : MonoBehaviour
             return;
         }
 
-        else
+        else if (!health.m_destroyed)
         {
             GameObject projectileObj =
              Instantiate(

@@ -10,12 +10,16 @@ public class AI_Manager : MonoBehaviour
     [Header("Spawn Timing")]
     [SerializeField] private float m_minSpawnTime = 5f;
     [SerializeField] private float m_maxSpawnTime = 15f;
+
+    [Header("Random Unit")]
+    [SerializeField] private int m_randomBigUnitSpawnAtLevel= 5;
     [SerializeField] private float m_randomUnitSpawnTime = 60f;
 
     private float m_checkTime;
 
     [Header("References")]
     private PlayerResources m_playerResources;
+    private PlayerExperience m_playerXP;
     [SerializeField] private SO_CurrencySystem m_prices;
 
     [Header("AI State")]
@@ -33,6 +37,7 @@ public class AI_Manager : MonoBehaviour
     private void Start()
     {
         m_playerResources = FindAnyObjectByType<PlayerResources>();
+        m_playerXP = FindAnyObjectByType<PlayerExperience>();
         cost = m_prices.m_PriceForUnit1;
 
         StartCoroutine(RandomSpawn());
@@ -43,8 +48,12 @@ public class AI_Manager : MonoBehaviour
 
         yield return new WaitForSeconds(m_randomUnitSpawnTime);
 
-        SpawnMinion();
+        if (m_playerXP.CurrentLevel >= m_randomBigUnitSpawnAtLevel)
+            factory.GetMinion(m_units[1]);
+        else
+            SpawnMinion();
 
+        StartCoroutine(RandomSpawn());
     }
 
     void Update()

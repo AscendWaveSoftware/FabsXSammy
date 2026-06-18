@@ -25,8 +25,6 @@ public class MOBA_Health : MonoBehaviour, IDamageable
         m_targetHealth = m_data.m_targetHealth;
         m_destroyed = true;
 
-        m_aiMinion = GetComponent<AI_Minion>();
-
         if (m_damageCoroutine != null)
         {
             StopCoroutine(m_damageCoroutine);
@@ -45,6 +43,7 @@ public class MOBA_Health : MonoBehaviour, IDamageable
     IEnumerator MinionAlive()
     {
         yield return new WaitForSeconds(3);
+        m_aiMinion = GetComponent<AI_Minion>();
         m_destroyed = false;
     }
 
