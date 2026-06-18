@@ -78,6 +78,7 @@ public class PlayerHealth : MonoBehaviour
 
         IsAlive = false;
 
+        PlaytestAnalyticsManager.Instance.RegisterDeath();
         ResetPlayerResources();
         Respawn();
     }
