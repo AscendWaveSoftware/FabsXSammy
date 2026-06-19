@@ -19,6 +19,8 @@ public class MOBA_Health : MonoBehaviour, IDamageable
     private GameObject m_prefab;
 
     AI_Minion m_aiMinion;
+    Tower m_tower;
+    Factory m_factory;
 
     private void OnEnable()
     {
@@ -31,6 +33,9 @@ public class MOBA_Health : MonoBehaviour, IDamageable
             m_damageCoroutine = null;
         }
 
+        m_aiMinion = GetComponent<AI_Minion>();
+        m_tower = GetComponent<Tower>();
+        m_factory = GetComponent<Factory>();
         m_healthSlider = GetComponentInChildren<Slider>(true);
 
         ResetHealth();
@@ -43,7 +48,6 @@ public class MOBA_Health : MonoBehaviour, IDamageable
     IEnumerator MinionAlive()
     {
         yield return new WaitForSeconds(3);
-        m_aiMinion = GetComponent<AI_Minion>();
         m_destroyed = false;
     }
 
@@ -111,7 +115,7 @@ public class MOBA_Health : MonoBehaviour, IDamageable
                 Destroy(gameObject);
         }
 
-        if (!m_aiMinion)
+        if (m_factory || m_tower)
             MOBA_Manager.Instance.OnDamage(_damage, m_data.m_isEnemyBuilding);
     }
 

@@ -3754,7 +3754,7 @@ MonoBehaviour:
   m_minSpawnTime: 2
   m_maxSpawnTime: 5
   m_randomBigUnitSpawnAtLevel: 10
-  m_randomUnitSpawnTime: 180
+  m_randomUnitSpawnTime: 75
   m_prices: {fileID: 11400000, guid: 1a877b9232a92ef4b907de8a9d919da7, type: 2}
   m_pendingUnits: 0
 --- !u!4 &561912548

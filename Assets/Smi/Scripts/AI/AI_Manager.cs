@@ -12,8 +12,9 @@ public class AI_Manager : MonoBehaviour
     [SerializeField] private float m_maxSpawnTime = 15f;
 
     [Header("Random Unit")]
-    [SerializeField] private int m_randomBigUnitSpawnAtLevel= 5;
+    [SerializeField] private int m_randomBigUnitSpawnAtLevel = 5;
     [SerializeField] private float m_randomUnitSpawnTime = 60f;
+    private float m_BigUnitSpawnTime = 60f;
 
     private float m_checkTime;
 
@@ -40,6 +41,8 @@ public class AI_Manager : MonoBehaviour
         m_playerXP = FindAnyObjectByType<PlayerExperience>();
         cost = m_prices.m_PriceForUnit1;
 
+        m_BigUnitSpawnTime = m_randomUnitSpawnTime * 2;
+
         StartCoroutine(RandomSpawn());
     }
 
@@ -49,7 +52,10 @@ public class AI_Manager : MonoBehaviour
         yield return new WaitForSeconds(m_randomUnitSpawnTime);
 
         if (m_playerXP.CurrentLevel >= m_randomBigUnitSpawnAtLevel)
+        {
+            m_randomUnitSpawnTime = m_BigUnitSpawnTime;
             factory.GetMinion(m_units[1]);
+        }
         else
             SpawnMinion();
 

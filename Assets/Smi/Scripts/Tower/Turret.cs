@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +11,7 @@ public class Turret : MonoBehaviour
     public GameObject m_projectilePrefab;
     public Transform m_projectileSpawnPoint;
 
-    private LineRenderer m_lineRenderer;
+    // private LineRenderer m_lineRenderer;
 
     private float m_nextAttackTime;
     private GameObject m_currentTarget;
@@ -18,7 +20,7 @@ public class Turret : MonoBehaviour
 
     private void Awake()
     {
-        m_lineRenderer = GetComponent<LineRenderer>();
+        // m_lineRenderer = GetComponent<LineRenderer>();
         m_team = m_towerStats.m_team;
     }
 
@@ -29,7 +31,7 @@ public class Turret : MonoBehaviour
             FindNewTarget();
         }
 
-        UpdateLineToCurrentTarget();
+        // UpdateLineToCurrentTarget();
 
         if (m_currentTarget == null)
             return;
@@ -93,20 +95,20 @@ public class Turret : MonoBehaviour
         transform.Rotate(0f, -90f, 0f);
     }
 
-    private void UpdateLineToCurrentTarget()
-    {
-        if (m_currentTarget != null)
-        {
-            m_lineRenderer.enabled = true;
-
-            m_lineRenderer.SetPosition(0, m_projectileSpawnPoint.position);
-            m_lineRenderer.SetPosition(1, m_currentTarget.transform.position);
-        }
-        else
-        {
-            m_lineRenderer.enabled = false;
-        }
-    }
+    //   private void UpdateLineToCurrentTarget()
+    //   {
+    //       if (m_currentTarget != null)
+    //       {
+    //           m_lineRenderer.enabled = true;
+    //
+    //           m_lineRenderer.SetPosition(0, m_projectileSpawnPoint.position);
+    //           m_lineRenderer.SetPosition(1, m_currentTarget.transform.position);
+    //       }
+    //       else
+    //       {
+    //           m_lineRenderer.enabled = false;
+    //       }
+    //   }
 
     private void AttackCurrentTarget()
     {
@@ -135,6 +137,15 @@ public class Turret : MonoBehaviour
             projectile.m_damage = m_towerStats.m_damage;
             projectile.m_speed = m_towerStats.m_projectileSpeed;
             projectile.SeekTarget(m_currentTarget.transform);
+
+            StartCoroutine(DestroyProjectile(projectile));
         }
+    }
+
+    private IEnumerator DestroyProjectile(Projectile _projectile)
+    {
+        yield return new WaitForSeconds(1);
+        if (m_currentTarget == null && _projectile != null)
+            Destroy(_projectile.gameObject);
     }
 }
