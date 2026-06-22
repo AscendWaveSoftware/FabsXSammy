@@ -114,14 +114,14 @@ public class AI_Minion : MonoBehaviour
         {
             if (minion == null) continue;
 
-            float distanceSqr =
-                (minion.transform.position - currentPosition).sqrMagnitude;
+                float distanceSqr =
+                    (minion.transform.position - currentPosition).sqrMagnitude;
 
-            if (distanceSqr <= detectRangeSqr && distanceSqr < closestDistanceSqr)
-            {
-                closestDistanceSqr = distanceSqr;
-                closest = minion.transform;
-            }
+                if (distanceSqr <= detectRangeSqr && distanceSqr < closestDistanceSqr)
+                {
+                    closestDistanceSqr = distanceSqr;
+                    closest = minion.transform;
+                }
         }
 
         return closest;
@@ -149,5 +149,13 @@ public class AI_Minion : MonoBehaviour
         }
 
         return closest;
+    }
+
+    private void OnDisable()
+    {
+        if (m_stats.m_team == Team.Blue)
+            EntityManager.BlueMinions.Remove(this);
+        else
+            EntityManager.RedMinions.Remove(this);
     }
 }

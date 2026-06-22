@@ -19,5 +19,5 @@ MonoBehaviour:
   m_attackDamage: 50
   m_attackCooldown: 3
   m_stopDistance: 3
-  m_detectRange: 20
+  m_detectRange: 15
   m_targetSwitchInterval: 0.5

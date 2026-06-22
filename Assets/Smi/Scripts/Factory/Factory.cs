@@ -62,9 +62,7 @@ public class Factory : MonoBehaviour, IMinionPool
 
         var health = newMinion.GetComponent<MOBA_Health>();
         if (health != null)
-        {
             health.SetPool(this, minionPrefab);
-        }
 
         return newMinion;
     }
