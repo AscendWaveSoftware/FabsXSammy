@@ -7,15 +7,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7099ef5f8f258af44bbd2d43efd80b0e, type: 3}
-  m_Name: AllyTower
-  m_EditorClassIdentifier: Assembly-CSharp::TowerStats
-  m_targetHealth: 500
-  m_isEnemyBuilding: 0
-  m_team: 0
-  m_damage: 25
+  m_Name: EnemyTurret
+  m_EditorClassIdentifier: Assembly-CSharp::SO_TowerStats
+  m_targetHealth: 0
+  m_isEnemyBuilding: 1
+  m_team: 1
+  m_damage: 10
   m_projectileSpeed: 20
   m_attackRange: 15
-  m_attackCooldown: 2
+  m_attackCooldown: 10

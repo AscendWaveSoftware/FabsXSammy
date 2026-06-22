@@ -37,7 +37,11 @@ public class MinionCombat : MonoBehaviour
     {
         m_lastAttackTime = Time.time;
         m_isAttacking = true;
-        m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
-        target.TakeDamage(m_minonStats.m_attackDamage);
+
+            m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
+            target.TakeDamage(m_minonStats.m_attackDamage);
+
+        if (m_minionAI.m_currentTarget != enabled)
+            m_minionAI.m_currentTarget = null;
     }
 }

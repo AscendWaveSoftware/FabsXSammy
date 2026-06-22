@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 2752412798224001799}
   - component: {fileID: 3354604756654096032}
   - component: {fileID: 69186139473225255}
+  - component: {fileID: 7556271588631930314}
   m_Layer: 0
   m_Name: Shop
   m_TagString: Untagged
@@ -165,6 +166,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7556271588631930314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799835700847637019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &1217523749748366283
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,7 +842,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1171384612527714937}
   - component: {fileID: 7517560261858270348}
-  - component: {fileID: 7175599418590396377}
   - component: {fileID: 7124952478596879520}
   m_Layer: 0
   m_Name: AllyFactory
@@ -862,26 +882,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   m_stats: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
---- !u!114 &7175599418590396377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878547187031522997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
-  m_SerializedVersion: 0
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 1
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!114 &7124952478596879520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974917895536c7d45bfdeff3594074dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
-  m_damageDuration: 0.2
+  m_damageDuration: 0.25
   m_data: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
 --- !u!1 &4366946021081738894
 GameObject:
@@ -2083,7 +2083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d3dbcf3da9b3046901fe903fc943dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
-  m_towerStats: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
+  m_towerStats: {fileID: 11400000, guid: c499d4edf3ed49648b80aff5497eca9e, type: 2}
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 5301373197576511285}
 --- !u!1001 &4852101790102339812
@@ -2298,7 +2298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d3dbcf3da9b3046901fe903fc943dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
-  m_towerStats: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
+  m_towerStats: {fileID: 11400000, guid: c499d4edf3ed49648b80aff5497eca9e, type: 2}
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 8165515394021372968}
 --- !u!4 &4962009817560065807 stripped
