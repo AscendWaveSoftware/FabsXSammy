@@ -24,6 +24,11 @@ public class Factory : MonoBehaviour, IMinionPool
         }
     }
 
+    public void OnDamage(float _damage)
+    {
+        MOBA_Manager.Instance.OnDamage(_damage, m_stats.m_isEnemyBuilding);
+    }
+
     private void LoseState()
     {
         Debug.Log("YOU LOSE");

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -115,8 +114,11 @@ public class MOBA_Health : MonoBehaviour, IDamageable
                 Destroy(gameObject);
         }
 
-        if (m_factory || m_tower)
-            MOBA_Manager.Instance.OnDamage(_damage, m_data.m_isEnemyBuilding);
+        if (m_tower)
+            m_tower.OnDamage(_damage);
+        else if(m_factory)
+            m_factory.OnDamage(_damage);
+          
     }
 
     private void ResetHealth()

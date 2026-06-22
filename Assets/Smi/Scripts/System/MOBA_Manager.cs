@@ -9,7 +9,6 @@ public class MOBA_Manager : MonoBehaviour
     public float m_allyHealth;
     public float m_enemyHealth;
     [SerializeField] private Slider[] m_Slider;
-    MOBA_Health[] m_healthObj;
 
     private void Awake()
     {

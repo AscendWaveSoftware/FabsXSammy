@@ -18,8 +18,17 @@ public class Tower : MonoBehaviour
         if (m_towerStats != null && MOBA_Manager.Instance != null)
         {
             currentHealth = m_towerStats.m_targetHealth;
-            MOBA_Manager.Instance.SetSlider(currentHealth, m_towerStats.m_isEnemyBuilding);
+
+            if (m_team == Team.Red)
+                MOBA_Manager.Instance.SetSlider(currentHealth, true);
+            else
+                MOBA_Manager.Instance.SetSlider(currentHealth, false);
         }
+    }
+
+    public void OnDamage(float _damage)
+    {
+        MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
     }
 
     private void RegisterTower()
