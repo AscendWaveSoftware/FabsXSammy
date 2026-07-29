@@ -1,12 +1,18 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(MOBA_Health))]
 public class Tower : MonoBehaviour
 {
     public Team m_team;
     [SerializeField] private SO_TowerStats m_towerStats;
+    public UnityEvent OnDamagedEvent;
+    [SerializeField] private GameObject OnDestroyed;
 
-    private float currentHealth;
+    [SerializeField] private float currentHealth;
+
+
+    private bool m_bIsDamaged = false;
 
     private void OnEnable()
     {
@@ -15,20 +21,32 @@ public class Tower : MonoBehaviour
 
     private void Start()
     {
-        if (m_towerStats != null && MOBA_Manager.Instance != null)
+        if (MOBA_Manager.Instance != null)
         {
-            currentHealth = m_towerStats.m_targetHealth;
-
             if (m_team == Team.Red)
                 MOBA_Manager.Instance.SetSlider(currentHealth, true);
             else
                 MOBA_Manager.Instance.SetSlider(currentHealth, false);
         }
+
+        if (m_towerStats)
+            currentHealth = m_towerStats.m_targetHealth;
     }
 
     public void OnDamage(float _damage)
     {
-        MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+        currentHealth -= _damage;
+
+        if (MOBA_Manager.Instance != null)
+        {
+            MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+        }
+
+        if (currentHealth <= m_towerStats.m_targetHealth / 2 && !m_bIsDamaged)
+        {
+            OnDamagedEvent?.Invoke();
+            m_bIsDamaged = true;
+        }
     }
 
     private void RegisterTower()
@@ -49,6 +67,7 @@ public class Tower : MonoBehaviour
 
     private void OnDisable()
     {
+        MOBA_Manager.Instance.DestroyedTower(new Vector3(this.transform.position.x, -0.5f, this.transform.position.z), m_towerStats.m_isEnemyBuilding);
         UnregisterTower();
     }
 }

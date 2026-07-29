@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
 public class Turret : MonoBehaviour
 {
     [SerializeField] private SO_TowerStats m_towerStats;
@@ -16,12 +14,15 @@ public class Turret : MonoBehaviour
     private float m_nextAttackTime;
     private GameObject m_currentTarget;
 
+    private AudioSource m_audioSource;
+
     private Team m_team;
 
     private void Awake()
     {
         // m_lineRenderer = GetComponent<LineRenderer>();
         m_team = m_towerStats.m_team;
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -88,10 +89,10 @@ public class Turret : MonoBehaviour
 
     private void RotateTowardsTarget()
     {
-        Vector3 targetPos = m_currentTarget.transform.position;
-        targetPos.y = transform.position.y;
+        //Vector3 targetPos = m_currentTarget.transform.position;
+        //targetPos.y = transform.position.y;
 
-        transform.LookAt(targetPos);
+        transform.LookAt(m_currentTarget.transform.position);
         transform.Rotate(0f, -90f, 0f);
     }
 
@@ -125,20 +126,8 @@ public class Turret : MonoBehaviour
 
         else if (!health.m_destroyed)
         {
-            GameObject projectileObj =
-             Instantiate(
-                 m_projectilePrefab,
-                 m_projectileSpawnPoint.position,
-                 Quaternion.identity
-             );
-
-            Projectile projectile = projectileObj.GetComponent<Projectile>();
-
-            projectile.m_damage = m_towerStats.m_damage;
-            projectile.m_speed = m_towerStats.m_projectileSpeed;
-            projectile.SeekTarget(m_currentTarget.transform);
-
-            StartCoroutine(DestroyProjectile(projectile));
+            PlayAttackSound();
+            StartCoroutine(SpawnProjectile());   
         }
     }
 
@@ -147,5 +136,45 @@ public class Turret : MonoBehaviour
         yield return new WaitForSeconds(1);
         if (m_currentTarget == null && _projectile != null)
             Destroy(_projectile.gameObject);
+    }
+
+    private IEnumerator SpawnProjectile()
+    {
+        yield return new WaitForSeconds(0.5f);
+        GameObject projectileObj = Instantiate(m_projectilePrefab, m_projectileSpawnPoint.position, Quaternion.identity);
+
+        Projectile projectile = projectileObj.GetComponent<Projectile>();
+
+        projectile.m_damage = m_towerStats.m_damage;
+        projectile.m_speed = m_towerStats.m_projectileSpeed;
+        projectile.SeekTarget(m_currentTarget.transform);
+
+        StartCoroutine(DestroyProjectile(projectile));
+
+        m_projectileSpawnPoint.GetComponentInChildren<ParticleSystem>().Play();
+    }
+
+    private void PlayAttackSound()
+    {
+        GameObject audioObj = new GameObject("AttackSound");
+        audioObj.transform.position = transform.position;
+
+        AudioSource source = audioObj.AddComponent<AudioSource>();
+        source.clip = m_audioSource.clip;
+        source.volume = m_audioSource.volume;
+        source.pitch = Random.Range(0.8f, 1.0f);
+        source.spatialBlend = m_audioSource.spatialBlend;
+        source.minDistance = m_audioSource.minDistance;
+        source.maxDistance = m_audioSource.maxDistance;
+        source.rolloffMode = m_audioSource.rolloffMode;
+        source.outputAudioMixerGroup = m_audioSource.outputAudioMixerGroup;
+
+        source.Play();
+
+        Destroy(audioObj, source.clip.length / source.pitch);
+    }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 }

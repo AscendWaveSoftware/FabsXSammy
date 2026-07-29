@@ -21,6 +21,7 @@ public class Projectile : MonoBehaviour
         }
 
         Vector3 dir = m_target.position - transform.position;
+        dir.y += 1.5f;
         float dist = m_speed * Time.deltaTime;
 
         transform.Translate(dir.normalized * dist, Space.World);

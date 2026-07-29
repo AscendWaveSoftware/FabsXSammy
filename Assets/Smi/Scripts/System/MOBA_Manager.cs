@@ -9,6 +9,7 @@ public class MOBA_Manager : MonoBehaviour
     public float m_allyHealth;
     public float m_enemyHealth;
     [SerializeField] private Slider[] m_Slider;
+    [SerializeField] private GameObject[] m_DestroyedTower;
 
     private void Awake()
     {
@@ -41,15 +42,38 @@ public class MOBA_Manager : MonoBehaviour
 
     public void OnDamage(float _damage, bool _isEnemy)
     {
-        if (!_isEnemy)
+       for (int i = 0; i < m_Slider.Length; i++)
         {
-            m_allyHealth -= _damage;
-            m_Slider[0].value = m_allyHealth;
-        }
-        else
+            if (m_Slider[i])
+            {
+                if (!_isEnemy)
+                {
+                    m_allyHealth -= _damage;
+                    m_Slider[0].value = m_allyHealth;
+                }
+                else
+                {
+                    m_enemyHealth -= _damage;
+                    m_Slider[1].value = m_enemyHealth;
+                }
+            }
+        }     
+    }
+
+    public void DestroyedTower(Vector3 _position, bool _isEnemy)
+    {
+        switch (_isEnemy)
         {
-            m_enemyHealth -= _damage;
-            m_Slider[1].value = m_enemyHealth;
+            case false:
+                var destTowerAlly = Instantiate(m_DestroyedTower[0], this.transform);
+                destTowerAlly.transform.position = _position;
+                destTowerAlly.transform.Rotate(0,Random.Range(0,355),0);
+                break;
+
+            case true:
+                var destTowerEnemy = Instantiate(m_DestroyedTower[1], this.transform);
+                destTowerEnemy.transform.position = _position;
+                break;
         }
     }
 }

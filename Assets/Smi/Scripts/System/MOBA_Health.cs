@@ -111,7 +111,7 @@ public class MOBA_Health : MonoBehaviour, IDamageable
             if (m_minionPool != null)
                 m_minionPool.Return(gameObject, m_prefab);
             else
-                Destroy(gameObject);
+                gameObject.SetActive(false);
         }
 
         if (m_tower)
