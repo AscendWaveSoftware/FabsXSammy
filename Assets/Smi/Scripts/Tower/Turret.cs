@@ -9,8 +9,6 @@ public class Turret : MonoBehaviour
     public GameObject m_projectilePrefab;
     public Transform m_projectileSpawnPoint;
 
-    // private LineRenderer m_lineRenderer;
-
     private float m_nextAttackTime;
     private GameObject m_currentTarget;
 
@@ -20,7 +18,6 @@ public class Turret : MonoBehaviour
 
     private void Awake()
     {
-        // m_lineRenderer = GetComponent<LineRenderer>();
         m_team = m_towerStats.m_team;
         m_audioSource = GetComponent<AudioSource>();
     }
@@ -31,8 +28,6 @@ public class Turret : MonoBehaviour
         {
             FindNewTarget();
         }
-
-        // UpdateLineToCurrentTarget();
 
         if (m_currentTarget == null)
             return;
@@ -89,28 +84,9 @@ public class Turret : MonoBehaviour
 
     private void RotateTowardsTarget()
     {
-        //Vector3 targetPos = m_currentTarget.transform.position;
-        //targetPos.y = transform.position.y;
-
         transform.LookAt(m_currentTarget.transform.position);
         transform.Rotate(0f, -90f, 0f);
     }
-
-    //   private void UpdateLineToCurrentTarget()
-    //   {
-    //       if (m_currentTarget != null)
-    //       {
-    //           m_lineRenderer.enabled = true;
-    //
-    //           m_lineRenderer.SetPosition(0, m_projectileSpawnPoint.position);
-    //           m_lineRenderer.SetPosition(1, m_currentTarget.transform.position);
-    //       }
-    //       else
-    //       {
-    //           m_lineRenderer.enabled = false;
-    //       }
-    //   }
-
     private void AttackCurrentTarget()
     {
         if (m_currentTarget == null)

@@ -50,7 +50,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -4992,7 +4992,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 45560361247f8fa419f2b02bffaf4008, type: 2}
     - target: {fileID: 919132149155446097, guid: 4923f4fd2be71054b9a8efcc95618670, type: 3}
       propertyPath: m_Name
-      value: Asset_Tower_Top
+      value: Turret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

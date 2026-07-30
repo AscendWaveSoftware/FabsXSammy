@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.ParticleSystem;
 
 [RequireComponent(typeof(MOBA_Health))]
 public class Tower : MonoBehaviour
@@ -9,6 +10,9 @@ public class Tower : MonoBehaviour
     public UnityEvent OnDamagedEvent;
     [SerializeField] private GameObject OnDestroyed;
 
+    [SerializeField] private ParticleSystem mainModule;
+    [SerializeField] private MainModule main;
+
     [SerializeField] private float currentHealth;
 
 
@@ -17,6 +21,7 @@ public class Tower : MonoBehaviour
     private void OnEnable()
     {
         RegisterTower();
+        main = mainModule.main;
     }
 
     private void Start()
@@ -42,10 +47,16 @@ public class Tower : MonoBehaviour
             MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
         }
 
-        if (currentHealth <= m_towerStats.m_targetHealth / 2 && !m_bIsDamaged)
+        if (currentHealth <= m_towerStats.m_targetHealth / 2)
         {
-            OnDamagedEvent?.Invoke();
-            m_bIsDamaged = true;
+            if (mainModule)
+                main.startLifetimeMultiplier = 10f * (1f - (currentHealth / m_towerStats.m_targetHealth));
+
+            if (!m_bIsDamaged)
+            {
+                OnDamagedEvent?.Invoke();
+                m_bIsDamaged = true;
+            }
         }
     }
 
