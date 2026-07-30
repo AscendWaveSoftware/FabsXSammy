@@ -5731,7 +5731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: MaxDistance
-      value: 300
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: rolloffMode
@@ -10674,7 +10674,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 300
+  MaxDistance: 150
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0

@@ -53,12 +53,7 @@ public class Factory : MonoBehaviour, IMinionPool
             return minion;
         }
 
-        GameObject newMinion = Instantiate(
-            minionPrefab,
-            transform.position,
-            Quaternion.identity,
-            transform
-        );
+        GameObject newMinion = Instantiate(minionPrefab, transform.position, Quaternion.identity, transform);
 
         var health = newMinion.GetComponent<MOBA_Health>();
         if (health != null)

@@ -9,15 +9,14 @@ public class AI_Minion : MonoBehaviour
     [SerializeField] public SO_MinionStats m_stats;
 
     private NavMeshAgent m_agent;
-
     private float m_timeSinceLastTarget = 0;
     private float m_destinationUpdateTimer;
-
+    [SerializeField] private AudioClip m_clip;
+    private AudioSource m_audioSource;
 
     private void OnEnable()
     {
         m_agent = GetComponent<NavMeshAgent>();
-
         m_agent.speed = m_stats.m_moveSpeed;
 
         if (m_stats.m_team == Team.Blue)
@@ -26,6 +25,8 @@ public class AI_Minion : MonoBehaviour
             EntityManager.RedMinions.Add(this);
 
         FindAndSetTarget();
+
+        m_audioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -43,6 +44,8 @@ public class AI_Minion : MonoBehaviour
             UpdateDestination();
             m_destinationUpdateTimer = 0.0f;
         }
+
+
     }
 
     private void UpdateDestination()
@@ -89,7 +92,7 @@ public class AI_Minion : MonoBehaviour
             return;
         }
 
-        Factory factory = 
+        Factory factory =
             m_stats.m_team == Team.Blue
                 ? EntityManager.RedFactory
                 : EntityManager.BlueFactory;
@@ -114,14 +117,14 @@ public class AI_Minion : MonoBehaviour
         {
             if (minion == null) continue;
 
-                float distanceSqr =
-                    (minion.transform.position - currentPosition).sqrMagnitude;
+            float distanceSqr =
+                (minion.transform.position - currentPosition).sqrMagnitude;
 
-                if (distanceSqr <= detectRangeSqr && distanceSqr < closestDistanceSqr)
-                {
-                    closestDistanceSqr = distanceSqr;
-                    closest = minion.transform;
-                }
+            if (distanceSqr <= detectRangeSqr && distanceSqr < closestDistanceSqr)
+            {
+                closestDistanceSqr = distanceSqr;
+                closest = minion.transform;
+            }
         }
 
         return closest;
@@ -153,6 +156,9 @@ public class AI_Minion : MonoBehaviour
 
     private void OnDisable()
     {
+        if (m_clip)
+            m_audioSource.PlayOneShot(m_clip);
+
         if (m_stats.m_team == Team.Blue)
             EntityManager.BlueMinions.Remove(this);
         else

@@ -117,6 +117,7 @@ public class Turret : MonoBehaviour
     private IEnumerator SpawnProjectile()
     {
         yield return new WaitForSeconds(0.5f);
+
         GameObject projectileObj = Instantiate(m_projectilePrefab, m_projectileSpawnPoint.position, Quaternion.identity);
 
         Projectile projectile = projectileObj.GetComponent<Projectile>();
@@ -138,7 +139,7 @@ public class Turret : MonoBehaviour
         AudioSource source = audioObj.AddComponent<AudioSource>();
         source.clip = m_audioSource.clip;
         source.volume = m_audioSource.volume;
-        source.pitch = Random.Range(0.8f, 1.0f);
+        source.pitch = Random.Range(0.8f, 1.1f);
         source.spatialBlend = m_audioSource.spatialBlend;
         source.minDistance = m_audioSource.minDistance;
         source.maxDistance = m_audioSource.maxDistance;

@@ -8,129 +8,114 @@ public class AI_Manager : MonoBehaviour
     [SerializeField] private Factory factory;
 
     [Header("Spawn Timing")]
-    [SerializeField] private float m_minSpawnTime = 5f;
+    [SerializeField] private float m_minSpawnTime = 8f;
     [SerializeField] private float m_maxSpawnTime = 15f;
 
-    [Header("Random Unit")]
-    [SerializeField] private int m_randomBigUnitSpawnAtLevel = 5;
-    [SerializeField] private float m_randomUnitSpawnTime = 60f;
-    private float m_BigUnitSpawnTime = 60f;
+    [Header("AI Economy")]
+    [SerializeField] private int m_aiScrap = 0;
+    [SerializeField] private int m_incomeAmount = 10;
+    [SerializeField] private float m_incomeInterval = 5f;
 
-    private float m_checkTime;
+    [Header("Wave Settings")]
+    [SerializeField] private int m_maxUnitsPerWave = 4;
+    [SerializeField] private float m_spawnDelay = 0.5f;
+
+    [Header("Big Units")]
+    [SerializeField] private int m_bigUnitUnlockLevel = 10;
+    [SerializeField] private float m_startBigUnitChance = 0.15f;
+    [SerializeField] private float m_bigChanceIncreasePerLevel = 0.03f;
+    [SerializeField] private float m_maxBigUnitChance = 0.5f;
 
     [Header("References")]
-    private PlayerResources m_playerResources;
     private PlayerExperience m_playerXP;
+
     [SerializeField] private SO_CurrencySystem m_prices;
 
-    [Header("AI State")]
-    [SerializeField] private int m_pendingUnits = 0;
-    private int m_lastThreshold = 0;
-    private float aiTimer = 0f;
-    private const float AI_INTERVAL = 0.5f;
 
-    int cost;
-    int current;
-    int unit;
+    private float m_incomeTimer;
+    private bool m_isSpawning;
 
-    private bool m_isSpawning = false;
 
     private void Start()
     {
-        m_playerResources = FindAnyObjectByType<PlayerResources>();
         m_playerXP = FindAnyObjectByType<PlayerExperience>();
-        cost = m_prices.m_PriceForUnit1;
-
-        m_BigUnitSpawnTime = m_randomUnitSpawnTime * 2;
-
-        StartCoroutine(RandomSpawn());
     }
 
-    private IEnumerator RandomSpawn()
+
+    private void Update()
     {
-
-        yield return new WaitForSeconds(m_randomUnitSpawnTime);
-
-        if (m_playerXP.CurrentLevel >= m_randomBigUnitSpawnAtLevel)
-        {
-            m_randomUnitSpawnTime = m_BigUnitSpawnTime;
-            factory.GetMinion(m_units[1]);
-        }
-        else
-            SpawnMinion();
-
-        StartCoroutine(RandomSpawn());
+        GenerateIncome();
+        HandleSpawning();
     }
 
-    void Update()
+
+    private void GenerateIncome()
     {
-        aiTimer += Time.deltaTime;
-        if (aiTimer >= AI_INTERVAL)
+        m_incomeTimer += Time.deltaTime;
+
+        if (m_incomeTimer >= m_incomeInterval)
         {
-            CheckScrap();
-            HandleSpawning();
-            aiTimer = 0f;
+            m_aiScrap += m_incomeAmount;
+            m_incomeTimer = 0f;
         }
     }
 
-    private void CheckScrap()
-    {
-        current = m_playerResources.CurrentScrap;
-
-        int currentThreshold = current / cost;
-
-        if (currentThreshold < m_lastThreshold)
-        {
-            m_lastThreshold = currentThreshold;
-            return;
-        }
-
-        if (currentThreshold > m_lastThreshold)
-        {
-            int diff = currentThreshold - m_lastThreshold;
-            m_pendingUnits += diff;
-            m_lastThreshold = currentThreshold;
-        }
-    }
 
     private void HandleSpawning()
     {
         if (m_isSpawning)
             return;
 
-        if (m_pendingUnits <= 0)
+        if (m_aiScrap < m_prices.m_PriceForUnit1)
             return;
 
         StartCoroutine(SpawnRoutine());
     }
 
+
     private IEnumerator SpawnRoutine()
     {
         m_isSpawning = true;
 
-        yield return new WaitForSeconds(m_checkTime);
+        yield return new WaitForSeconds(Random.Range(m_minSpawnTime, m_maxSpawnTime));
 
-        int groupSize = Random.value < 0.5f ? 3 : 5;
-        int bigUnits = m_pendingUnits / groupSize;
-        int smallUnits = m_pendingUnits % groupSize;
+        int spawnedUnits = 0;
 
-        for (int i = 0; i < bigUnits; i++)
-            factory.GetMinion(m_units[1]);
+        while (m_aiScrap >= m_prices.m_PriceForUnit1 &&
+               spawnedUnits < m_maxUnitsPerWave)
+        {
+            bool spawnBig = CanSpawnBigUnit();
 
-        for (int i = 0; i < smallUnits; i++)
-            factory.GetMinion(m_units[0]);
 
-        m_pendingUnits = 0;
+            if (spawnBig)
+            {
+                factory.GetMinion(m_units[1]);
+                m_aiScrap -= m_prices.m_PriceForUnit2;
+            }
+            else
+            {
+                factory.GetMinion(m_units[0]);
+                m_aiScrap -= m_prices.m_PriceForUnit1;
+            }
+            spawnedUnits++;
 
-        m_checkTime = Random.Range(m_minSpawnTime, m_maxSpawnTime);
+            yield return new WaitForSeconds(m_spawnDelay);
+        }
+
         m_isSpawning = false;
     }
 
-    private void SpawnMinion()
-    {
-        if (factory == null || m_units.Length == 0)
-            return;
 
-        factory.GetMinion(m_units[unit]);
+    private bool CanSpawnBigUnit()
+    {
+        if (m_playerXP.CurrentLevel < m_bigUnitUnlockLevel)
+            return false;
+
+        if (m_aiScrap < m_prices.m_PriceForUnit2)
+            return false;
+
+        float chance = Mathf.Clamp(m_startBigUnitChance + ((m_playerXP.CurrentLevel - m_bigUnitUnlockLevel) * m_bigChanceIncreasePerLevel), 0f, m_maxBigUnitChance);
+
+        return Random.value < chance;
     }
 }
