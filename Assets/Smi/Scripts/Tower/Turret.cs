@@ -103,7 +103,7 @@ public class Turret : MonoBehaviour
         else if (!health.m_destroyed)
         {
             PlayAttackSound();
-            StartCoroutine(SpawnProjectile());   
+            StartCoroutine(SpawnProjectile());
         }
     }
 
@@ -124,7 +124,8 @@ public class Turret : MonoBehaviour
 
         projectile.m_damage = m_towerStats.m_damage;
         projectile.m_speed = m_towerStats.m_projectileSpeed;
-        projectile.SeekTarget(m_currentTarget.transform);
+        if (m_currentTarget)
+            projectile.SeekTarget(m_currentTarget.transform);
 
         StartCoroutine(DestroyProjectile(projectile));
 

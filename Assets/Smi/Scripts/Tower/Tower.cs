@@ -22,10 +22,7 @@ public class Tower : MonoBehaviour
     {
         RegisterTower();
         main = mainModule.main;
-    }
 
-    private void Start()
-    {
         if (MOBA_Manager.Instance != null)
         {
             if (m_team == Team.Red)
@@ -33,7 +30,10 @@ public class Tower : MonoBehaviour
             else
                 MOBA_Manager.Instance.SetSlider(currentHealth, false);
         }
+    }
 
+    private void Start()
+    {   
         if (m_towerStats)
             currentHealth = m_towerStats.m_targetHealth;
     }

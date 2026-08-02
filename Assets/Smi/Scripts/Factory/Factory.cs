@@ -13,10 +13,6 @@ public class Factory : MonoBehaviour, IMinionPool
     private void OnEnable()
     {
         RegisterFactory();
-    }
-
-    private void Start()
-    {
         if (m_stats != null && MOBA_Manager.Instance != null)
         {
             m_currentHealth = m_stats.m_targetHealth;

@@ -23,7 +23,6 @@ public class MinionCombat : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(m_animator.GetBool("Attack"));
         if (m_isAttacking)
             if (Time.time - m_lastAttackTime >= m_minonStats.m_attackCooldown)
                 m_isAttacking = false;
