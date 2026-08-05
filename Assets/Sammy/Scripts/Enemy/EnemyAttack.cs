@@ -13,6 +13,8 @@ public class EnemyAttack : MonoBehaviour
     private PlayerHealth m_playerHealth;
     private float m_nextAttackTime;
 
+    public float AttackRange => m_attackRange;
+
     private void Awake()
     {
         m_stats = GetComponent<EnemyStats>();
@@ -35,6 +37,14 @@ public class EnemyAttack : MonoBehaviour
     private void Update()
     {
         TryAttackPlayer();
+    }
+
+    public void SetPlayerTarget(Transform _playerTarget)
+    {
+        m_playerTarget = _playerTarget;
+        m_playerHealth = m_playerTarget != null
+            ? m_playerTarget.GetComponent<PlayerHealth>()
+            : null;
     }
 
     private void TryAttackPlayer()

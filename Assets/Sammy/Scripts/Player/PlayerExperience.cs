@@ -9,6 +9,8 @@ public class PlayerExperience : MonoBehaviour
     [SerializeField] private int xpToNextLevel = 100;
     [SerializeField] private float xpRequirementMultiplier = 1.25f;
 
+    private float m_experienceMultiplier = 1f;
+
     public int CurrentLevel => currentLevel;
     public int CurrentXP => currentXP;
     public int XPToNextLevel => xpToNextLevel;
@@ -25,7 +27,8 @@ public class PlayerExperience : MonoBehaviour
     {
         if (_amount <= 0) return;
 
-        currentXP += _amount;
+        int modifiedAmount = Mathf.Max(1, Mathf.RoundToInt(_amount * m_experienceMultiplier));
+        currentXP += modifiedAmount;
 
         while(currentXP >= xpToNextLevel)
         {
@@ -34,6 +37,14 @@ public class PlayerExperience : MonoBehaviour
         }
 
         OnExperienceChanged?.Invoke(currentLevel, currentXP, xpToNextLevel);
+    }
+
+    public void AddExperienceGain(float _percentage)
+    {
+        if (_percentage <= 0f)
+            return;
+
+        m_experienceMultiplier += _percentage;
     }
 
     public void ResetXP()

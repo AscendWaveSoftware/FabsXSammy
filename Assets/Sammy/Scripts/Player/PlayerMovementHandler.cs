@@ -53,6 +53,14 @@ public class PlayerMovementHandler : MonoBehaviour
         m_moveSpeed += _bonus;
     }
 
+    public void AddMoveSpeedPercentage(float _percentage)
+    {
+        if (_percentage <= 0f)
+            return;
+
+        m_moveSpeed *= 1f + _percentage;
+    }
+
     private void Movement()
     {
         Vector3 localInput = new Vector3(m_Velocity.x, 0f, m_Velocity.y).normalized;

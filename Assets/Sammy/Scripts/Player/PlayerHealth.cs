@@ -20,6 +20,9 @@ public class PlayerHealth : MonoBehaviour
 
     private int m_currentHealth;
     private Rigidbody m_rb;
+    private float m_damageReduction;
+    private float m_healthRegenerationPerSecond;
+    private float m_regenerationAccumulator;
 
     private void Awake()
     {
@@ -37,12 +40,28 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
     }
 
+    private void Update()
+    {
+        if (!IsAlive || m_healthRegenerationPerSecond <= 0f || m_currentHealth >= m_maxHealth)
+            return;
+
+        m_regenerationAccumulator += m_healthRegenerationPerSecond * Time.deltaTime;
+        int healthToRestore = Mathf.FloorToInt(m_regenerationAccumulator);
+
+        if (healthToRestore <= 0)
+            return;
+
+        m_regenerationAccumulator -= healthToRestore;
+        Heal(healthToRestore);
+    }
+
     public void TakeDamage(int _damageAmount)
     {
         if (!IsAlive) return;
         if (_damageAmount <= 0) return;
 
-        m_currentHealth -= _damageAmount;
+        int reducedDamage = Mathf.Max(1, Mathf.CeilToInt(_damageAmount * (1f - m_damageReduction)));
+        m_currentHealth -= reducedDamage;
         m_currentHealth = Mathf.Clamp(m_currentHealth, 0, m_maxHealth);
 
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
@@ -72,6 +91,22 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
     }
 
+    public void AddDamageReduction(float _percentage)
+    {
+        if (_percentage <= 0f)
+            return;
+
+        m_damageReduction = Mathf.Clamp(m_damageReduction + _percentage, 0f, 0.75f);
+    }
+
+    public void AddHealthRegeneration(float _healthPerSecond)
+    {
+        if (_healthPerSecond <= 0f)
+            return;
+
+        m_healthRegenerationPerSecond += _healthPerSecond;
+    }
+
     private void Die()
     {
         if (!IsAlive) return;
@@ -99,6 +134,7 @@ public class PlayerHealth : MonoBehaviour
         }
 
         m_currentHealth = m_maxHealth;
+        m_regenerationAccumulator = 0f;
         IsAlive = true;
 
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);

@@ -101,8 +101,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   maxHealth: 50
   attackDamage: 10
-  goldReward: 10
+  xpReward: 25
   scrapReward: 5
+  damageTextScale: 1
+  criticalDamageTextScale: 1.2
+  damageTextHeightOffset: 0.25
 --- !u!114 &4344217055707033303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,8 +118,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc107da0f848b24385b383847ca693b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
-  moveSpeed: 3
+  moveSpeed: 15
   stoppingDistance: 1.2
+  acceleration: 15
+  orbitActivationDistance: 3.5
+  orbitSpeedRange: {x: 12, y: 24}
+  maximumApproachSpread: 2.5
+  separationRadius: 1.25
+  separationWeight: 1.5
+  repathInterval: 0.18
+  navMeshSampleRadius: 2.5
+  obstacleLookAhead: 2
+  obstacleProbeRadius: 0.3
+  stuckTimeBeforeRecovery: 0.8
   playerTarget: {fileID: 0}
 --- !u!114 &6536622991771834294
 MonoBehaviour:
@@ -339,7 +353,7 @@ Transform:
   m_GameObject: {fileID: 8515173049387706918}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.25, z: 0}
   m_LocalScale: {x: 7.46, y: 7.46, z: 7.46}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -417,6 +431,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a7dbf66c2360d24fba22583e9f1581a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBillboard
+  outlineMaterial: {fileID: 2100000, guid: 6f9a2b4c89ed4d09bfef5dd1e2dc65a6, type: 2}
+  outlineColor: {r: 1, g: 0.16, b: 0.05, a: 1}
+  outlineWidth: 0.018
 --- !u!114 &4231217232514310001
 MonoBehaviour:
   m_ObjectHideFlags: 0

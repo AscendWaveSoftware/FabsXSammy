@@ -14,6 +14,8 @@ public class EnemyDeathNotifier : MonoBehaviour
     {
         if (m_hasNotified) return;
 
+        m_hasNotified = true;
+
         if (m_enemySpawner != null)
             m_enemySpawner.NotifyEnemyDied();
     }

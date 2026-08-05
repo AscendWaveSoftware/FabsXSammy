@@ -90,6 +90,11 @@ public class EnemySpawner : MonoBehaviour
         if (enemyMovement != null)
             enemyMovement.SetPlayerTarget(playerTarget);
 
+        EnemyAttack enemyAttack = spawnedEnemy.GetComponent<EnemyAttack>();
+
+        if (enemyAttack != null)
+            enemyAttack.SetPlayerTarget(playerTarget);
+
         EnemyDeathNotifier deathNotifier = spawnedEnemy.GetComponent<EnemyDeathNotifier>();
 
         if (deathNotifier == null)

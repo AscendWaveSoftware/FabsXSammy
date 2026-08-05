@@ -325,6 +325,9 @@ MonoBehaviour:
   m_levelText: {fileID: 7251953437090988359}
   m_xpText: {fileID: 7600699975832585751}
   m_xpBarImage: {fileID: 9100960905059251663}
+  m_hideCursorDuringGameplay: 1
+  m_lockCursorDuringGameplay: 1
+  m_shopSearchInterval: 1
 --- !u!114 &5135860194248459096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,6 +347,10 @@ MonoBehaviour:
     m_Bits: 8
   m_attackPoint: {fileID: 131278767419082001}
   m_playerResources: {fileID: 6679145990123216154}
+  m_shakeStrength: 0.16
+  m_shakeDuration: 0.12
+  m_minimumShakeInterval: 0.04
+  m_shakeListenerGain: 1
 --- !u!114 &2666698548747110859
 MonoBehaviour:
   m_ObjectHideFlags: 0
