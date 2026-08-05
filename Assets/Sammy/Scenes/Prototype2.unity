@@ -1864,7 +1864,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.33333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 41393552b52d7af4a8ab24662297c29e, type: 2}
   m_BuildHeightMesh: 0
@@ -3876,7 +3876,7 @@ GameObject:
   - component: {fileID: 1766696440}
   - component: {fileID: 1766696439}
   m_Layer: 5
-  m_Name: Test Player Canvas
+  m_Name: Player Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
