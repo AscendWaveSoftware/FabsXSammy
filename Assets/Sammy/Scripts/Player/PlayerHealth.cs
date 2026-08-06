@@ -19,7 +19,12 @@ public class PlayerHealth : MonoBehaviour
 
     public event Action<int, int> OnHealthChanged;
     public event Action<int, bool> OnDamageTaken;
-    public event Action<int> OnDamageBlocked;
+
+    /// <summary>
+    /// Raised when a guarded hit was fully absorbed. Carries the blocked damage
+    /// and the world position the hit came from, so feedback can face the attacker.
+    /// </summary>
+    public event Action<int, Vector3> OnDamageBlocked;
 
     private int m_currentHealth;
     private Rigidbody m_rb;
@@ -60,14 +65,16 @@ public class PlayerHealth : MonoBehaviour
         Heal(healthToRestore);
     }
 
-    public void TakeDamage(int _damageAmount)
+    public void TakeDamage(int _damageAmount) => TakeDamage(_damageAmount, transform.position);
+
+    public void TakeDamage(int _damageAmount, Vector3 _attackerPosition)
     {
         if (!IsAlive) return;
         if (_damageAmount <= 0) return;
 
         if (m_playerCombat != null && m_playerCombat.IsBlocking)
         {
-            OnDamageBlocked?.Invoke(_damageAmount);
+            OnDamageBlocked?.Invoke(_damageAmount, _attackerPosition);
             return;
         }
 

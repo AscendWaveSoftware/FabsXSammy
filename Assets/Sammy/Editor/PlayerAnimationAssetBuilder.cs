@@ -9,8 +9,9 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class PlayerAnimationAssetBuilder
 {
-    private const string SessionKey = "Sammy.PlayerAnimationAssets.V6";
+    private const string SessionKey = "Sammy.PlayerAnimationAssets.V9";
     private const string TextureRoot = "Assets/Sammy/Textures/Player";
+    private const string AudioRoot = "Assets/Sammy/Audio";
     private const string OutputRoot = "Assets/Sammy/Animations/Player";
     private const string ControllerPath = OutputRoot + "/Player.controller";
     private const string PlayerPrefabPath = "Assets/Sammy/Prefabs/Player.prefab";
@@ -52,6 +53,14 @@ public static class PlayerAnimationAssetBuilder
         new("HURT", "Hurt", 4, 12f, false)
     };
 
+    // One swing clip per combo step, in the order the combo plays them.
+    private static readonly string[] SwingClipPaths =
+    {
+        AudioRoot + "/SwordSwing_1.wav",
+        AudioRoot + "/SwordSwing_2.wav",
+        AudioRoot + "/SwordSwing_3.wav"
+    };
+
     static PlayerAnimationAssetBuilder()
     {
         EditorApplication.delayCall += BuildOncePerSession;
@@ -86,7 +95,7 @@ public static class PlayerAnimationAssetBuilder
             AnimatorController controller = CreateOrUpdateController(clips);
             ConfigurePlayerPrefab(controller, clips);
             AssetDatabase.SaveAssets();
-            Debug.Log("Sammy player animations rebuilt successfully.");
+            Debug.Log("Player animations rebuilt successfully.");
         }
         catch (Exception exception)
         {
@@ -227,8 +236,6 @@ public static class PlayerAnimationAssetBuilder
             clipChanged = true;
         }
 
-        // Unity keeps the final key for the remaining sample interval. One key
-        // per sprite therefore produces an even loop without a doubled pose.
         ObjectReferenceKeyframe[] keyframes = new ObjectReferenceKeyframe[sprites.Length];
 
         for (int i = 0; i < sprites.Length; i++)
@@ -464,6 +471,10 @@ public static class PlayerAnimationAssetBuilder
             if (serializedCombat.hasModifiedProperties)
                 serializedCombat.ApplyModifiedPropertiesWithoutUndo();
 
+            prefabChanged |= ConfigureCombatAudio(root, animationController);
+            prefabChanged |= ConfigureBlockFeedback(root, health, spriteRenderer);
+            prefabChanged |= ConfigureFootstepDust(root, rigidbody, movement, health);
+
             if (prefabChanged)
                 PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabPath);
         }
@@ -471,6 +482,97 @@ public static class PlayerAnimationAssetBuilder
         {
             PrefabUtility.UnloadPrefabContents(root);
         }
+    }
+
+    private static bool ConfigureCombatAudio(GameObject _root, PlayerAnimationController _animationController)
+    {
+        PlayerCombatAudio combatAudio = _root.GetComponent<PlayerCombatAudio>();
+        bool prefabChanged = false;
+
+        if (combatAudio == null)
+        {
+            combatAudio = _root.AddComponent<PlayerCombatAudio>();
+            prefabChanged = true;
+        }
+
+        SerializedObject serializedCombatAudio = new(combatAudio);
+        prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerAnimation"), _animationController);
+
+        SerializedProperty swingClips = serializedCombatAudio.FindProperty("m_swingClips");
+
+        if (swingClips == null)
+            throw new InvalidOperationException("PlayerCombatAudio swing clip array no longer exists.");
+
+        if (swingClips.arraySize != SwingClipPaths.Length)
+        {
+            swingClips.arraySize = SwingClipPaths.Length;
+            prefabChanged = true;
+        }
+
+        for (int i = 0; i < SwingClipPaths.Length; i++)
+            prefabChanged |= SetObjectReference(swingClips.GetArrayElementAtIndex(i), LoadSwingClip(SwingClipPaths[i]));
+
+        if (serializedCombatAudio.hasModifiedProperties)
+            serializedCombatAudio.ApplyModifiedPropertiesWithoutUndo();
+
+        return prefabChanged;
+    }
+
+    private static bool ConfigureFootstepDust(
+        GameObject _root,
+        Rigidbody _rigidbody,
+        PlayerMovementHandler _movement,
+        PlayerHealth _health)
+    {
+        PlayerFootstepDust footstepDust = _root.GetComponent<PlayerFootstepDust>();
+        bool prefabChanged = false;
+
+        if (footstepDust == null)
+        {
+            footstepDust = _root.AddComponent<PlayerFootstepDust>();
+            prefabChanged = true;
+        }
+
+        SerializedObject serializedFootstepDust = new(footstepDust);
+        prefabChanged |= SetObjectReference(serializedFootstepDust.FindProperty("m_rigidbody"), _rigidbody);
+        prefabChanged |= SetObjectReference(serializedFootstepDust.FindProperty("m_movement"), _movement);
+        prefabChanged |= SetObjectReference(serializedFootstepDust.FindProperty("m_health"), _health);
+
+        if (serializedFootstepDust.hasModifiedProperties)
+            serializedFootstepDust.ApplyModifiedPropertiesWithoutUndo();
+
+        return prefabChanged;
+    }
+
+    private static bool ConfigureBlockFeedback(GameObject _root, PlayerHealth _health, SpriteRenderer _spriteRenderer)
+    {
+        PlayerBlockFeedback blockFeedback = _root.GetComponent<PlayerBlockFeedback>();
+        bool prefabChanged = false;
+
+        if (blockFeedback == null)
+        {
+            blockFeedback = _root.AddComponent<PlayerBlockFeedback>();
+            prefabChanged = true;
+        }
+
+        SerializedObject serializedBlockFeedback = new(blockFeedback);
+        prefabChanged |= SetObjectReference(serializedBlockFeedback.FindProperty("m_playerHealth"), _health);
+        prefabChanged |= SetObjectReference(serializedBlockFeedback.FindProperty("m_playerSprite"), _spriteRenderer);
+
+        if (serializedBlockFeedback.hasModifiedProperties)
+            serializedBlockFeedback.ApplyModifiedPropertiesWithoutUndo();
+
+        return prefabChanged;
+    }
+
+    private static AudioClip LoadSwingClip(string _clipPath)
+    {
+        AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(_clipPath);
+
+        if (clip == null)
+            throw new InvalidOperationException($"Player swing audio clip is missing: {_clipPath}");
+
+        return clip;
     }
 
     private static string GetSpriteName(SheetDefinition _sheet, int _index) =>

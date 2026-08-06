@@ -147,9 +147,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4711829365002174885, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: m_stepDistance
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 4711829365002174885, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: m_startDiameter
+      value: 2.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4711829365002174885, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: m_runEndDiameter
+      value: 3.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 4711829365002174885, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: m_walkEndDiameter
+      value: 2.39
+      objectReference: {fileID: 0}
     - target: {fileID: 5135860194248459096, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
       propertyPath: m_shakeStrength
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5135860194248459096, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: m_blockImpactShakeMultiplier
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 6579025736125334437, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -553,6 +573,33 @@ MonoBehaviour:
   maxEnemiesAlive: 7
   spawnInterval: 3
   spawnOnStart: 1
+  difficultyRampDuration: 300
+  lateGameMaxEnemiesAlive: 20
+  lateGameSpawnInterval: 1
+  difficultyCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   playerTarget: {fileID: 1778837}
 --- !u!4 &246607862
 Transform:

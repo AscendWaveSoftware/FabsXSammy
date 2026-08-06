@@ -39,7 +39,8 @@ public class PlayerCombat : MonoBehaviour
     private float m_maxBlockDuration = 0.85f;
     [SerializeField, Min(0f), Tooltip("Short recovery after releasing or exhausting a block.")]
     private float m_blockCooldown = 0.3f;
-    [SerializeField, Range(0f, 1f)] private float m_blockImpactShakeMultiplier = 0.45f;
+    [SerializeField, Range(0f, 2f), Tooltip("A successful block should punch harder than a normal hit so it reads as a win.")]
+    private float m_blockImpactShakeMultiplier = 0.9f;
 
     public bool IsBlocking => m_isBlocking;
 
@@ -293,13 +294,16 @@ public class PlayerCombat : MonoBehaviour
         m_playerAnimation?.ReleaseBlock();
     }
 
-    private void HandleDamageBlocked(int _incomingDamage)
+    private void HandleDamageBlocked(int _incomingDamage, Vector3 _attackerPosition)
     {
         if (!m_isBlocking || _incomingDamage <= 0)
             return;
 
         m_playerAnimation?.ReplayBlockImpact();
-        PlayHitShake(transform.position, m_blockImpactShakeMultiplier);
+
+        // Shaking from the attacker's side makes the block read directionally
+        // instead of as a generic screen wobble.
+        PlayHitShake(_attackerPosition, m_blockImpactShakeMultiplier);
     }
 
     private void PlayHitSlowMotion(bool _isCriticalHit)
@@ -481,7 +485,7 @@ public class PlayerCombat : MonoBehaviour
         m_criticalHitSlowMotionDuration = Mathf.Max(0f, m_criticalHitSlowMotionDuration);
         m_maxBlockDuration = Mathf.Max(0.1f, m_maxBlockDuration);
         m_blockCooldown = Mathf.Max(0f, m_blockCooldown);
-        m_blockImpactShakeMultiplier = Mathf.Clamp01(m_blockImpactShakeMultiplier);
+        m_blockImpactShakeMultiplier = Mathf.Clamp(m_blockImpactShakeMultiplier, 0f, 2f);
 
         if (Application.isPlaying && m_impulseSource != null)
             ConfigureImpulseSource();

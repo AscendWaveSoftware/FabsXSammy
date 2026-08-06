@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Animator), typeof(Rigidbody))]
 public class PlayerAnimationController : MonoBehaviour
 {
+    public const int ComboStepCount = 3;
+
     private enum AnimationMode
     {
         Locomotion,
@@ -38,7 +41,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private PlayerHealth m_health;
 
     [Header("Animation Clips")]
-    [SerializeField] private AnimationClip[] m_attackClips = new AnimationClip[3];
+    [SerializeField] private AnimationClip[] m_attackClips = new AnimationClip[ComboStepCount];
     [SerializeField] private AnimationClip m_defendClip;
     [SerializeField] private AnimationClip m_hurtClip;
 
@@ -52,6 +55,12 @@ public class PlayerAnimationController : MonoBehaviour
 
     [Header("Attack Timing")]
     [SerializeField] private float[] m_attackImpactTimes = { 0.50f, 0.34f, 0.43f };
+
+    /// <summary>
+    /// Raised when a combo swing actually starts playing. The argument is the
+    /// 1-based combo step, so step 1 belongs to the Attack1 state.
+    /// </summary>
+    public event Action<int> OnAttackSwingStarted;
 
     private AnimationMode m_mode;
     private LocomotionState m_locomotionState;
@@ -308,6 +317,7 @@ public class PlayerAnimationController : MonoBehaviour
         m_animator.speed = 1f;
         SetActionLocked(true);
         TryPlayState(AttackStates[m_attackStep], m_attackStep == 0 ? m_transitionDuration : 0.025f);
+        OnAttackSwingStarted?.Invoke(m_attackStep + 1);
         return true;
     }
 
@@ -517,12 +527,12 @@ public class PlayerAnimationController : MonoBehaviour
         m_speedSmoothing = Mathf.Max(0.01f, m_speedSmoothing);
         m_transitionDuration = Mathf.Max(0f, m_transitionDuration);
 
-        if (m_attackClips == null || m_attackClips.Length != 3)
-            System.Array.Resize(ref m_attackClips, 3);
+        if (m_attackClips == null || m_attackClips.Length != ComboStepCount)
+            Array.Resize(ref m_attackClips, ComboStepCount);
 
-        if (m_attackImpactTimes == null || m_attackImpactTimes.Length != 3)
+        if (m_attackImpactTimes == null || m_attackImpactTimes.Length != ComboStepCount)
         {
-            m_attackImpactTimes = new float[3];
+            m_attackImpactTimes = new float[ComboStepCount];
             m_attackImpactTimes[0] = 0.50f;
             m_attackImpactTimes[1] = 0.34f;
             m_attackImpactTimes[2] = 0.43f;

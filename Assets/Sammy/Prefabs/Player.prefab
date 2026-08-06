@@ -160,6 +160,9 @@ GameObject:
   - component: {fileID: 2732306110862175300}
   - component: {fileID: 1091281746123874321}
   - component: {fileID: 6991371757986253784}
+  - component: {fileID: 4711829365002174883}
+  - component: {fileID: 4711829365002174884}
+  - component: {fileID: 4711829365002174885}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -363,7 +366,7 @@ MonoBehaviour:
   m_criticalHitSlowMotionDuration: 0.085
   m_maxBlockDuration: 0.85
   m_blockCooldown: 0.3
-  m_blockImpactShakeMultiplier: 0.45
+  m_blockImpactShakeMultiplier: 0.9
 --- !u!114 &2666698548747110859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,6 +489,87 @@ MonoBehaviour:
   - 0.5
   - 0.34
   - 0.43
+--- !u!114 &4711829365002174883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae698f377a47499185cb2ea9d634135a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatAudio
+  m_swingClips:
+  - {fileID: 8300000, guid: 55149c25f98549249995ba2cc86b063b, type: 3}
+  - {fileID: 8300000, guid: 30085da859e8a924caf001182d196098, type: 3}
+  - {fileID: 8300000, guid: 2d04df17d831f8b4bb387d039f743385, type: 3}
+  m_outputMixerGroup: {fileID: 0}
+  m_volume: 0.8
+  m_pitchVariation: 0.05
+  m_spatialBlend: 0
+  m_cutOffFade: 0.06
+  m_playerAnimation: {fileID: 6991371757986253784}
+--- !u!114 &4711829365002174884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 757c07f3084846888cb1fed583f4160c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBlockFeedback
+  m_playerHealth: {fileID: 2666698548747110859}
+  m_playerSprite: {fileID: 8938069420127037739}
+  m_blockMessage: BLOCKED!
+  m_calloutColor: {r: 0.71, g: 0.95, b: 1, a: 1}
+  m_calloutOutlineColor: {r: 0.03, g: 0.16, b: 0.34, a: 1}
+  m_calloutScale: 0.32
+  m_calloutHeightOffset: 0.3
+  m_calloutDuration: 0.75
+  m_flashColor: {r: 0.55, g: 0.9, b: 1, a: 1}
+  m_flashForwardOffset: 0.62
+  m_flashHeightOffset: 0.55
+  m_flashStartDiameter: 0.55
+  m_flashEndDiameter: 2.5
+  m_flashDuration: 0.34
+  m_flareColor: {r: 0.5, g: 0.92, b: 1, a: 1}
+  m_flareStrength: 4.5
+  m_flareDuration: 0.28
+--- !u!114 &4711829365002174885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c9b1f47a2d84e6ab5d0c1e8f7a63b25, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepDust
+  m_rigidbody: {fileID: 9185282312738775992}
+  m_movement: {fileID: 7453557029405839637}
+  m_health: {fileID: 2666698548747110859}
+  m_stepDistance: 0.6
+  m_minimumNormalizedSpeed: 0.1
+  m_maximumPuffs: 20
+  m_teleportDistance: 2
+  m_dustColor: {r: 0.79, g: 0.73, b: 0.61, a: 1}
+  m_walkAlpha: 0.2
+  m_runAlpha: 0.38
+  m_startDiameter: 0.16
+  m_walkEndDiameter: 0.36
+  m_runEndDiameter: 0.58
+  m_lifetime: 0.55
+  m_riseSpeed: 0.34
+  m_backwardDrift: 0.6
+  m_sidewaysScatter: 0.13
+  m_groundClearance: 0.05
 --- !u!1 &3494323110108150359
 GameObject:
   m_ObjectHideFlags: 0

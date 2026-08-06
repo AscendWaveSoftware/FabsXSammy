@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
@@ -17,6 +18,7 @@ public class EnemyAttack : MonoBehaviour
     [SerializeField] private Transform m_playerTarget;
 
     private EnemyStats m_stats;
+    private EnemyAttackTelegraph m_telegraph;
     private PlayerHealth m_playerHealth;
     private SpriteRenderer[] m_renderers;
     private Color[] m_baseColors;
@@ -32,11 +34,37 @@ public class EnemyAttack : MonoBehaviour
     private void Awake()
     {
         m_stats = GetComponent<EnemyStats>();
-        m_renderers = GetComponentsInChildren<SpriteRenderer>(true);
+
+        // Added here rather than in the prefab so every enemy variant gets the
+        // same telegraph without anyone having to remember to wire it up.
+        m_telegraph = GetComponent<EnemyAttackTelegraph>();
+
+        if (m_telegraph == null)
+            m_telegraph = gameObject.AddComponent<EnemyAttackTelegraph>();
+
+        CacheBodyRenderers();
+    }
+
+    private void CacheBodyRenderers()
+    {
+        SpriteRenderer[] childRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        List<SpriteRenderer> bodyRenderers = new(childRenderers.Length);
+
+        foreach (SpriteRenderer childRenderer in childRenderers)
+        {
+            // The telegraph builds its own renderers underneath this enemy. Tinting
+            // those as body would overwrite the warning colours every frame.
+            if (childRenderer == null || m_telegraph.OwnsRenderer(childRenderer))
+                continue;
+
+            bodyRenderers.Add(childRenderer);
+        }
+
+        m_renderers = bodyRenderers.ToArray();
         m_baseColors = new Color[m_renderers.Length];
 
         for (int i = 0; i < m_renderers.Length; i++)
-            m_baseColors[i] = m_renderers[i] != null ? m_renderers[i].color : Color.white;
+            m_baseColors[i] = m_renderers[i].color;
     }
 
     private void Start()
@@ -118,6 +146,7 @@ public class EnemyAttack : MonoBehaviour
         m_isWindingUp = true;
         m_windupStartedAt = Time.time;
         m_attackExecutesAt = Time.time + m_attackWindup;
+        m_telegraph?.BeginWindup(m_attackRange);
         UpdateWindupVisual();
 
         if (m_attackWindup <= 0f)
@@ -129,11 +158,12 @@ public class EnemyAttack : MonoBehaviour
         RestoreBaseColors();
         m_isWindingUp = false;
         m_nextAttackTime = Time.time + m_attackCooldown;
+        m_telegraph?.NotifyStrike();
 
         if (m_playerHealth == null || !m_playerHealth.IsAlive || !IsPlayerInRange())
             return;
 
-        m_playerHealth.TakeDamage(m_stats.AttackDamage);
+        m_playerHealth.TakeDamage(m_stats.AttackDamage, transform.position);
     }
 
     private void CancelWindup()
@@ -143,6 +173,7 @@ public class EnemyAttack : MonoBehaviour
 
         m_isWindingUp = false;
         RestoreBaseColors();
+        m_telegraph?.CancelWindup();
     }
 
     private bool IsPlayerInRange()
@@ -158,6 +189,8 @@ public class EnemyAttack : MonoBehaviour
             ? Mathf.InverseLerp(m_windupStartedAt, m_attackExecutesAt, Time.time)
             : 1f;
         float intensity = Mathf.SmoothStep(0.18f, 0.82f, progress);
+
+        m_telegraph?.UpdateWindup(progress);
 
         for (int i = 0; i < m_renderers.Length; i++)
         {
