@@ -335,14 +335,38 @@ public class LevelUpSelectionUI : MonoBehaviour
         _rect.pivot = new Vector2(0.5f, 0.5f);
     }
 
+    /// <summary>
+    /// The scene's pool plus whatever the player brings along, so spell cards do
+    /// not have to be maintained in two places.
+    /// </summary>
+    private IEnumerable<UpgradeDefinition> EnumerateCandidateUpgrades()
+    {
+        if (m_availableUpgrades != null)
+        {
+            foreach (UpgradeDefinition upgrade in m_availableUpgrades)
+                yield return upgrade;
+        }
+
+        if (m_playerUpgradeHandler == null)
+            yield break;
+
+        foreach (UpgradeDefinition upgrade in m_playerUpgradeHandler.SpellUnlockUpgrades)
+            yield return upgrade;
+    }
+
     private List<UpgradeDefinition> GetRandomUpgrades(int _amount)
     {
         Dictionary<UpgradeType, List<UpgradeDefinition>> upgradesByType = new Dictionary<UpgradeType, List<UpgradeDefinition>>();
         List<UpgradeDefinition> selectedUpgrades = new List<UpgradeDefinition>();
 
-        foreach (UpgradeDefinition upgrade in m_availableUpgrades)
+        foreach (UpgradeDefinition upgrade in EnumerateCandidateUpgrades())
         {
             if (upgrade == null || upgrade.UpgradeType == UpgradeType.MIN || upgrade.UpgradeType == UpgradeType.MAX)
+                continue;
+
+            // Drops cards that would have no effect, so an already unlocked
+            // spell never wastes one of the three slots.
+            if (m_playerUpgradeHandler != null && !m_playerUpgradeHandler.IsUpgradeAvailable(upgrade))
                 continue;
 
             if (!upgradesByType.TryGetValue(upgrade.UpgradeType, out List<UpgradeDefinition> variants))

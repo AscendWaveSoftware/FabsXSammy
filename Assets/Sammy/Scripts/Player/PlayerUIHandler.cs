@@ -41,6 +41,17 @@ public class PlayerUIHandler : MonoBehaviour
     private float m_targetXpFillAmount;
     private bool m_hasInitialXpValue;
 
+    /// <summary>
+    /// Screen space root the HUD is built into. Available from Start onwards,
+    /// because the reparenting happens in Awake.
+    /// </summary>
+    public RectTransform HudRoot => m_playerHudCanvas != null ? m_playerHudCanvas.transform as RectTransform : null;
+
+    /// <summary>Font the rest of the HUD uses, so additions match it.</summary>
+    public TMP_FontAsset HudFont => m_levelText != null && m_levelText.font != null
+        ? m_levelText.font
+        : TMP_Settings.defaultFontAsset;
+
     public static void SetInteractiveUIActive(Object _requester, bool _isActive)
     {
         if (s_instance == null || _requester == null)

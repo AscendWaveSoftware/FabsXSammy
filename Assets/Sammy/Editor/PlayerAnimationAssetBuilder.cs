@@ -9,7 +9,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class PlayerAnimationAssetBuilder
 {
-    private const string SessionKey = "Sammy.PlayerAnimationAssets.V9";
+    private const string SessionKey = "Sammy.PlayerAnimationAssets.V10";
     private const string TextureRoot = "Assets/Sammy/Textures/Player";
     private const string AudioRoot = "Assets/Sammy/Audio";
     private const string OutputRoot = "Assets/Sammy/Animations/Player";
@@ -53,13 +53,14 @@ public static class PlayerAnimationAssetBuilder
         new("HURT", "Hurt", 4, 12f, false)
     };
 
-    // One swing clip per combo step, in the order the combo plays them.
     private static readonly string[] SwingClipPaths =
     {
         AudioRoot + "/SwordSwing_1.wav",
         AudioRoot + "/SwordSwing_2.wav",
         AudioRoot + "/SwordSwing_3.wav"
     };
+
+    private const string BlockClipPath = AudioRoot + "/Blocking.wav";
 
     static PlayerAnimationAssetBuilder()
     {
@@ -497,6 +498,8 @@ public static class PlayerAnimationAssetBuilder
 
         SerializedObject serializedCombatAudio = new(combatAudio);
         prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerAnimation"), _animationController);
+        prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerHealth"), _root.GetComponent<PlayerHealth>());
+        prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_blockClip"), LoadCombatClip(BlockClipPath));
 
         SerializedProperty swingClips = serializedCombatAudio.FindProperty("m_swingClips");
 
@@ -510,7 +513,7 @@ public static class PlayerAnimationAssetBuilder
         }
 
         for (int i = 0; i < SwingClipPaths.Length; i++)
-            prefabChanged |= SetObjectReference(swingClips.GetArrayElementAtIndex(i), LoadSwingClip(SwingClipPaths[i]));
+            prefabChanged |= SetObjectReference(swingClips.GetArrayElementAtIndex(i), LoadCombatClip(SwingClipPaths[i]));
 
         if (serializedCombatAudio.hasModifiedProperties)
             serializedCombatAudio.ApplyModifiedPropertiesWithoutUndo();
@@ -565,12 +568,12 @@ public static class PlayerAnimationAssetBuilder
         return prefabChanged;
     }
 
-    private static AudioClip LoadSwingClip(string _clipPath)
+    private static AudioClip LoadCombatClip(string _clipPath)
     {
         AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(_clipPath);
 
         if (clip == null)
-            throw new InvalidOperationException($"Player swing audio clip is missing: {_clipPath}");
+            throw new InvalidOperationException($"Player combat audio clip is missing: {_clipPath}");
 
         return clip;
     }

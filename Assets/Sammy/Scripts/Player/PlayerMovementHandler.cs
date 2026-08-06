@@ -19,6 +19,12 @@ public class PlayerMovementHandler : MonoBehaviour
 
     public float CurrentMaxPlanarSpeed => Mathf.Max(0f, m_moveSpeed / 4f);
 
+    /// <summary>
+    /// World direction the sprite is currently facing. The body never rotates,
+    /// so the facing lives entirely in the sprite flip.
+    /// </summary>
+    public Vector3 FacingDirection => m_characterSpriteFlip ? -transform.right : transform.right;
+
     private void Awake()
     {
         m_rb = GetComponent<Rigidbody>();

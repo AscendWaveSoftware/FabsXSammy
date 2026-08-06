@@ -41,7 +41,15 @@ public class EnemyStats : MonoBehaviour
         OnHealthChanged?.Invoke(m_currentHealth, maxHealth);
     }
 
-    public bool TakeDamage(int _damageAmount, PlayerResources _playerResources, bool _isCriticalHit = false)
+    /// <param name="_interruptsEnemy">
+    /// False for damage over time. A poison tick every half second would otherwise
+    /// reset the hit stun forever and lock the enemy out of attacking entirely.
+    /// </param>
+    public bool TakeDamage(
+        int _damageAmount,
+        PlayerResources _playerResources,
+        bool _isCriticalHit = false,
+        bool _interruptsEnemy = true)
     {
         if (m_isDead) return false;
         if (_damageAmount <= 0) return false;
@@ -59,10 +67,10 @@ public class EnemyStats : MonoBehaviour
             criticalDamageTextScale
         );
 
-        if (m_currentHealth > 0)
-            m_enemyAttack?.NotifyHit();
-        else
+        if (m_currentHealth <= 0)
             Die(_playerResources);
+        else if (_interruptsEnemy)
+            m_enemyAttack?.NotifyHit();
 
         return true;
     }

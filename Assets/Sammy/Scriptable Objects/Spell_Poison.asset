@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9461092c4bca4557a67f4e6fc39241b9, type: 3}
+  m_Name: Spell_Poison
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  SpellName: Poison
+  Delivery: 1
+  UiColor: {r: 0.45, g: 0.95, b: 0.3, a: 1}
+  Frames:
+  - {fileID: -1411907229, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 1105885459, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -1505571534, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 1390557163, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -1531049431, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 503597710, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -739944056, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -946929475, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 82478251, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 205255930, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 456382574, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -344664419, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 1124648034, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -1394812524, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 1802299143, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: -702264643, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  - {fileID: 287647335, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
+  ProjectileFrame: 0
+  ImpactStartFrame: 0
+  ImpactFrameRate: 13
+  Cooldown: 6
+  TargetSearchRange: 16
+  SpawnHeight: 0.25
+  Speed: 14
+  TurnRate: 220
+  Lifetime: 2.5
+  HitRadius: 0.5
+  CoreScale: 9
+  GlowDiameter: 1.2
+  GlowPulse: 0.12
+  SpawnPopDuration: 0.12
+  TrailSpacing: 0.22
+  TrailLifetime: 0.35
+  CastFlashDiameter: 0
+  CastFlashFrames: 3
+  CastFlashFrameRate: 26
+  CloudTickInterval: 0.4
+  CloudVisualScale: 1.15
+  CloudGroundOffset: 0
+  CloudPlacementDistance: 4.5
+  PoisonDamagePerTick: 9
+  PoisonTickInterval: 0.5
+  PoisonDuration: 5
+  PoisonColor: {r: 0.45, g: 0.95, b: 0.3, a: 0.75}
+  Damage: 1
+  ImpactRadius: 2.4
+  ImpactVisualScale: 1.1
+  GlowColor: {r: 0.85, g: 0.52, b: 1, a: 0.85}
+  TrailColor: {r: 0.74, g: 0.44, b: 1, a: 0.7}

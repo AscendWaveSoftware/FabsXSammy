@@ -11,4 +11,7 @@ public class UpgradeDefinition : ScriptableObject
     [Header("Effect")]
     public UpgradeType UpgradeType;
     public float Value;
+
+    [Tooltip("Only used by UNLOCKSPELL. The spell this card hands to the player.")]
+    public SpellDefinition SpellToUnlock;
 }

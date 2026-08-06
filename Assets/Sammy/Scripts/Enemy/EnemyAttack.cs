@@ -133,10 +133,19 @@ public class EnemyAttack : MonoBehaviour
 
     public void NotifyHit()
     {
-        if (m_stats != null && m_stats.IsDead)
+        Stun(m_hitStunDuration);
+    }
+
+    /// <summary>
+    /// Prevents this enemy from attacking for a while and cancels a windup that
+    /// is already running, so the telegraph visibly snaps off.
+    /// </summary>
+    public void Stun(float _duration)
+    {
+        if (_duration <= 0f || (m_stats != null && m_stats.IsDead))
             return;
 
-        m_stunnedUntil = Mathf.Max(m_stunnedUntil, Time.time + m_hitStunDuration);
+        m_stunnedUntil = Mathf.Max(m_stunnedUntil, Time.time + _duration);
         m_nextAttackTime = Mathf.Max(m_nextAttackTime, m_stunnedUntil);
         CancelWindup();
     }

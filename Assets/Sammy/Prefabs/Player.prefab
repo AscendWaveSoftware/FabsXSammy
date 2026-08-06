@@ -163,6 +163,8 @@ GameObject:
   - component: {fileID: 4711829365002174883}
   - component: {fileID: 4711829365002174884}
   - component: {fileID: 4711829365002174885}
+  - component: {fileID: 4711829365002174886}
+  - component: {fileID: 4711829365002174887}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -415,10 +417,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 318a1150739ad6d4eade85f33378c771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgradeHandler
+  m_spellUnlockUpgrades:
+  - {fileID: 11400000, guid: 5c3d3647cadc47949425f9c81561357c, type: 2}
+  - {fileID: 11400000, guid: 4fa59b09572e44a0af6f70a5e23c427c, type: 2}
+  - {fileID: 11400000, guid: ced8fc6b117a4c04974d680a414e5af8, type: 2}
   m_playerMovementHandler: {fileID: 7453557029405839637}
   m_playerHealth: {fileID: 2666698548747110859}
   m_playerCombat: {fileID: 5135860194248459096}
   m_playerExperience: {fileID: 0}
+  m_playerSpellCaster: {fileID: 4711829365002174886}
 --- !u!114 &2732306110862175300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,7 +458,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -466,7 +473,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9248335932a734c4d833834e20310114, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
   m_animator: {fileID: 1091281746123874321}
   m_rigidbody: {fileID: 9185282312738775992}
@@ -499,18 +506,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae698f377a47499185cb2ea9d634135a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatAudio
   m_swingClips:
   - {fileID: 8300000, guid: 55149c25f98549249995ba2cc86b063b, type: 3}
   - {fileID: 8300000, guid: 30085da859e8a924caf001182d196098, type: 3}
   - {fileID: 8300000, guid: 2d04df17d831f8b4bb387d039f743385, type: 3}
+  m_blockClip: {fileID: 8300000, guid: 1ab3f4245dc76bd4aada6a3911a3a616, type: 3}
+  m_blockVolume: 0.85
+  m_minimumBlockInterval: 0.09
   m_outputMixerGroup: {fileID: 0}
   m_volume: 0.8
   m_pitchVariation: 0.05
   m_spatialBlend: 0
   m_cutOffFade: 0.06
   m_playerAnimation: {fileID: 6991371757986253784}
+  m_playerHealth: {fileID: 2666698548747110859}
 --- !u!114 &4711829365002174884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,7 +532,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 757c07f3084846888cb1fed583f4160c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBlockFeedback
   m_playerHealth: {fileID: 2666698548747110859}
   m_playerSprite: {fileID: 8938069420127037739}
@@ -550,7 +561,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c9b1f47a2d84e6ab5d0c1e8f7a63b25, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepDust
   m_rigidbody: {fileID: 9185282312738775992}
   m_movement: {fileID: 7453557029405839637}
@@ -570,6 +581,48 @@ MonoBehaviour:
   m_backwardDrift: 0.6
   m_sidewaysScatter: 0.13
   m_groundClearance: 0.05
+--- !u!114 &4711829365002174886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de847f9c2bb44f7ab5d600538d67c0d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellCaster
+  m_spells:
+  - {fileID: 11400000, guid: 7e5082dacaa341248e30444ab150a898, type: 2}
+  - {fileID: 11400000, guid: e7f285edb0194112ac55b73626446139, type: 2}
+  - {fileID: 11400000, guid: 1d1eb61b95e8415a85566a05be8e4f31, type: 2}
+  m_enemyLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  m_playerHealth: {fileID: 2666698548747110859}
+  m_playerResources: {fileID: 6679145990123216154}
+  m_rigidbody: {fileID: 9185282312738775992}
+  m_movement: {fileID: 7453557029405839637}
+--- !u!114 &4711829365002174887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 571533d5e699472498628afc2e9eebfd, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellBarUI
+  m_spellCaster: {fileID: 4711829365002174886}
+  m_uiHandler: {fileID: 1514402343732450852}
+  m_slotWidth: 132
+  m_slotHeight: 46
+  m_slotSpacing: 12
+  m_bottomMargin: 26
+  m_cooldownAlpha: 0.45
 --- !u!1 &3494323110108150359
 GameObject:
   m_ObjectHideFlags: 0
