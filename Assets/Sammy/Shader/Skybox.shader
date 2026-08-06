@@ -112,10 +112,9 @@ Shader "Skybox/Dual Panoramic (URP Ready)" {
                 half3 c1 = DecodeHDR(t1, _Texture1_HDR);
                 half3 c2 = DecodeHDR(t2, _Texture2_HDR);
 
-                half3 col = lerp(c1, c2, _Blend)
-                          * lerp(_Tint1.rgb, _Tint2.rgb, _Blend)
-                          * unity_ColorSpaceDouble.rgb
-                          * lerp(_Exposure1, _Exposure2, _Blend);
+                c1 *= _Tint1.rgb * unity_ColorSpaceDouble.rgb * _Exposure1;
+                c2 *= _Tint2.rgb * unity_ColorSpaceDouble.rgb * _Exposure2;
+                half3 col = lerp(c1, c2, saturate(_Blend));
 
                 return half4(col, 1);
             }

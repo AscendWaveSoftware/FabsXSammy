@@ -16,4 +16,14 @@ public sealed class LightDirector
         sun.color = c;
         RenderSettings.fogColor = c;
     }
+
+    public void ApplyColor(Color _color)
+    {
+        if (sun)
+        {
+            sun.color = _color;
+        }
+
+        RenderSettings.fogColor = _color;
+    }
 }

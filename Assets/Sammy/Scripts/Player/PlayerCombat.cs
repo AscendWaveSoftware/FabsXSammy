@@ -20,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerResources m_playerResources;
     [SerializeField] private PlayerHealth m_playerHealth;
+    [SerializeField] private PlayerAnimationController m_playerAnimation;
 
     [Header("Hit Camera Shake")]
     [SerializeField, Min(0f)] private float m_shakeStrength = 0.16f;
@@ -27,18 +28,46 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField, Min(0f)] private float m_minimumShakeInterval = 0.04f;
     [SerializeField, Min(0f)] private float m_shakeListenerGain = 1f;
 
+    [Header("Hit Slow Motion")]
+    [SerializeField, Range(0.1f, 1f)] private float m_hitTimeScale = 0.72f;
+    [SerializeField, Min(0f)] private float m_hitSlowMotionDuration = 0.065f;
+    [SerializeField, Range(0.1f, 1f)] private float m_criticalHitTimeScale = 0.6f;
+    [SerializeField, Min(0f)] private float m_criticalHitSlowMotionDuration = 0.085f;
+
+    [Header("Block")]
+    [SerializeField, Min(0.1f), Tooltip("Maximum time a held block remains active before the guard needs to be reset.")]
+    private float m_maxBlockDuration = 0.85f;
+    [SerializeField, Min(0f), Tooltip("Short recovery after releasing or exhausting a block.")]
+    private float m_blockCooldown = 0.3f;
+    [SerializeField, Range(0f, 1f)] private float m_blockImpactShakeMultiplier = 0.45f;
+
+    public bool IsBlocking => m_isBlocking;
+
     private readonly HashSet<EnemyStats> m_damagedEnemies = new();
-    private float m_nextAttackTime;
     private float m_nextAllowedShakeTime;
+    private uint m_lastProcessedAnimationSwing;
     private float m_criticalChance;
     private int m_healthOnHit;
     private CinemachineImpulseSource m_impulseSource;
     private bool m_hasShakeListener;
+    private bool m_hasLoggedMissingAnimationController;
+    private bool m_hitSlowMotionActive;
+    private float m_hitSlowMotionEndsAt;
+    private float m_timeScaleBeforeHitSlowMotion;
+    private float m_fixedDeltaTimeBeforeHitSlowMotion;
+    private float m_appliedHitTimeScale;
+    private bool m_isBlocking;
+    private bool m_blockRequiresRelease;
+    private float m_blockEndsAt;
+    private float m_nextBlockAllowedAt;
 
     private void Awake()
     {
         if (m_playerHealth == null)
             m_playerHealth = GetComponent<PlayerHealth>();
+
+        if (m_playerAnimation == null)
+            m_playerAnimation = GetComponent<PlayerAnimationController>();
 
         m_impulseSource = GetComponent<CinemachineImpulseSource>();
 
@@ -49,12 +78,52 @@ public class PlayerCombat : MonoBehaviour
         EnsurePlayerCameraShakeListener();
     }
 
+    private void OnEnable()
+    {
+        if (m_playerHealth != null)
+            m_playerHealth.OnDamageBlocked += HandleDamageBlocked;
+    }
+
+    private void Update()
+    {
+        UpdateHitSlowMotion();
+        UpdateBlockInput();
+        UpdateBlockState();
+    }
+
+    private void OnDisable()
+    {
+        if (m_playerHealth != null)
+            m_playerHealth.OnDamageBlocked -= HandleDamageBlocked;
+
+        StopBlocking(false);
+
+        if (m_hitSlowMotionActive && Time.timeScale > 0f)
+            FinishHitSlowMotion(Mathf.Approximately(Time.timeScale, m_appliedHitTimeScale));
+    }
+
     public void OnAttack(InputValue _value)
     {
         if (!_value.isPressed || Time.timeScale <= 0f)
             return;
 
-        TryAttack();
+        if (m_isBlocking)
+        {
+            m_blockRequiresRelease = true;
+            StopBlocking(true);
+        }
+
+        if (m_playerAnimation != null)
+        {
+            m_playerAnimation.RequestAttack();
+            return;
+        }
+
+        if (!m_hasLoggedMissingAnimationController)
+        {
+            Debug.LogError("PlayerCombat requires a PlayerAnimationController. Attack was ignored to prevent invisible damage.", this);
+            m_hasLoggedMissingAnimationController = true;
+        }
     }
 
     public void AddDamage(int _amount)
@@ -88,7 +157,22 @@ public class PlayerCombat : MonoBehaviour
         m_healthOnHit += _amount;
     }
 
-    private void TryAttack()
+    internal bool TryPerformAnimationImpact(int _comboStep, uint _swingSequence)
+    {
+        if (_comboStep < 1 || _comboStep > 3 || _swingSequence == 0 ||
+            _swingSequence <= m_lastProcessedAnimationSwing)
+        {
+            return false;
+        }
+
+        // Consume the impact before hit detection. A missed swing must not become
+        // eligible to deal damage later if another callback is raised.
+        m_lastProcessedAnimationSwing = _swingSequence;
+        ApplyAttackHit(_comboStep);
+        return true;
+    }
+
+    private void ApplyAttackHit(int _comboStep)
     {
         if(m_attackPoint == null)
         {
@@ -135,7 +219,162 @@ public class PlayerCombat : MonoBehaviour
                 m_playerHealth.Heal(m_healthOnHit * confirmedHitCount);
 
             PlayHitShake(combinedHitPosition / confirmedHitCount, isCriticalHit ? 1.45f : 1f);
+            PlayHitSlowMotion(isCriticalHit);
         }
+    }
+
+    private void UpdateBlockInput()
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null)
+            return;
+
+        if (mouse.rightButton.wasPressedThisFrame)
+            TryStartBlocking();
+
+        if (mouse.rightButton.wasReleasedThisFrame)
+        {
+            m_blockRequiresRelease = false;
+            StopBlocking(true);
+        }
+    }
+
+    private void UpdateBlockState()
+    {
+        if (!m_isBlocking)
+            return;
+
+        if (Time.timeScale <= 0f)
+            return;
+
+        if (m_playerHealth != null && !m_playerHealth.IsAlive)
+        {
+            StopBlocking(false);
+            return;
+        }
+
+        if (Time.time >= m_blockEndsAt)
+        {
+            m_blockRequiresRelease = true;
+            StopBlocking(true);
+        }
+    }
+
+    private bool TryStartBlocking()
+    {
+        if (m_isBlocking)
+            return true;
+
+        if (m_blockRequiresRelease || Time.timeScale <= 0f || Time.time < m_nextBlockAllowedAt ||
+            (m_playerHealth != null && !m_playerHealth.IsAlive) || m_playerAnimation == null)
+        {
+            return false;
+        }
+
+        if (!m_playerAnimation.RequestBlock())
+            return false;
+
+        m_isBlocking = true;
+        m_blockEndsAt = Time.time + m_maxBlockDuration;
+        return true;
+    }
+
+    private void StopBlocking(bool _startCooldown)
+    {
+        if (!m_isBlocking)
+            return;
+
+        m_isBlocking = false;
+        m_blockEndsAt = 0f;
+
+        if (_startCooldown)
+            m_nextBlockAllowedAt = Mathf.Max(m_nextBlockAllowedAt, Time.time + m_blockCooldown);
+
+        m_playerAnimation?.ReleaseBlock();
+    }
+
+    private void HandleDamageBlocked(int _incomingDamage)
+    {
+        if (!m_isBlocking || _incomingDamage <= 0)
+            return;
+
+        m_playerAnimation?.ReplayBlockImpact();
+        PlayHitShake(transform.position, m_blockImpactShakeMultiplier);
+    }
+
+    private void PlayHitSlowMotion(bool _isCriticalHit)
+    {
+        float duration = _isCriticalHit
+            ? m_criticalHitSlowMotionDuration
+            : m_hitSlowMotionDuration;
+
+        if (duration <= 0f || Time.timeScale <= 0f)
+            return;
+
+        if (m_hitSlowMotionActive && !Mathf.Approximately(Time.timeScale, m_appliedHitTimeScale))
+            FinishHitSlowMotion(false);
+
+        if (!m_hitSlowMotionActive)
+        {
+            m_hitSlowMotionActive = true;
+            m_timeScaleBeforeHitSlowMotion = Time.timeScale;
+            m_fixedDeltaTimeBeforeHitSlowMotion = Time.fixedDeltaTime;
+            m_appliedHitTimeScale = m_timeScaleBeforeHitSlowMotion;
+        }
+
+        float timeScaleMultiplier = _isCriticalHit
+            ? m_criticalHitTimeScale
+            : m_hitTimeScale;
+        float requestedTimeScale = Mathf.Max(0.01f, m_timeScaleBeforeHitSlowMotion * timeScaleMultiplier);
+
+        m_appliedHitTimeScale = Mathf.Min(m_appliedHitTimeScale, requestedTimeScale);
+        m_hitSlowMotionEndsAt = Mathf.Max(m_hitSlowMotionEndsAt, Time.unscaledTime + duration);
+
+        Time.timeScale = m_appliedHitTimeScale;
+        Time.fixedDeltaTime = m_fixedDeltaTimeBeforeHitSlowMotion *
+                              (m_appliedHitTimeScale / Mathf.Max(0.01f, m_timeScaleBeforeHitSlowMotion));
+    }
+
+    private void UpdateHitSlowMotion()
+    {
+        if (!m_hitSlowMotionActive)
+            return;
+
+        // A shop or level-up pause owns timeScale=0. Wait until it resumes so
+        // restoring this short effect can never accidentally close the pause.
+        if (Time.timeScale <= 0f)
+            return;
+
+        if (!Mathf.Approximately(Time.timeScale, m_appliedHitTimeScale))
+        {
+            FinishHitSlowMotion(false);
+            return;
+        }
+
+        if (Time.unscaledTime >= m_hitSlowMotionEndsAt)
+            FinishHitSlowMotion(true);
+    }
+
+    private void FinishHitSlowMotion(bool _restoreTimeScale)
+    {
+        if (!m_hitSlowMotionActive)
+            return;
+
+        if (_restoreTimeScale)
+        {
+            Time.timeScale = m_timeScaleBeforeHitSlowMotion;
+            Time.fixedDeltaTime = m_fixedDeltaTimeBeforeHitSlowMotion;
+        }
+        else if (Time.timeScale > 0f)
+        {
+            // Another system intentionally changed the time scale. Preserve it,
+            // but keep the physics step proportional instead of leaving our value.
+            Time.fixedDeltaTime = m_fixedDeltaTimeBeforeHitSlowMotion *
+                                  (Time.timeScale / Mathf.Max(0.01f, m_timeScaleBeforeHitSlowMotion));
+        }
+
+        m_hitSlowMotionActive = false;
+        m_hitSlowMotionEndsAt = 0f;
     }
 
     private void PlayHitShake(Vector3 _hitPosition, float _strengthMultiplier)
@@ -236,6 +475,13 @@ public class PlayerCombat : MonoBehaviour
         m_minimumShakeInterval = Mathf.Max(0f, m_minimumShakeInterval);
         m_shakeListenerGain = Mathf.Max(0f, m_shakeListenerGain);
         m_criticalDamageMultiplier = Mathf.Max(1f, m_criticalDamageMultiplier);
+        m_hitTimeScale = Mathf.Clamp(m_hitTimeScale, 0.1f, 1f);
+        m_hitSlowMotionDuration = Mathf.Max(0f, m_hitSlowMotionDuration);
+        m_criticalHitTimeScale = Mathf.Clamp(m_criticalHitTimeScale, 0.1f, m_hitTimeScale);
+        m_criticalHitSlowMotionDuration = Mathf.Max(0f, m_criticalHitSlowMotionDuration);
+        m_maxBlockDuration = Mathf.Max(0.1f, m_maxBlockDuration);
+        m_blockCooldown = Mathf.Max(0f, m_blockCooldown);
+        m_blockImpactShakeMultiplier = Mathf.Clamp01(m_blockImpactShakeMultiplier);
 
         if (Application.isPlaying && m_impulseSource != null)
             ConfigureImpulseSource();

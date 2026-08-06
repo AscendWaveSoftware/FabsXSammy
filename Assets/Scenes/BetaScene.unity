@@ -195,6 +195,10 @@ PrefabInstance:
       propertyPath: m_moveSpeed
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 8938069420127037739, guid: 4e86cfb96a8e2ea4ebe4c815c2d9aa9d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 424f6c9c1b393604dbac90c38b42ba8b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -22229,6 +22233,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6b2c9a14d7f4083a5e1b2679cdf3408, type: 2}
   - {fileID: 11400000, guid: f1c7a3e95b2d4608ac4e7f1239db5602, type: 2}
   - {fileID: 11400000, guid: a4d9e2b76c1f4385be0a9127d3cf6840, type: 2}
+  m_inputUnlockDelay: 0.45
+  m_clickQuietTime: 0.2
 --- !u!4 &829959518
 Transform:
   m_ObjectHideFlags: 0

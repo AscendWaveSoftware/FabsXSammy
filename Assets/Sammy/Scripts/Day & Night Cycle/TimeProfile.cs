@@ -58,9 +58,9 @@ public class TimeProfile : ScriptableObject
 
     private void OnValidate()
     {
-        SunriseHour = Mathf.Clamp(SunriseHour, 0, 23);
-        DayHour = Mathf.Clamp(DayHour, 0, 23);
-        SunsetHour = Mathf.Clamp(SunsetHour, 0, 23);
-        NightHour = Mathf.Clamp(NightHour, 0, 23);
+        SunriseHour = Mathf.Clamp(SunriseHour, 0, 20);
+        DayHour = Mathf.Clamp(DayHour, SunriseHour + 1, 21);
+        SunsetHour = Mathf.Clamp(SunsetHour, DayHour + 1, 22);
+        NightHour = Mathf.Clamp(NightHour, SunsetHour + 1, 23);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Stats")]
@@ -17,9 +18,12 @@ public class PlayerHealth : MonoBehaviour
     public bool IsAlive { get; private set; }
 
     public event Action<int, int> OnHealthChanged;
+    public event Action<int, bool> OnDamageTaken;
+    public event Action<int> OnDamageBlocked;
 
     private int m_currentHealth;
     private Rigidbody m_rb;
+    private PlayerCombat m_playerCombat;
     private float m_damageReduction;
     private float m_healthRegenerationPerSecond;
     private float m_regenerationAccumulator;
@@ -27,6 +31,7 @@ public class PlayerHealth : MonoBehaviour
     private void Awake()
     {
         m_rb = GetComponent<Rigidbody>();
+        m_playerCombat = GetComponent<PlayerCombat>();
 
         if(m_playerResources == null)
             m_playerResources = GetComponent<PlayerResources>();
@@ -60,13 +65,23 @@ public class PlayerHealth : MonoBehaviour
         if (!IsAlive) return;
         if (_damageAmount <= 0) return;
 
+        if (m_playerCombat != null && m_playerCombat.IsBlocking)
+        {
+            OnDamageBlocked?.Invoke(_damageAmount);
+            return;
+        }
+
         int reducedDamage = Mathf.Max(1, Mathf.CeilToInt(_damageAmount * (1f - m_damageReduction)));
-        m_currentHealth -= reducedDamage;
+        int appliedDamage = Mathf.Min(reducedDamage, m_currentHealth);
+        m_currentHealth -= appliedDamage;
         m_currentHealth = Mathf.Clamp(m_currentHealth, 0, m_maxHealth);
 
         OnHealthChanged?.Invoke(m_currentHealth, m_maxHealth);
 
-        if (m_currentHealth <= 0)
+        bool isLethal = m_currentHealth <= 0;
+        OnDamageTaken?.Invoke(appliedDamage, isLethal);
+
+        if (isLethal)
             Die();
     }
 
@@ -113,9 +128,14 @@ public class PlayerHealth : MonoBehaviour
 
         IsAlive = false;
 
-        PlaytestAnalyticsManager.Instance.RegisterDeath();
-        PlaytestAnalyticsManager.Instance.RegisterVictory();
-        PlaytestAnalyticsManager.Instance.EndRun();
+        PlaytestAnalyticsManager analytics = PlaytestAnalyticsManager.Instance;
+        if (analytics != null)
+        {
+            analytics.RegisterDeath();
+            analytics.RegisterVictory();
+            analytics.EndRun();
+        }
+
         ResetPlayerResources();
         Respawn();
     }

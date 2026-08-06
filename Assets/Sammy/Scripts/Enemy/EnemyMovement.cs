@@ -209,7 +209,9 @@ public class EnemyMovement : MonoBehaviour
         if (playerTarget == null)
             FindPlayerTarget();
 
-        return playerTarget != null && (m_enemyStats == null || !m_enemyStats.IsDead);
+        return playerTarget != null &&
+               (m_enemyStats == null || !m_enemyStats.IsDead) &&
+               (m_enemyAttack == null || !m_enemyAttack.IsWindingUp);
     }
 
     private void UpdateNavMeshMovement()

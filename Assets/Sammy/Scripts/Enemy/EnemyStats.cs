@@ -21,6 +21,7 @@ public class EnemyStats : MonoBehaviour
 
     private int m_currentHealth;
     private bool m_isDead;
+    private EnemyAttack m_enemyAttack;
 
     public int AttackDamage => attackDamage;
     public int CurrentHealth => m_currentHealth;
@@ -32,6 +33,7 @@ public class EnemyStats : MonoBehaviour
     private void Awake()
     {
         m_currentHealth = maxHealth;
+        m_enemyAttack = GetComponent<EnemyAttack>();
     }
 
     private void Start()
@@ -57,7 +59,9 @@ public class EnemyStats : MonoBehaviour
             criticalDamageTextScale
         );
 
-        if (m_currentHealth <= 0)
+        if (m_currentHealth > 0)
+            m_enemyAttack?.NotifyHit();
+        else
             Die(_playerResources);
 
         return true;

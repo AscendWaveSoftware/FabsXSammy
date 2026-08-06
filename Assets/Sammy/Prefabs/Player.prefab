@@ -158,6 +158,8 @@ GameObject:
   - component: {fileID: 196982072544225915}
   - component: {fileID: -4707047747260392551}
   - component: {fileID: 2732306110862175300}
+  - component: {fileID: 1091281746123874321}
+  - component: {fileID: 6991371757986253784}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -328,6 +330,7 @@ MonoBehaviour:
   m_hideCursorDuringGameplay: 1
   m_lockCursorDuringGameplay: 1
   m_shopSearchInterval: 1
+  m_progressBarSmoothing: 10
 --- !u!114 &5135860194248459096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,15 +345,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
   m_attackDamage: 25
   m_attackRange: 1.5
+  m_criticalDamageMultiplier: 2
   m_enemyLayer:
     serializedVersion: 2
     m_Bits: 8
   m_attackPoint: {fileID: 131278767419082001}
   m_playerResources: {fileID: 6679145990123216154}
+  m_playerHealth: {fileID: 2666698548747110859}
+  m_playerAnimation: {fileID: 6991371757986253784}
   m_shakeStrength: 0.16
   m_shakeDuration: 0.12
   m_minimumShakeInterval: 0.04
   m_shakeListenerGain: 1
+  m_hitTimeScale: 0.72
+  m_hitSlowMotionDuration: 0.065
+  m_criticalHitTimeScale: 0.6
+  m_criticalHitSlowMotionDuration: 0.085
+  m_maxBlockDuration: 0.85
+  m_blockCooldown: 0.3
+  m_blockImpactShakeMultiplier: 0.45
 --- !u!114 &2666698548747110859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,11 +394,12 @@ MonoBehaviour:
   m_playerHealth: {fileID: 2666698548747110859}
   m_healthBarImage: {fileID: 7301362121621065280}
   m_healthText: {fileID: 1081488117997582205}
-  m_highHealthColor: {r: 0, g: 1, b: 0, a: 1}
-  m_mediumHealthColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  m_lowHealthColor: {r: 1, g: 0, b: 0, a: 1}
+  m_highHealthColor: {r: 0.16, g: 0.86, b: 0.48, a: 1}
+  m_mediumHealthColor: {r: 1, g: 0.72, b: 0.18, a: 1}
+  m_lowHealthColor: {r: 1, g: 0.25, b: 0.22, a: 1}
   m_mediumHealthThreshold: 0.6
   m_lowHealthThreshold: 0.3
+  m_fillSmoothing: 10
 --- !u!114 &-4707047747260392551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,6 +415,7 @@ MonoBehaviour:
   m_playerMovementHandler: {fileID: 7453557029405839637}
   m_playerHealth: {fileID: 2666698548747110859}
   m_playerCombat: {fileID: 5135860194248459096}
+  m_playerExperience: {fileID: 0}
 --- !u!114 &2732306110862175300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,6 +431,61 @@ MonoBehaviour:
   playerResources: {fileID: 6679145990123216154}
   playerCamera: {fileID: 0}
   towerCamera: {fileID: 0}
+--- !u!95 &1091281746123874321
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bd4c4f98c431ff443b7c6b2360959384, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6991371757986253784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382272963486644533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9248335932a734c4d833834e20310114, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
+  m_animator: {fileID: 1091281746123874321}
+  m_rigidbody: {fileID: 9185282312738775992}
+  m_movement: {fileID: 7453557029405839637}
+  m_combat: {fileID: 5135860194248459096}
+  m_health: {fileID: 2666698548747110859}
+  m_attackClips:
+  - {fileID: 7400000, guid: 480611687e7e0aa408004c7c9f7c8323, type: 2}
+  - {fileID: 7400000, guid: a678fa42e15a3e84791be8e2a4a25517, type: 2}
+  - {fileID: 7400000, guid: 40f59c093fbaf5e41bb674f3eb669c75, type: 2}
+  m_defendClip: {fileID: 7400000, guid: 34bfe8bffd21f5147ab69880f8523a3b, type: 2}
+  m_hurtClip: {fileID: 7400000, guid: cbb5d4a379ee4e546986fa2fb46dc620, type: 2}
+  m_idleWorldSpeed: 0.08
+  m_idleEnterMultiplier: 1.35
+  m_runEnterSpeed: 0.55
+  m_runExitSpeed: 0.42
+  m_speedSmoothing: 0.08
+  m_transitionDuration: 0.07
+  m_attackImpactTimes:
+  - 0.5
+  - 0.34
+  - 0.43
 --- !u!1 &3494323110108150359
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,8 +998,8 @@ Transform:
   m_GameObject: {fileID: 4892836745473404588}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.46, y: 7.46, z: 7.46}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
+  m_LocalScale: {x: 5.4, y: 5.4, z: 5.4}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 533850769984097448}
@@ -984,7 +1054,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: -651574854, guid: 460a1d02fe7f8b0469c19ef3b4f3a6b5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

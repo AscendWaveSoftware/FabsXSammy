@@ -146,6 +146,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
   m_attackRange: 1.4
   m_attackCooldown: 1
+  m_attackWindup: 0.28
+  m_hitStunDuration: 0.24
+  m_windupTint: {r: 1, g: 0.28, b: 0.18, a: 1}
   m_playerTarget: {fileID: 0}
 --- !u!1 &2252493165415453837
 GameObject:

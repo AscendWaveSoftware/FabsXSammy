@@ -14,9 +14,12 @@ public class PlayerMovementHandler : MonoBehaviour
 
     private Rigidbody m_rb;
     private Vector2 m_Velocity;
-    //private bool m_IsMoving;
+    private bool m_facingLocked;
+    private bool m_movementLocked;
 
-    private void Start()
+    public float CurrentMaxPlanarSpeed => Mathf.Max(0f, m_moveSpeed / 4f);
+
+    private void Awake()
     {
         m_rb = GetComponent<Rigidbody>();
         m_rb.useGravity = false;
@@ -26,31 +29,62 @@ public class PlayerMovementHandler : MonoBehaviour
                            RigidbodyConstraints.FreezePositionY;
     }
 
+    private void OnDisable()
+    {
+        m_Velocity = Vector2.zero;
+        m_facingLocked = false;
+        m_movementLocked = false;
+        StopPlanarMovement();
+    }
+
     private void Update()
     {
-        m_sp.flipX = m_characterSpriteFlip;
+        if (!m_facingLocked)
+        {
+            if (m_Velocity.x > 0.01f)
+                m_characterSpriteFlip = false;
+            else if (m_Velocity.x < -0.01f)
+                m_characterSpriteFlip = true;
+        }
+
+        if (m_sp != null)
+            m_sp.flipX = m_characterSpriteFlip;
     }
 
     private void FixedUpdate() => Movement();
 
     public void OnMove(InputValue _value)
     {
+        if (!isActiveAndEnabled)
+        {
+            m_Velocity = Vector2.zero;
+            return;
+        }
+
         m_Velocity = _value.Get<Vector2>();
 
-        if (m_Velocity.x > 0)
-            m_characterSpriteFlip = false;
-        else if (m_Velocity.x < 0)
-            m_characterSpriteFlip = true;
+        if (m_Velocity.sqrMagnitude <= 0.0001f)
+            StopPlanarMovement();
+    }
+
+    public void SetFacingLocked(bool _locked) => m_facingLocked = _locked;
+
+    public void SetMovementLocked(bool _locked)
+    {
+        m_movementLocked = _locked;
+
+        if (_locked)
+            StopPlanarMovement();
     }
 
     public void SetMoveSpeed(float _newSpeed)
     {
-        m_moveSpeed = _newSpeed;
+        m_moveSpeed = Mathf.Max(0f, _newSpeed);
     }
 
     public void AddMoveSpeedBonus(float _bonus)
     {
-        m_moveSpeed += _bonus;
+        m_moveSpeed = Mathf.Max(0f, m_moveSpeed + _bonus);
     }
 
     public void AddMoveSpeedPercentage(float _percentage)
@@ -63,8 +97,19 @@ public class PlayerMovementHandler : MonoBehaviour
 
     private void Movement()
     {
-        Vector3 localInput = new Vector3(m_Velocity.x, 0f, m_Velocity.y).normalized;
-        Vector3 targetSpeed = transform.TransformDirection(localInput) * (m_moveSpeed / 4);
+        if (m_rb == null)
+            return;
+
+        if (m_movementLocked || m_Velocity.sqrMagnitude <= 0.0001f)
+        {
+            StopPlanarMovement();
+            return;
+        }
+
+        // Preserve analogue input magnitude so slow movement genuinely maps to Walk.
+        // Normalizing here made every non-zero stick input reach full running speed.
+        Vector3 localInput = Vector3.ClampMagnitude(new Vector3(m_Velocity.x, 0f, m_Velocity.y), 1f);
+        Vector3 targetSpeed = transform.TransformDirection(localInput) * CurrentMaxPlanarSpeed;
         Vector3 velocityXZ = new Vector3(m_rb.linearVelocity.x, 0f, m_rb.linearVelocity.z);
         Vector3 speedDif = targetSpeed - velocityXZ;
 
@@ -76,5 +121,19 @@ public class PlayerMovementHandler : MonoBehaviour
             Mathf.Pow(Mathf.Abs(speedDif.z) * accelRate, 1) * Mathf.Sign(speedDif.z)
         );
         m_rb.AddForce(movement, ForceMode.Force);
+    }
+
+    private void StopPlanarMovement()
+    {
+        if (m_rb == null)
+            return;
+
+        m_rb.linearVelocity = new Vector3(0f, m_rb.linearVelocity.y, 0f);
+    }
+
+    private void OnValidate()
+    {
+        m_acceleration = Mathf.Max(0f, m_acceleration);
+        m_moveSpeed = Mathf.Max(0f, m_moveSpeed);
     }
 }

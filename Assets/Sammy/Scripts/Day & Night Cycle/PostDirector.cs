@@ -19,10 +19,10 @@ public class PostDirector
         volume = _v;
         if (!volume || !volume.profile) return;
 
-        volume.profile.TryGet(out colorAdj);
-        volume.profile.TryGet(out bloom);
-        volume.profile.TryGet(out vignette);
-        volume.profile.TryGet(out tone);
+        colorAdj = GetOrAdd<ColorAdjustments>(volume.profile);
+        bloom = GetOrAdd<Bloom>(volume.profile);
+        vignette = GetOrAdd<Vignette>(volume.profile);
+        tone = GetOrAdd<Tonemapping>(volume.profile);
     }
 
     public void ApplyTime(float _t01, float _facingSun01, TimeProfile _p)
@@ -37,7 +37,7 @@ public class PostDirector
         }
 
         // Exposure
-        if (_p.PostExposureEVOverTime != null)
+        if (_p.PostExposureEVOverTime != null && _p.PostExposureEVOverTime.length > 0)
         {
             float evTarget = _p.PostExposureEVOverTime.Evaluate(_t01);
             if (!init) { evSmoothed = evTarget; init = true; }
@@ -48,18 +48,20 @@ public class PostDirector
         // Bloom
         if (bloom != null)
         {
-            float baseBloom = _p.BloomIntensityOverTime != null ? _p.BloomIntensityOverTime.Evaluate(_t01) : 0f;
+            float baseBloom = _p.BloomIntensityOverTime != null && _p.BloomIntensityOverTime.length > 0
+                ? _p.BloomIntensityOverTime.Evaluate(_t01)
+                : 0f;
             float facingBonus = Mathf.Lerp(0f, _p.FacingBloomBonus, Mathf.Clamp01(_facingSun01));
             bloom.active = true;
-            bloom.intensity.Override(baseBloom + facingBonus);
+            bloom.intensity.Override(Mathf.Max(0f, baseBloom + facingBonus));
         }
 
         // Vignette
         if (vignette != null)
         {
             vignette.active = true;
-            if (_p.VignetteIntensityOverTime != null)
-                vignette.intensity.Override(_p.VignetteIntensityOverTime.Evaluate(_t01));
+            if (_p.VignetteIntensityOverTime != null && _p.VignetteIntensityOverTime.length > 0)
+                vignette.intensity.Override(Mathf.Clamp01(_p.VignetteIntensityOverTime.Evaluate(_t01)));
             if (_p.VignetteColorOverTime != null)
                 vignette.color.Override(_p.VignetteColorOverTime.Evaluate(_t01));
         }
@@ -70,5 +72,15 @@ public class PostDirector
             tone.active = true;
             tone.mode.Override(_p.UseACES ? TonemappingMode.ACES : TonemappingMode.None);
         }
+    }
+
+    private static T GetOrAdd<T>(VolumeProfile _profile) where T : VolumeComponent
+    {
+        if (_profile.TryGet(out T component))
+        {
+            return component;
+        }
+
+        return _profile.Add<T>(true);
     }
 }
