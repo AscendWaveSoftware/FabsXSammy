@@ -108,14 +108,18 @@ public class AI_Manager : MonoBehaviour
 
     private bool CanSpawnBigUnit()
     {
-        if (m_playerXP.CurrentLevel < m_bigUnitUnlockLevel)
-            return false;
+        if (m_playerXP)
+        {
+            if (m_playerXP.CurrentLevel < m_bigUnitUnlockLevel)
+                return false;
 
-        if (m_aiScrap < m_prices.m_PriceForUnit2)
-            return false;
+            if (m_aiScrap < m_prices.m_PriceForUnit2)
+                return false;
 
-        float chance = Mathf.Clamp(m_startBigUnitChance + ((m_playerXP.CurrentLevel - m_bigUnitUnlockLevel) * m_bigChanceIncreasePerLevel), 0f, m_maxBigUnitChance);
+            float chance = Mathf.Clamp(m_startBigUnitChance + ((m_playerXP.CurrentLevel - m_bigUnitUnlockLevel) * m_bigChanceIncreasePerLevel), 0f, m_maxBigUnitChance);
 
-        return Random.value < chance;
+            return Random.value < chance;
+        }
+        return false;
     }
 }

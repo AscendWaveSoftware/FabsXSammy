@@ -28,21 +28,27 @@ public class MOBA_Manager : MonoBehaviour
     {
         if (!_isEnemy)
         {
-            m_allyHealth += _health;
-            m_Slider[0].maxValue = m_allyHealth;
-            m_Slider[0].value = m_Slider[0].maxValue;
+            if (m_Slider[0] != null)
+            {
+                m_allyHealth += _health;
+                m_Slider[0].maxValue = m_allyHealth;
+                m_Slider[0].value = m_Slider[0].maxValue;
+            }
         }
         else
         {
-            m_enemyHealth += _health;
-            m_Slider[1].maxValue = m_enemyHealth;
-            m_Slider[1].value = m_Slider[1].maxValue;
+            if (m_Slider[1] != null)
+            {
+                m_enemyHealth += _health;
+                m_Slider[1].maxValue = m_enemyHealth;
+                m_Slider[1].value = m_Slider[1].maxValue;
+            }
         }
     }
 
     public void OnDamage(float _damage, bool _isEnemy)
     {
-       for (int i = 0; i < m_Slider.Length; i++)
+        for (int i = 0; i < m_Slider.Length; i++)
         {
             if (m_Slider[i])
             {
@@ -57,7 +63,7 @@ public class MOBA_Manager : MonoBehaviour
                     m_Slider[1].value = m_enemyHealth;
                 }
             }
-        }     
+        }
     }
 
     public void DestroyedTower(Vector3 _position, bool _isEnemy)
@@ -67,7 +73,7 @@ public class MOBA_Manager : MonoBehaviour
             case false:
                 var destTowerAlly = Instantiate(m_DestroyedTower[0], this.transform);
                 destTowerAlly.transform.position = _position;
-                destTowerAlly.transform.Rotate(0,Random.Range(0,355),0);
+                destTowerAlly.transform.Rotate(0, Random.Range(0, 355), 0);
                 break;
 
             case true:

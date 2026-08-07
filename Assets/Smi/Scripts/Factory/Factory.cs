@@ -82,7 +82,7 @@ public class Factory : MonoBehaviour, IMinionPool
 
     private void OnDestroy()
     {
-        if (m_stats.m_isEnemyBuilding)
+        if (m_stats.m_isEnemyBuilding && PlaytestAnalyticsManager.Instance != null)
         {
             PlaytestAnalyticsManager.Instance.RegisterVictory();
             PlaytestAnalyticsManager.Instance.EndRun();
