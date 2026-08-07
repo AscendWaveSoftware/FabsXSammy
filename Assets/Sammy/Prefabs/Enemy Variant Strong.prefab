@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4344217055707033303}
   - component: {fileID: 5134217613761303598}
   - component: {fileID: 5501229384710033472}
+  - component: {fileID: 5501229384710033474}
   m_Layer: 3
   m_Name: Enemy Variant Strong
   m_TagString: Enemy
@@ -169,6 +170,28 @@ MonoBehaviour:
   m_shadowColor: {r: 0.04, g: 0.05, b: 0.09, a: 1}
   m_groundClearance: 0.03
   m_backwardOffset: 0.25
+--- !u!114 &5501229384710033474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883173139186161293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc80432929ae4b2ebeb50a2433abb1df, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathBurst
+  m_sparkCount: 13
+  m_sparkColor: {r: 0.85, g: 0.16, b: 0.3, a: 0.9}
+  m_sparkStartDiameter: 0.4
+  m_sparkEndDiameter: 0.04
+  m_sparkLifetime: 0.55
+  m_sparkSpeed: 3.6
+  m_upwardBias: 1.4
+  m_flashColor: {r: 1, g: 0.42, b: 0.42, a: 0.9}
+  m_flashEndDiameter: 2
+  m_flashDuration: 0.32
 --- !u!1 &3133907622521765088
 GameObject:
   m_ObjectHideFlags: 0

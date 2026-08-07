@@ -45,6 +45,12 @@ public class EnemyAttack : MonoBehaviour
     /// </summary>
     public bool IsStaggered => PveRuntime.Time < m_staggeredUntil;
 
+    /// <summary>Raised when a windup begins, so the animation can start with it.</summary>
+    public event System.Action OnWindupStarted;
+
+    /// <summary>Seconds this enemy takes to wind up, so an attack clip can match it.</summary>
+    public float AttackWindup => m_attackWindup;
+
     private void Awake()
     {
         m_stats = GetComponent<EnemyStats>();
@@ -191,6 +197,7 @@ public class EnemyAttack : MonoBehaviour
         m_windupStartedAt = PveRuntime.Time;
         m_attackExecutesAt = PveRuntime.Time + m_attackWindup;
         m_telegraph?.BeginWindup(m_attackRange);
+        OnWindupStarted?.Invoke();
         UpdateWindupVisual();
 
         if (m_attackWindup <= 0f)

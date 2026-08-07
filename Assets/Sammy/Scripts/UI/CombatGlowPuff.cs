@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,6 +13,7 @@ public class CombatGlowPuff : MonoBehaviour
     private SpriteRenderer m_renderer;
     private Material m_defaultMaterial;
     private Transform m_cameraTransform;
+    private Vector3 m_drift;
     private Color m_color;
     private float m_elapsedTime;
     private float m_duration;
@@ -28,7 +29,8 @@ public class CombatGlowPuff : MonoBehaviour
         float _duration,
         int _sortingOrder = 199,
         Material _emissiveMaterial = null,
-        float _emissionIntensity = 1f)
+        float _emissionIntensity = 1f,
+        Vector3 _drift = default)
     {
         if (_duration <= 0f || _startDiameter <= 0f)
             return;
@@ -37,6 +39,7 @@ public class CombatGlowPuff : MonoBehaviour
         puff.gameObject.SetActive(true);
         puff.Initialize(_worldPosition, _color, _startDiameter, _endDiameter, _duration, _sortingOrder);
         puff.ApplyEmission(_emissiveMaterial, _emissionIntensity);
+        puff.m_drift = _drift;
     }
 
     /// <summary>
@@ -91,6 +94,15 @@ public class CombatGlowPuff : MonoBehaviour
         m_elapsedTime += Time.deltaTime;
         float normalizedTime = Mathf.Clamp01(m_elapsedTime / m_duration);
 
+        if (m_drift.sqrMagnitude > 0.0001f)
+        {
+            transform.position += m_drift * Time.deltaTime;
+
+            // Air resistance, so a burst spreads out and settles instead of
+            // shooting away in a straight line.
+            m_drift = Vector3.Lerp(m_drift, Vector3.zero, Mathf.Clamp01(Time.deltaTime * 3.2f));
+        }
+
         float diameter = Mathf.Lerp(m_startDiameter, m_endDiameter, normalizedTime);
         transform.localScale = Vector3.one * diameter;
 
@@ -114,7 +126,7 @@ public class CombatGlowPuff : MonoBehaviour
             return;
 
         transform.LookAt(
-            transform.position + m_cameraTransform.rotation * -Vector3.forward,
+            transform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
     }

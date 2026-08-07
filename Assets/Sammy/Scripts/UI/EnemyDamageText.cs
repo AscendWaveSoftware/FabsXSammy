@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -116,7 +116,7 @@ public class EnemyDamageText : MonoBehaviour
         float tilt = Mathf.Lerp(m_startingTilt, 0f, Mathf.Clamp01(m_elapsedTime / m_duration));
 
         transform.LookAt(
-            transform.position + m_cameraTransform.rotation * -Vector3.forward,
+            transform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
         transform.rotation *= Quaternion.Euler(0f, 0f, tilt + wobble);

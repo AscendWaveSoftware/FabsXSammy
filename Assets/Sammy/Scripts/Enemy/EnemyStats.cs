@@ -18,6 +18,9 @@ public class EnemyStats : MonoBehaviour
     private float criticalDamageTextScale = 0.44f;
     [SerializeField, Min(0f), Tooltip("Additional height above the enemy sprite.")]
     private float damageTextHeightOffset = 0.25f;
+    [SerializeField, Min(0f), Tooltip(
+        "Height of the artwork above the root. Leave at 0 to measure the sprite bounds instead.")]
+    private float damageTextHeadOverride;
 
     private int m_currentHealth;
     private bool m_isDead;
@@ -29,6 +32,12 @@ public class EnemyStats : MonoBehaviour
     public bool IsDead => m_isDead;
 
     public event Action<int, int> OnHealthChanged;
+
+    /// <summary>Raised on every hit that lands. Carries the damage and whether it killed.</summary>
+    public event Action<int, bool> OnDamageTaken;
+
+    /// <summary>Raised once, just before this enemy is removed from the arena.</summary>
+    public event Action OnDied;
 
     private void Awake()
     {
@@ -67,7 +76,12 @@ public class EnemyStats : MonoBehaviour
             criticalDamageTextScale
         );
 
-        if (m_currentHealth <= 0)
+        bool isLethal = m_currentHealth <= 0;
+
+        // Raised before Die, so a listener still has a live enemy to read from.
+        OnDamageTaken?.Invoke(appliedDamage, isLethal);
+
+        if (isLethal)
             Die(_playerResources);
         else if (_interruptsEnemy)
             m_enemyAttack?.NotifyHit();
@@ -77,6 +91,22 @@ public class EnemyStats : MonoBehaviour
 
     private Vector3 GetDamageTextPosition()
     {
+        return new Vector3(
+            transform.position.x,
+            transform.position.y + GetHeadOffset() + damageTextHeightOffset,
+            transform.position.z
+        );
+    }
+
+    /// <summary>How far the top of the enemy sits above its root.</summary>
+    private float GetHeadOffset()
+    {
+        // An animated sheet reports its whole frame as the sprite bounds, transparent
+        // padding included, which would float the numbers metres above the monster.
+        // The override is the measured height of the artwork itself.
+        if (damageTextHeadOverride > 0f)
+            return damageTextHeadOverride;
+
         float highestPoint = transform.position.y + 0.8f;
 
         Collider enemyCollider = GetComponent<Collider>();
@@ -90,7 +120,7 @@ public class EnemyStats : MonoBehaviour
                 highestPoint = Mathf.Max(highestPoint, spriteRenderer.bounds.max.y);
         }
 
-        return new Vector3(transform.position.x, highestPoint + damageTextHeightOffset, transform.position.z);
+        return highestPoint - transform.position.y;
     }
 
     private void OnValidate()
@@ -98,6 +128,7 @@ public class EnemyStats : MonoBehaviour
         damageTextScale = Mathf.Max(0.05f, damageTextScale);
         criticalDamageTextScale = Mathf.Max(0.05f, criticalDamageTextScale);
         damageTextHeightOffset = Mathf.Max(0f, damageTextHeightOffset);
+        damageTextHeadOverride = Mathf.Max(0f, damageTextHeadOverride);
     }
 
     private void Die(PlayerResources _playerResources)
@@ -106,6 +137,7 @@ public class EnemyStats : MonoBehaviour
 
         m_isDead = true;
 
+        OnDied?.Invoke();
         GiveReward(_playerResources);
 
         Destroy(gameObject);

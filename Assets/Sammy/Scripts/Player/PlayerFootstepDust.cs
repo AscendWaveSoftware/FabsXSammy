@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 /// <summary>
@@ -117,7 +117,7 @@ public class PlayerFootstepDust : MonoBehaviour
         // Sprite front faces back towards the camera, matching the other
         // billboarded combat effects.
         Quaternion facing = Quaternion.LookRotation(
-            m_cameraTransform.rotation * -Vector3.forward,
+            m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
 

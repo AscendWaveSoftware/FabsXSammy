@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -132,7 +132,7 @@ public class SpellImpact : MonoBehaviour
             return;
 
         transform.LookAt(
-            transform.position + m_cameraTransform.rotation * -Vector3.forward,
+            transform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
     }

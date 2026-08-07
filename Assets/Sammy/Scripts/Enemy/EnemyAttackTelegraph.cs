@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -34,6 +34,10 @@ public class EnemyAttackTelegraph : MonoBehaviour
     [SerializeField, Min(0.05f), Tooltip("Sized to match the damage numbers, a single glyph needs the room to read at a glance.")]
     private float m_staggerScale = 0.75f;
     [SerializeField, Min(0f)] private float m_staggerHeightOffset = 0.45f;
+
+    [Header("Bounds")]
+    [SerializeField, Min(0f), Tooltip("Height of the head above the pivot. Set this for animated sprites, whose frame is mostly empty padding and would push the signs far too high. 0 measures automatically.")]
+    private float m_headOffsetOverride;
 
     [Header("Strike Flash")]
     [SerializeField] private Color m_strikeFlashColor = new(1f, 0.32f, 0.16f, 1f);
@@ -120,7 +124,7 @@ public class EnemyAttackTelegraph : MonoBehaviour
 
         Transform warningTransform = m_warningText.transform;
         warningTransform.LookAt(
-            warningTransform.position + m_cameraTransform.rotation * -Vector3.forward,
+            warningTransform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
     }
@@ -207,7 +211,13 @@ public class EnemyAttackTelegraph : MonoBehaviour
         }
 
         m_feetOffset = lowestPoint - transform.position.y;
-        m_headOffset = highestPoint - transform.position.y;
+
+        // An animated sheet reports the whole frame as its bounds, transparent
+        // padding included, which would float the warning signs metres above the
+        // enemy. The override is the measured height of the artwork itself.
+        m_headOffset = m_headOffsetOverride > 0f
+            ? m_headOffsetOverride
+            : highestPoint - transform.position.y;
     }
 
     private void BuildGroundRings()
@@ -318,7 +328,7 @@ public class EnemyAttackTelegraph : MonoBehaviour
 
         Transform staggerTransform = m_staggerText.transform;
         staggerTransform.LookAt(
-            staggerTransform.position + m_cameraTransform.rotation * -Vector3.forward,
+            staggerTransform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
         );
 

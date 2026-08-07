@@ -65,8 +65,6 @@ public class PlayerSpellBarUI : MonoBehaviour
 
     private void Start()
     {
-        // Built in Start, because the HUD canvas is only reparented into screen
-        // space during PlayerUIHandler's Awake.
         BuildBar();
         RefreshLayout();
     }
@@ -203,8 +201,6 @@ public class PlayerSpellBarUI : MonoBehaviour
         if (visibleCount == 0)
             return;
 
-        // Laid out from the centre outwards over the unlocked slots only, so the
-        // bar stays centred instead of leaving gaps where a locked spell sits.
         float totalWidth = visibleCount * m_slotWidth + (visibleCount - 1) * m_slotSpacing;
         float cursorX = -totalWidth * 0.5f;
 

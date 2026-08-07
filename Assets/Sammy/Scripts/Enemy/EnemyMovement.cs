@@ -65,6 +65,28 @@ public class EnemyMovement : MonoBehaviour
     public bool IsKnockedBack => PveRuntime.Time < m_knockbackEndsAt;
 
     /// <summary>
+    /// How fast this enemy is actually travelling on the ground plane. Read from
+    /// whichever system is driving it, so the animation matches what is seen.
+    /// </summary>
+    public float CurrentPlanarSpeed
+    {
+        get
+        {
+            Vector3 velocity = m_usesNavMesh && m_agent != null && m_agent.enabled
+                ? m_agent.velocity
+                : (m_rb != null ? m_rb.linearVelocity : Vector3.zero);
+
+            return new Vector2(velocity.x, velocity.z).magnitude;
+        }
+    }
+
+    /// <summary>Speed this enemy walks at when unobstructed, for normalising the animation.</summary>
+    public float MaximumPlanarSpeed => Mathf.Max(0.01f, moveSpeed);
+
+    /// <summary>Point this enemy is oriented towards, used to decide which way the sprite faces.</summary>
+    public Vector3 FacingTarget => playerTarget != null ? playerTarget.position : transform.position;
+
+    /// <summary>
     /// Pushes this enemy away over a short moment. Goes through the NavMeshAgent
     /// rather than the rigidbody, because the agent drives a kinematic body and
     /// would ignore a physics force outright.
