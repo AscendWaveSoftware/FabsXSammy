@@ -14,6 +14,7 @@ public class PlayerMovementHandler : MonoBehaviour
 
     private Rigidbody m_rb;
     private Vector2 m_Velocity;
+    private Vector3 m_pausedVelocity;
     private bool m_facingLocked;
     private bool m_movementLocked;
 
@@ -35,16 +36,51 @@ public class PlayerMovementHandler : MonoBehaviour
                            RigidbodyConstraints.FreezePositionY;
     }
 
+    private void OnEnable()
+    {
+        PveRuntime.PauseChanged += HandlePauseChanged;
+        ApplyPauseState(PveRuntime.IsPaused);
+    }
+
     private void OnDisable()
     {
+        PveRuntime.PauseChanged -= HandlePauseChanged;
+
         m_Velocity = Vector2.zero;
         m_facingLocked = false;
         m_movementLocked = false;
         StopPlanarMovement();
     }
 
+    private void HandlePauseChanged(bool _paused) => ApplyPauseState(_paused);
+
+    /// <summary>
+    /// Skipping FixedUpdate is not enough on its own: the rigidbody would coast
+    /// on the velocity it already had. It is parked and handed back, so the
+    /// player keeps the momentum they had when they looked away.
+    /// </summary>
+    private void ApplyPauseState(bool _paused)
+    {
+        if (m_rb == null)
+            return;
+
+        if (_paused)
+        {
+            m_pausedVelocity = m_rb.linearVelocity;
+            m_rb.linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            m_rb.linearVelocity = m_pausedVelocity;
+            m_pausedVelocity = Vector3.zero;
+        }
+    }
+
     private void Update()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_facingLocked)
         {
             if (m_Velocity.x > 0.01f)
@@ -57,7 +93,13 @@ public class PlayerMovementHandler : MonoBehaviour
             m_sp.flipX = m_characterSpriteFlip;
     }
 
-    private void FixedUpdate() => Movement();
+    private void FixedUpdate()
+    {
+        if (PveRuntime.IsPaused)
+            return;
+
+        Movement();
+    }
 
     public void OnMove(InputValue _value)
     {

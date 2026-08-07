@@ -49,6 +49,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
+        // No spawning and no difficulty ramp while the player is on the tower
+        // camera, so the arena is exactly as they left it.
+        if (PveRuntime.IsPaused)
+            return;
+
         // Scaled time on purpose: a level up pause or the combat hit slow motion
         // must not push the difficulty forward while the player cannot play.
         m_elapsedRunTime += Time.deltaTime;

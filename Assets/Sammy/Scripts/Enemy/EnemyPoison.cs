@@ -65,7 +65,7 @@ public class EnemyPoison : MonoBehaviour
         if (m_isPoisoned)
         {
             m_damagePerTick = Mathf.Max(m_damagePerTick, _damagePerTick);
-            m_expiresAt = Mathf.Max(m_expiresAt, Time.time + _duration);
+            m_expiresAt = Mathf.Max(m_expiresAt, PveRuntime.Time + _duration);
             return;
         }
 
@@ -73,17 +73,20 @@ public class EnemyPoison : MonoBehaviour
         // that already wore off.
         m_isPoisoned = true;
         m_damagePerTick = _damagePerTick;
-        m_expiresAt = Time.time + _duration;
+        m_expiresAt = PveRuntime.Time + _duration;
 
         // The first tick lands immediately, so the cloud reads as dealing damage
         // the moment it engulfs an enemy rather than half a second later.
-        m_nextTickTime = Time.time;
+        m_nextTickTime = PveRuntime.Time;
         enabled = true;
     }
 
     private void Update()
     {
-        if (m_stats == null || m_stats.IsDead || Time.time >= m_expiresAt)
+        if (PveRuntime.IsPaused)
+            return;
+
+        if (m_stats == null || m_stats.IsDead || PveRuntime.Time >= m_expiresAt)
         {
             // Disabled rather than destroyed. Destroy is deferred to the end of
             // the frame, so a cloud ticking in that same frame would still find
@@ -93,10 +96,10 @@ public class EnemyPoison : MonoBehaviour
             return;
         }
 
-        if (Time.time < m_nextTickTime)
+        if (PveRuntime.Time < m_nextTickTime)
             return;
 
-        m_nextTickTime = Time.time + m_tickInterval;
+        m_nextTickTime = PveRuntime.Time + m_tickInterval;
         SpawnPoisonPuff();
 
         // Applied last. The enemy may be destroyed by this call, so nothing may

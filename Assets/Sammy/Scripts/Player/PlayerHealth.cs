@@ -52,6 +52,9 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!IsAlive || m_healthRegenerationPerSecond <= 0f || m_currentHealth >= m_maxHealth)
             return;
 

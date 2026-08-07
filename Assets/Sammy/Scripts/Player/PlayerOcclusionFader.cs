@@ -39,6 +39,11 @@ public class PlayerOcclusionFader : MonoBehaviour
 
     private void LateUpdate()
     {
+        // The player camera object is switched off, but its Camera component is
+        // not null, so this would otherwise keep raycasting from a camera nobody
+        // is looking through.
+        if (PveRuntime.IsPaused) return;
+
         if (!player || !renderCamera) return;
 
         currentOccluders.Clear();

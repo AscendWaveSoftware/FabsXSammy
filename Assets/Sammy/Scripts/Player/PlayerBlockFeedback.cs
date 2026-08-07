@@ -72,6 +72,9 @@ public class PlayerBlockFeedback : MonoBehaviour
 
     private void Update()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         if (m_flareRemaining <= 0f)
             return;
 

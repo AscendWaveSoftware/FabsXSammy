@@ -66,6 +66,10 @@ public class EnemyDamageText : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 

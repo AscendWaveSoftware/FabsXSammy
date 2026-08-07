@@ -165,8 +165,9 @@ public class PlayerSpellCaster : MonoBehaviour
     private void Update()
     {
         // A shop or level up pause owns timeScale, casting through it would let
-        // the player empty every cooldown while the game is frozen.
-        if (Time.timeScale <= 0f)
+        // the player empty every cooldown while the game is frozen. The arena
+        // pause blocks casting for the same reason.
+        if (Time.timeScale <= 0f || PveRuntime.IsPaused)
             return;
 
         // Read directly rather than through an input action, matching how the
@@ -192,7 +193,7 @@ public class PlayerSpellCaster : MonoBehaviour
         if (_slotIndex < 0 || _slotIndex >= m_nextCastTime.Length)
             return 0f;
 
-        return Mathf.Max(0f, m_nextCastTime[_slotIndex] - Time.time);
+        return Mathf.Max(0f, m_nextCastTime[_slotIndex] - PveRuntime.Time);
     }
 
     private void TryCast(int _slotIndex)
@@ -211,7 +212,7 @@ public class PlayerSpellCaster : MonoBehaviour
         if (m_playerHealth != null && !m_playerHealth.IsAlive)
             return;
 
-        if (Time.time < m_nextCastTime[_slotIndex])
+        if (PveRuntime.Time < m_nextCastTime[_slotIndex])
             return;
 
         if (!spell.IsUsable)
@@ -239,7 +240,7 @@ public class PlayerSpellCaster : MonoBehaviour
         if (!wasCast)
             return;
 
-        m_nextCastTime[_slotIndex] = Time.time + spell.Cooldown;
+        m_nextCastTime[_slotIndex] = PveRuntime.Time + spell.Cooldown;
         OnSpellCast?.Invoke(spell);
     }
 

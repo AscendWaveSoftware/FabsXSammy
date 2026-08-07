@@ -96,6 +96,10 @@ public class SpellImpact : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 
@@ -153,6 +157,7 @@ public class SpellImpact : MonoBehaviour
         transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.one * _scale;
 
+        SpellEmission.Apply(m_renderer, _definition);
         ApplyFrame(0);
     }
 

@@ -43,7 +43,7 @@ public class EnemyAttack : MonoBehaviour
     /// True while this enemy is dazed. Unlike a plain stun this also stops it
     /// from moving, which is what makes a blocked attack visibly cost something.
     /// </summary>
-    public bool IsStaggered => Time.time < m_staggeredUntil;
+    public bool IsStaggered => PveRuntime.Time < m_staggeredUntil;
 
     private void Awake()
     {
@@ -99,6 +99,11 @@ public class EnemyAttack : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena. Returning here also keeps a running windup
+        // intact, so the enemy picks the attack back up where it left off.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (m_stats == null || m_stats.IsDead || m_playerTarget == null ||
             m_playerHealth == null || !m_playerHealth.IsAlive)
         {
@@ -106,7 +111,7 @@ public class EnemyAttack : MonoBehaviour
             return;
         }
 
-        if (Time.time < m_stunnedUntil)
+        if (PveRuntime.Time < m_stunnedUntil)
         {
             CancelWindup();
             return;
@@ -124,13 +129,13 @@ public class EnemyAttack : MonoBehaviour
 
             UpdateWindupVisual();
 
-            if (Time.time >= m_attackExecutesAt)
+            if (PveRuntime.Time >= m_attackExecutesAt)
                 ExecuteAttack();
 
             return;
         }
 
-        if (playerInRange && Time.time >= m_nextAttackTime)
+        if (playerInRange && PveRuntime.Time >= m_nextAttackTime)
             BeginWindup();
     }
 
@@ -161,7 +166,7 @@ public class EnemyAttack : MonoBehaviour
         if (_duration <= 0f || (m_stats != null && m_stats.IsDead))
             return;
 
-        m_stunnedUntil = Mathf.Max(m_stunnedUntil, Time.time + _duration);
+        m_stunnedUntil = Mathf.Max(m_stunnedUntil, PveRuntime.Time + _duration);
         m_nextAttackTime = Mathf.Max(m_nextAttackTime, m_stunnedUntil);
         CancelWindup();
     }
@@ -176,15 +181,15 @@ public class EnemyAttack : MonoBehaviour
         if (_duration <= 0f || (m_stats != null && m_stats.IsDead))
             return;
 
-        m_staggeredUntil = Mathf.Max(m_staggeredUntil, Time.time + _duration);
+        m_staggeredUntil = Mathf.Max(m_staggeredUntil, PveRuntime.Time + _duration);
         Stun(_duration);
     }
 
     private void BeginWindup()
     {
         m_isWindingUp = true;
-        m_windupStartedAt = Time.time;
-        m_attackExecutesAt = Time.time + m_attackWindup;
+        m_windupStartedAt = PveRuntime.Time;
+        m_attackExecutesAt = PveRuntime.Time + m_attackWindup;
         m_telegraph?.BeginWindup(m_attackRange);
         UpdateWindupVisual();
 
@@ -196,7 +201,7 @@ public class EnemyAttack : MonoBehaviour
     {
         RestoreBaseColors();
         m_isWindingUp = false;
-        m_nextAttackTime = Time.time + m_attackCooldown;
+        m_nextAttackTime = PveRuntime.Time + m_attackCooldown;
         m_telegraph?.NotifyStrike();
 
         if (m_playerHealth == null || !m_playerHealth.IsAlive || !IsPlayerInRange())
@@ -242,7 +247,7 @@ public class EnemyAttack : MonoBehaviour
     private void UpdateWindupVisual()
     {
         float progress = m_attackWindup > 0f
-            ? Mathf.InverseLerp(m_windupStartedAt, m_attackExecutesAt, Time.time)
+            ? Mathf.InverseLerp(m_windupStartedAt, m_attackExecutesAt, PveRuntime.Time)
             : 1f;
         float intensity = Mathf.SmoothStep(0.18f, 0.82f, progress);
 

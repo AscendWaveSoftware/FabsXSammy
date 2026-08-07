@@ -9,7 +9,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class PlayerAnimationAssetBuilder
 {
-    private const string SessionKey = "Sammy.PlayerAnimationAssets.V11";
+    private const string SessionKey = "Sammy.PlayerAnimationAssets.V12";
     private const string TextureRoot = "Assets/Sammy/Textures/Player";
     private const string AudioRoot = "Assets/Sammy/Audio";
     private const string OutputRoot = "Assets/Sammy/Animations/Player";
@@ -475,6 +475,13 @@ public static class PlayerAnimationAssetBuilder
             prefabChanged |= ConfigureCombatAudio(root, animationController);
             prefabChanged |= ConfigureBlockFeedback(root, health, spriteRenderer);
             prefabChanged |= ConfigureFootstepDust(root, rigidbody, movement, health);
+
+            // Purely visual and fully self-configuring, so it only has to exist.
+            if (root.GetComponent<CharacterDropShadow>() == null)
+            {
+                root.AddComponent<CharacterDropShadow>();
+                prefabChanged = true;
+            }
 
             if (prefabChanged)
                 PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabPath);

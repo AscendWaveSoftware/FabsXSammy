@@ -16,6 +16,8 @@ MonoBehaviour:
   Delivery: 0
   UiColor: {r: 0.72, g: 0.45, b: 1, a: 1}
   CastClip: {fileID: 0}
+  EmissiveMaterial: {fileID: 2100000, guid: 9f4c8b2e1a7d40539c6e0b3d85a1f724, type: 2}
+  EmissionIntensity: 2.6
   Frames:
   - {fileID: -74038244, guid: be203c0d45bdf9e4ab91726f8e6d78f1, type: 3}
   - {fileID: 1152421360, guid: be203c0d45bdf9e4ab91726f8e6d78f1, type: 3}

@@ -41,5 +41,16 @@ public class DebugKey : MonoBehaviour
 
         if (towerCamera != null)
             towerCamera.gameObject.SetActive(!_playerCameraActive);
+
+        // The arena holds still while the player studies the lane. Tower defence
+        // keeps running, so this cannot go through Time.timeScale.
+        PveRuntime.SetPaused(!_playerCameraActive);
+    }
+
+    private void OnDisable()
+    {
+        // Never leave the arena frozen behind, for example when the scene is torn
+        // down while the tower camera is up.
+        PveRuntime.SetPaused(false);
     }
 }

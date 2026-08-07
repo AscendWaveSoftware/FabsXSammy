@@ -91,12 +91,21 @@ public static class SpellNova
             damageScale *= _definition.ChainDamageFalloff;
             int jumpDamage = Mathf.Max(1, Mathf.RoundToInt(_definition.Damage * damageScale));
 
-            CombatGlowPuff.Show(targetPosition, _definition.ChainColor, 0.3f, 1f, 0.3f);
+            CombatGlowPuff.Show(
+                targetPosition,
+                _definition.ChainColor,
+                0.3f,
+                1f,
+                0.3f,
+                199,
+                _definition.EmissiveMaterial,
+                _definition.EmissionIntensity
+            );
             nextTarget.TakeDamage(jumpDamage, _playerResources);
         }
 
         if (ChainAnchors.Count >= 2)
-            SpellChainLightning.Show(ChainAnchors, _definition.ChainColor);
+            SpellChainLightning.Show(ChainAnchors, _definition.ChainColor, _definition);
 
         ChainedEnemies.Clear();
         ChainAnchors.Clear();
@@ -155,6 +164,15 @@ public static class SpellNova
             ? enemyCollider.bounds.center
             : _enemyStats.transform.position;
 
-        CombatGlowPuff.Show(sparkPosition, _definition.GlowColor, 0.35f, 1.1f, 0.4f);
+        CombatGlowPuff.Show(
+            sparkPosition,
+            _definition.GlowColor,
+            0.35f,
+            1.1f,
+            0.4f,
+            199,
+            _definition.EmissiveMaterial,
+            _definition.EmissionIntensity
+        );
     }
 }

@@ -160,6 +160,8 @@ public class PlayerCombatAudio : MonoBehaviour
 
     private void OnEnable()
     {
+        PveRuntime.PauseChanged += HandlePauseChanged;
+
         if (m_playerHealth != null)
             m_playerHealth.OnDamageBlocked += HandleDamageBlocked;
 
@@ -181,6 +183,8 @@ public class PlayerCombatAudio : MonoBehaviour
 
     private void OnDisable()
     {
+        PveRuntime.PauseChanged -= HandlePauseChanged;
+
         if (m_playerAnimation != null)
             m_playerAnimation.OnAttackSwingStarted -= HandleAttackSwingStarted;
 
@@ -196,12 +200,27 @@ public class PlayerCombatAudio : MonoBehaviour
 
     private void Update()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         // Audio ignores Time.timeScale, so the combat hit slow motion must not
         // stretch these fades out of sync with what the player hears.
         float unscaledDeltaTime = Time.unscaledDeltaTime;
 
         m_meleeVoice?.Update(unscaledDeltaTime);
         m_spellVoice?.Update(unscaledDeltaTime);
+    }
+
+    private void HandlePauseChanged(bool _paused)
+    {
+        // Cut rather than left hanging: a swing or spell ringing on while the
+        // player is looking at the towers would be the one thing they still hear
+        // from a frozen arena.
+        if (!_paused)
+            return;
+
+        m_meleeVoice?.StopAll();
+        m_spellVoice?.StopAll();
     }
 
     private void HandleAttackSwingStarted(int _comboStep)

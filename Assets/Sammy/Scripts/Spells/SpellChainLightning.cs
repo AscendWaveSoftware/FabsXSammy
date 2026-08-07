@@ -39,12 +39,16 @@ public class SpellChainLightning : MonoBehaviour
     /// Draws a bolt through the given world positions. The first entry is where
     /// the bolt starts, every following one is an enemy it arcs to.
     /// </summary>
-    public static void Show(IReadOnlyList<Vector3> _anchors, Color _color)
+    public static void Show(IReadOnlyList<Vector3> _anchors, Color _color, SpellDefinition _definition = null)
     {
         if (_anchors == null || _anchors.Count < 2)
             return;
 
-        Material lineMaterial = GetLineMaterial();
+        // The emissive material is preferred, because a LineRenderer's gradient is
+        // a vertex colour just like a sprite's and is clamped the same way.
+        Material lineMaterial = _definition != null && _definition.EmissiveMaterial != null
+            ? _definition.EmissiveMaterial
+            : GetLineMaterial();
 
         if (lineMaterial == null)
             return;
@@ -54,6 +58,9 @@ public class SpellChainLightning : MonoBehaviour
         SpellChainLightning bolt = GetOrCreate();
         bolt.gameObject.SetActive(true);
         bolt.Initialize(_color, lineMaterial);
+
+        if (_definition != null && _definition.EmissiveMaterial != null)
+            SpellEmission.Apply(bolt.m_lineRenderer, _definition);
     }
 
     private static SpellChainLightning GetOrCreate()
@@ -168,6 +175,10 @@ public class SpellChainLightning : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 

@@ -55,7 +55,7 @@ public class EnemyAttackTelegraph : MonoBehaviour
     private float m_staggerEndsAt;
     private bool m_isVisible;
 
-    private bool IsStaggerSignVisible => Time.time < m_staggerEndsAt;
+    private bool IsStaggerSignVisible => PveRuntime.Time < m_staggerEndsAt;
 
     private void Awake()
     {
@@ -84,8 +84,8 @@ public class EnemyAttackTelegraph : MonoBehaviour
         if (_duration <= 0f || m_staggerText == null)
             return;
 
-        m_staggerStartedAt = Time.time;
-        m_staggerEndsAt = Mathf.Max(m_staggerEndsAt, Time.time + _duration);
+        m_staggerStartedAt = PveRuntime.Time;
+        m_staggerEndsAt = Mathf.Max(m_staggerEndsAt, PveRuntime.Time + _duration);
         m_staggerText.gameObject.SetActive(true);
         UpdateStaggerSign();
     }
@@ -100,6 +100,9 @@ public class EnemyAttackTelegraph : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         UpdateStaggerVisibility();
 
         if (!m_isVisible)
@@ -320,13 +323,13 @@ public class EnemyAttackTelegraph : MonoBehaviour
         );
 
         // A lazy tilt back and forth sells "dazed" better than a rigid symbol.
-        float wobble = Mathf.Sin((Time.time - m_staggerStartedAt) * 8f) * 11f;
+        float wobble = Mathf.Sin((PveRuntime.Time - m_staggerStartedAt) * 8f) * 11f;
         staggerTransform.rotation *= Quaternion.Euler(0f, 0f, wobble);
     }
 
     private void UpdateStaggerSign()
     {
-        float elapsed = Time.time - m_staggerStartedAt;
+        float elapsed = PveRuntime.Time - m_staggerStartedAt;
         float pop = EaseOutBack(Mathf.Clamp01(elapsed / 0.16f));
         float bob = Mathf.Sin(elapsed * 6.5f) * 0.1f;
 

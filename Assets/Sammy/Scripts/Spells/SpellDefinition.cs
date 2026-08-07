@@ -40,6 +40,12 @@ public class SpellDefinition : ScriptableObject
     [Tooltip("Played once when the spell is cast. Optional, a spell without one stays silent.")]
     public AudioClip CastClip;
 
+    [Header("Emission")]
+    [Tooltip("Material with an HDR tint. Without one the spell renders as a plain sprite and can never reach the bloom threshold.")]
+    public Material EmissiveMaterial;
+    [Tooltip("How far past white the spell is pushed. Anything above the bloom threshold in the scene volume is what actually glows.")]
+    [Min(1f)] public float EmissionIntensity = 2.6f;
+
     [Header("Frames")]
     [Tooltip("Sliced sprite sheet, filled by the spell asset builder.")]
     public Sprite[] Frames;

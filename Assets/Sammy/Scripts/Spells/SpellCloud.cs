@@ -75,6 +75,10 @@ public class SpellCloud : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 
@@ -94,9 +98,9 @@ public class SpellCloud : MonoBehaviour
             ApplyFrame(targetFrame);
         }
 
-        if (Time.time >= m_nextTickTime)
+        if (PveRuntime.Time >= m_nextTickTime)
         {
-            m_nextTickTime = Time.time + m_definition.CloudTickInterval;
+            m_nextTickTime = PveRuntime.Time + m_definition.CloudTickInterval;
             PoisonEnemiesInside();
         }
     }
@@ -154,9 +158,10 @@ public class SpellCloud : MonoBehaviour
         m_visual.localScale = Vector3.one * scale;
         m_visual.localPosition = Vector3.up * (spriteHeight * scale * 0.5f + _definition.CloudGroundOffset);
 
+        SpellEmission.Apply(m_renderer, _definition);
         ApplyFrame(0);
 
-        m_nextTickTime = Time.time + _definition.CloudTickInterval;
+        m_nextTickTime = PveRuntime.Time + _definition.CloudTickInterval;
         PoisonEnemiesInside();
     }
 

@@ -12,6 +12,7 @@ public static class CombatFeedbackSprites
 
     private static Sprite s_ring;
     private static Sprite s_glow;
+    private static Sprite s_softShadow;
 
     /// <summary>Soft hollow ring, one world unit wide at scale 1.</summary>
     public static Sprite Ring
@@ -38,13 +39,29 @@ public static class CombatFeedbackSprites
     }
 
     /// <summary>
-    /// Builds both sprites up front. Generating them lazily would otherwise cost
+    /// Solid centre with a soft edge, one world unit wide at scale 1. The glow
+    /// profile is far too pointy for a shadow, which needs a readable core.
+    /// </summary>
+    public static Sprite SoftShadow
+    {
+        get
+        {
+            if (s_softShadow == null)
+                s_softShadow = CreateRadialSprite("Combat Feedback Shadow", SampleShadowAlpha);
+
+            return s_softShadow;
+        }
+    }
+
+    /// <summary>
+    /// Builds the sprites up front. Generating them lazily would otherwise cost
     /// a texture upload in the exact frame a block or a strike has to feel snappy.
     /// </summary>
     public static void Prewarm()
     {
         _ = Ring;
         _ = Glow;
+        _ = SoftShadow;
     }
 
     private static float SampleRingAlpha(float _normalizedDistance)
@@ -60,6 +77,17 @@ public static class CombatFeedbackSprites
     {
         float falloff = 1f - Mathf.Clamp01(_normalizedDistance);
         return falloff * falloff * falloff;
+    }
+
+    private static float SampleShadowAlpha(float _normalizedDistance)
+    {
+        // Flat out to the core radius, then a smooth edge. A shadow that fades
+        // from its very centre reads as a smudge rather than as ground contact,
+        // so the solid part carries most of the disc.
+        const float coreRadius = 0.5f;
+
+        float edge = 1f - Mathf.Clamp01((_normalizedDistance - coreRadius) / (1f - coreRadius));
+        return edge * edge * (3f - 2f * edge);
     }
 
     private static Sprite CreateRadialSprite(string _name, Func<float, float> _alphaProfile)

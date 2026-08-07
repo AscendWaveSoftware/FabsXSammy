@@ -87,7 +87,14 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
+        // Deliberately outside the pause guard: this owns Time.timeScale, and a
+        // hit slow motion left half applied would drag the tower defence side
+        // down to 72% speed for as long as the player stays on the other camera.
         UpdateHitSlowMotion();
+
+        if (PveRuntime.IsPaused)
+            return;
+
         UpdateBlockInput();
         UpdateBlockState();
     }
@@ -105,7 +112,9 @@ public class PlayerCombat : MonoBehaviour
 
     public void OnAttack(InputValue _value)
     {
-        if (!_value.isPressed || Time.timeScale <= 0f)
+        // The input system keeps delivering while the arena is paused, so the
+        // attack has to be turned away here rather than in Update.
+        if (!_value.isPressed || Time.timeScale <= 0f || PveRuntime.IsPaused)
             return;
 
         if (m_isBlocking)
@@ -238,6 +247,15 @@ public class PlayerCombat : MonoBehaviour
             m_blockRequiresRelease = false;
             StopBlocking(true);
         }
+
+        // A release that happened while the arena was paused, or while the window
+        // was out of focus, never arrives as an event. Without this the guard
+        // would stay up on its own until the block timer ran out.
+        else if (m_isBlocking && !mouse.rightButton.isPressed)
+        {
+            m_blockRequiresRelease = false;
+            StopBlocking(true);
+        }
     }
 
     private void UpdateBlockState()
@@ -254,7 +272,7 @@ public class PlayerCombat : MonoBehaviour
             return;
         }
 
-        if (Time.time >= m_blockEndsAt)
+        if (PveRuntime.Time >= m_blockEndsAt)
         {
             m_blockRequiresRelease = true;
             StopBlocking(true);
@@ -266,7 +284,7 @@ public class PlayerCombat : MonoBehaviour
         if (m_isBlocking)
             return true;
 
-        if (m_blockRequiresRelease || Time.timeScale <= 0f || Time.time < m_nextBlockAllowedAt ||
+        if (m_blockRequiresRelease || Time.timeScale <= 0f || PveRuntime.Time < m_nextBlockAllowedAt ||
             (m_playerHealth != null && !m_playerHealth.IsAlive) || m_playerAnimation == null)
         {
             return false;
@@ -276,7 +294,7 @@ public class PlayerCombat : MonoBehaviour
             return false;
 
         m_isBlocking = true;
-        m_blockEndsAt = Time.time + m_maxBlockDuration;
+        m_blockEndsAt = PveRuntime.Time + m_maxBlockDuration;
         return true;
     }
 
@@ -289,7 +307,7 @@ public class PlayerCombat : MonoBehaviour
         m_blockEndsAt = 0f;
 
         if (_startCooldown)
-            m_nextBlockAllowedAt = Mathf.Max(m_nextBlockAllowedAt, Time.time + m_blockCooldown);
+            m_nextBlockAllowedAt = Mathf.Max(m_nextBlockAllowedAt, PveRuntime.Time + m_blockCooldown);
 
         m_playerAnimation?.ReleaseBlock();
     }

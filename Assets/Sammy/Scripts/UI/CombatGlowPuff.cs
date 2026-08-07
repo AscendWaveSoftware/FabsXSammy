@@ -11,6 +11,7 @@ public class CombatGlowPuff : MonoBehaviour
     private static readonly Queue<CombatGlowPuff> Pool = new Queue<CombatGlowPuff>();
 
     private SpriteRenderer m_renderer;
+    private Material m_defaultMaterial;
     private Transform m_cameraTransform;
     private Color m_color;
     private float m_elapsedTime;
@@ -25,7 +26,9 @@ public class CombatGlowPuff : MonoBehaviour
         float _startDiameter,
         float _endDiameter,
         float _duration,
-        int _sortingOrder = 199)
+        int _sortingOrder = 199,
+        Material _emissiveMaterial = null,
+        float _emissionIntensity = 1f)
     {
         if (_duration <= 0f || _startDiameter <= 0f)
             return;
@@ -33,6 +36,20 @@ public class CombatGlowPuff : MonoBehaviour
         CombatGlowPuff puff = GetOrCreate();
         puff.gameObject.SetActive(true);
         puff.Initialize(_worldPosition, _color, _startDiameter, _endDiameter, _duration, _sortingOrder);
+        puff.ApplyEmission(_emissiveMaterial, _emissionIntensity);
+    }
+
+    /// <summary>
+    /// Pooled objects outlive the effect that spawned them, so a puff that once
+    /// carried a spell has to be put back on its plain material before something
+    /// else, like a poison tick, reuses it.
+    /// </summary>
+    private void ApplyEmission(Material _emissiveMaterial, float _emissionIntensity)
+    {
+        if (_emissiveMaterial != null)
+            SpellEmission.Apply(m_renderer, _emissiveMaterial, _emissionIntensity);
+        else
+            SpellEmission.Clear(m_renderer, m_defaultMaterial);
     }
 
     private static CombatGlowPuff GetOrCreate()
@@ -53,6 +70,7 @@ public class CombatGlowPuff : MonoBehaviour
     {
         m_renderer = gameObject.AddComponent<SpriteRenderer>();
         m_renderer.sprite = CombatFeedbackSprites.Glow;
+        m_defaultMaterial = m_renderer.sharedMaterial;
         m_renderer.shadowCastingMode = ShadowCastingMode.Off;
         m_renderer.receiveShadows = false;
         m_renderer.lightProbeUsage = LightProbeUsage.Off;
@@ -61,6 +79,10 @@ public class CombatGlowPuff : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 

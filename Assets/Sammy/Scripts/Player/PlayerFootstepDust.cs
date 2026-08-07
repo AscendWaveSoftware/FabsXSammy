@@ -99,6 +99,9 @@ public class PlayerFootstepDust : MonoBehaviour
 
     private void Update()
     {
+        if (PveRuntime.IsPaused)
+            return;
+
         UpdatePuffs();
         UpdateEmission();
     }

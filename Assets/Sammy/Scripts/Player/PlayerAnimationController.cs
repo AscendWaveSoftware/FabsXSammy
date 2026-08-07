@@ -66,6 +66,7 @@ public class PlayerAnimationController : MonoBehaviour
     private LocomotionState m_locomotionState;
     private float m_smoothedNormalizedSpeed;
     private float m_speedSmoothVelocity;
+    private float m_animatorSpeedBeforePause = 1f;
     private float m_stateElapsed;
     private int m_attackStep;
     private int m_bufferedAttackCount;
@@ -96,6 +97,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void OnEnable()
     {
+        PveRuntime.PauseChanged += HandlePauseChanged;
+
         if (m_health != null)
             m_health.OnDamageTaken += HandleDamageTaken;
 
@@ -118,6 +121,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void OnDisable()
     {
+        PveRuntime.PauseChanged -= HandlePauseChanged;
+
         if (m_health != null)
             m_health.OnDamageTaken -= HandleDamageTaken;
 
@@ -129,6 +134,11 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Update()
     {
+        // Held mid-swing rather than reset, so the combo resumes exactly where
+        // the player left it.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (m_animator == null || m_rigidbody == null)
             return;
 
@@ -146,6 +156,26 @@ public class PlayerAnimationController : MonoBehaviour
                 UpdateLocomotion();
                 break;
         }
+    }
+
+    /// <summary>
+    /// The Animator plays its clips on its own, entirely outside this script's
+    /// Update. Without stopping it the sprite would keep swinging while the
+    /// combat logic stands still, and the two would come back out of sync.
+    /// </summary>
+    private void HandlePauseChanged(bool _paused)
+    {
+        if (m_animator == null)
+            return;
+
+        if (_paused)
+        {
+            m_animatorSpeedBeforePause = m_animator.speed;
+            m_animator.speed = 0f;
+            return;
+        }
+
+        m_animator.speed = m_animatorSpeedBeforePause;
     }
 
     public bool RequestAttack()

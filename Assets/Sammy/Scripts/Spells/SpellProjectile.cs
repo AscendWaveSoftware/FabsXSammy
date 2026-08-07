@@ -72,6 +72,10 @@ public class SpellProjectile : MonoBehaviour
 
     private void Update()
     {
+        // Frozen with the arena while the player is on the tower camera.
+        if (PveRuntime.IsPaused)
+            return;
+
         if (!m_isRunning)
             return;
 
@@ -144,6 +148,9 @@ public class SpellProjectile : MonoBehaviour
         m_coreRenderer.sprite = _definition.ProjectileSprite;
         m_coreRenderer.color = Color.white;
         m_glowRenderer.color = _definition.GlowColor;
+
+        SpellEmission.Apply(m_coreRenderer, _definition);
+        SpellEmission.Apply(m_glowRenderer, _definition);
 
         // Sized before the first frame renders, otherwise the projectile would
         // flash at full size for one frame before the pop even starts.
@@ -220,7 +227,10 @@ public class SpellProjectile : MonoBehaviour
             m_definition.TrailColor,
             m_definition.GlowDiameter * 0.55f,
             m_definition.GlowDiameter * 0.1f,
-            m_definition.TrailLifetime
+            m_definition.TrailLifetime,
+            199,
+            m_definition.EmissiveMaterial,
+            m_definition.EmissionIntensity
         );
     }
 

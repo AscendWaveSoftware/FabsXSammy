@@ -59,9 +59,10 @@ public class EnemyMovement : MonoBehaviour
     private bool m_usesNavMesh;
     private Vector3 m_lastPosition;
     private Vector3 m_knockbackVelocity;
+    private Vector3 m_pausedVelocity;
     private float m_knockbackEndsAt;
 
-    public bool IsKnockedBack => Time.time < m_knockbackEndsAt;
+    public bool IsKnockedBack => PveRuntime.Time < m_knockbackEndsAt;
 
     /// <summary>
     /// Pushes this enemy away over a short moment. Goes through the NavMeshAgent
@@ -80,7 +81,7 @@ public class EnemyMovement : MonoBehaviour
             return;
 
         m_knockbackVelocity = flatDirection.normalized * (_distance / knockbackDuration);
-        m_knockbackEndsAt = Time.time + knockbackDuration;
+        m_knockbackEndsAt = PveRuntime.Time + knockbackDuration;
 
         // The agent steers along its own path every frame. Without dropping that
         // path first it would simply walk straight back through the push.
@@ -137,11 +138,53 @@ public class EnemyMovement : MonoBehaviour
     {
         FindPlayerTarget();
         m_usesNavMesh = TryInitializeNavMeshAgent();
+
+        // The agent only exists from here on, so an enemy that came into being
+        // during a pause still has to be told to hold still.
+        ApplyPauseState(PveRuntime.IsPaused);
+    }
+
+    private void OnEnable()
+    {
+        PveRuntime.PauseChanged += HandlePauseChanged;
+        ApplyPauseState(PveRuntime.IsPaused);
+    }
+
+    private void OnDisable()
+    {
+        PveRuntime.PauseChanged -= HandlePauseChanged;
+    }
+
+    private void HandlePauseChanged(bool _paused) => ApplyPauseState(_paused);
+
+    /// <summary>
+    /// An Update guard alone is not enough here: the NavMeshAgent walks its own
+    /// path and the rigidbody keeps its velocity, both without asking this
+    /// script. The path itself is kept, so the enemy simply carries on.
+    /// </summary>
+    private void ApplyPauseState(bool _paused)
+    {
+        if (m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
+            m_agent.isStopped = _paused;
+
+        if (m_rb == null || m_rb.isKinematic)
+            return;
+
+        if (_paused)
+        {
+            m_pausedVelocity = m_rb.linearVelocity;
+            m_rb.linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            m_rb.linearVelocity = m_pausedVelocity;
+            m_pausedVelocity = Vector3.zero;
+        }
     }
 
     private void FixedUpdate()
     {
-        if (m_usesNavMesh)
+        if (PveRuntime.IsPaused || m_usesNavMesh)
             return;
 
         // Checked before CanMove, because a knockback drives the movement itself
@@ -160,7 +203,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!m_usesNavMesh)
+        if (PveRuntime.IsPaused || !m_usesNavMesh)
             return;
 
         if (UpdateKnockback(Time.deltaTime))
@@ -207,8 +250,8 @@ public class EnemyMovement : MonoBehaviour
             maximumAttackDistance
         );
         m_personalStoppingDistance = Mathf.Max(0.2f, m_personalStoppingDistance);
-        m_nextRepathTime = Time.time + Random.Range(0f, repathInterval);
-        m_lastFormationUpdateTime = Time.time;
+        m_nextRepathTime = PveRuntime.Time + Random.Range(0f, repathInterval);
+        m_lastFormationUpdateTime = PveRuntime.Time;
     }
 
     private void FindPlayerTarget()
@@ -291,12 +334,12 @@ public class EnemyMovement : MonoBehaviour
 
         UpdateStuckRecovery(m_agent.velocity);
 
-        if (Time.time < m_nextRepathTime)
+        if (PveRuntime.Time < m_nextRepathTime)
             return;
 
-        m_nextRepathTime = Time.time + repathInterval * Random.Range(0.8f, 1.2f);
-        float formationDeltaTime = Time.time - m_lastFormationUpdateTime;
-        m_lastFormationUpdateTime = Time.time;
+        m_nextRepathTime = PveRuntime.Time + repathInterval * Random.Range(0.8f, 1.2f);
+        float formationDeltaTime = PveRuntime.Time - m_lastFormationUpdateTime;
+        m_lastFormationUpdateTime = PveRuntime.Time;
         Vector3 destination = CalculateDesiredDestination(formationDeltaTime);
 
         if (NavMesh.SamplePosition(destination, out NavMeshHit targetHit, navMeshSampleRadius, m_agent.areaMask))
@@ -311,12 +354,12 @@ public class EnemyMovement : MonoBehaviour
         toPlayer.y = 0f;
         float distanceToPlayer = toPlayer.magnitude;
 
-        if (distanceToPlayer <= orbitActivationDistance || Time.time < m_recoveryUntil)
+        if (distanceToPlayer <= orbitActivationDistance || PveRuntime.Time < m_recoveryUntil)
             m_formationAngle = Mathf.Repeat(m_formationAngle + m_orbitDirection * m_orbitSpeed * _deltaTime, 360f);
 
         float extraSpread = Mathf.Clamp(distanceToPlayer - orbitActivationDistance, 0f, maximumApproachSpread);
 
-        if (Time.time < m_recoveryUntil)
+        if (PveRuntime.Time < m_recoveryUntil)
             extraSpread = Mathf.Max(extraSpread, separationRadius);
 
         float angleInRadians = m_formationAngle * Mathf.Deg2Rad;
@@ -345,7 +388,7 @@ public class EnemyMovement : MonoBehaviour
             m_formationAngle + m_orbitDirection * Random.Range(75f, 135f),
             360f
         );
-        m_recoveryUntil = Time.time + Random.Range(0.8f, 1.25f);
+        m_recoveryUntil = PveRuntime.Time + Random.Range(0.8f, 1.25f);
         m_nextRepathTime = 0f;
     }
 
@@ -431,7 +474,7 @@ public class EnemyMovement : MonoBehaviour
         {
             float signedAngle = s_probeAngleOffsets[i];
 
-            if (Time.time < m_recoveryUntil && signedAngle != 0f)
+            if (PveRuntime.Time < m_recoveryUntil && signedAngle != 0f)
                 signedAngle = Mathf.Abs(signedAngle) * m_orbitDirection;
 
             Vector3 candidate = Quaternion.Euler(0f, signedAngle, 0f) * _desiredDirection;
@@ -498,7 +541,7 @@ public class EnemyMovement : MonoBehaviour
         m_stuckTimer = 0f;
         m_orbitDirection *= -1;
         m_formationAngle = Mathf.Repeat(m_formationAngle + m_orbitDirection * 100f, 360f);
-        m_recoveryUntil = Time.time + 1f;
+        m_recoveryUntil = PveRuntime.Time + 1f;
     }
 
     private void StopMoving()
