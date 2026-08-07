@@ -4,12 +4,12 @@ using UnityEngine;
 public class PlayerUpgradeHandler : MonoBehaviour
 {
     [Header("Spell Cards")]
-    [SerializeField, Tooltip("Cards that unlock the player's own spells. Kept here rather than in the scene pool so they stay in sync with the spell slots.")]
-    private UpgradeDefinition[] m_spellUnlockUpgrades;
+    [SerializeField, Tooltip("Cards that unlock and strengthen the player's own spells. Kept here rather than in the scene pool so they stay in sync with the spell slots.")]
+    private UpgradeDefinition[] m_spellUpgrades;
 
     /// <summary>Upgrades the player brings along on top of the scene's pool.</summary>
-    public IReadOnlyList<UpgradeDefinition> SpellUnlockUpgrades =>
-        m_spellUnlockUpgrades ?? System.Array.Empty<UpgradeDefinition>();
+    public IReadOnlyList<UpgradeDefinition> SpellUpgrades =>
+        m_spellUpgrades ?? System.Array.Empty<UpgradeDefinition>();
 
     [Header("References")]
     [SerializeField] private PlayerMovementHandler m_playerMovementHandler;
@@ -27,10 +27,19 @@ public class PlayerUpgradeHandler : MonoBehaviour
         if (_upgrade == null)
             return false;
 
-        if (_upgrade.UpgradeType != UpgradeType.UNLOCKSPELL)
-            return true;
+        switch (_upgrade.UpgradeType)
+        {
+            case UpgradeType.UNLOCKSPELL:
+                return m_playerSpellCaster != null && m_playerSpellCaster.CanUnlock(_upgrade.Spell);
 
-        return m_playerSpellCaster != null && m_playerSpellCaster.CanUnlock(_upgrade.SpellToUnlock);
+            // A card that strengthens a spell the player cannot even cast yet
+            // would be a wasted pick, so it stays out until the spell is owned.
+            case UpgradeType.SPELLPOWER:
+                return m_playerSpellCaster != null && m_playerSpellCaster.IsSpellUnlocked(_upgrade.Spell);
+
+            default:
+                return true;
+        }
     }
 
     private void Awake()
@@ -85,7 +94,10 @@ public class PlayerUpgradeHandler : MonoBehaviour
                 m_playerExperience?.AddExperienceGain(_upgrade.Value);
                 break;
             case UpgradeType.UNLOCKSPELL:
-                m_playerSpellCaster?.UnlockSpell(_upgrade.SpellToUnlock);
+                m_playerSpellCaster?.UnlockSpell(_upgrade.Spell);
+                break;
+            case UpgradeType.SPELLPOWER:
+                m_playerSpellCaster?.UpgradeSpell(_upgrade.Spell, _upgrade.SpellStat, _upgrade.Value);
                 break;
         }
 

@@ -28,12 +28,47 @@ public class PlayerSpellCaster : MonoBehaviour
     private readonly bool[] m_hasLoggedUnusableSpell = new bool[SpellSlotCount];
     private readonly bool[] m_unlockedSlots = new bool[SpellSlotCount];
 
+    private SpellDefinition[] m_runtimeSpells;
+
     /// <summary>Raised when a slot becomes available, so the HUD can show it.</summary>
     public event System.Action<int> OnSpellUnlocked;
 
-    /// <summary>Spell in a slot, or null when the slot is empty.</summary>
+    /// <summary>
+    /// Raised when a spell was actually cast, carrying the upgraded runtime copy.
+    /// Audio and other reactions hang off this rather than polling.
+    /// </summary>
+    public event System.Action<SpellDefinition> OnSpellCast;
+
+    /// <summary>
+    /// Upgraded runtime copy of the spell in a slot, or null when the slot is
+    /// empty. Never the asset, so upgrades cannot leak into the project files.
+    /// </summary>
     public SpellDefinition GetSpell(int _slotIndex) =>
-        m_spells != null && _slotIndex >= 0 && _slotIndex < m_spells.Length ? m_spells[_slotIndex] : null;
+        m_runtimeSpells != null && _slotIndex >= 0 && _slotIndex < m_runtimeSpells.Length
+            ? m_runtimeSpells[_slotIndex]
+            : null;
+
+    /// <summary>True once the card for this spell asset has been taken.</summary>
+    public bool IsSpellUnlocked(SpellDefinition _spellAsset)
+    {
+        int slotIndex = FindSlot(_spellAsset);
+        return slotIndex >= 0 && m_unlockedSlots[slotIndex];
+    }
+
+    /// <summary>
+    /// Improves a spell the player already owns. Applied to the runtime copy, so
+    /// the change lasts exactly as long as the run does.
+    /// </summary>
+    public bool UpgradeSpell(SpellDefinition _spellAsset, SpellStat _stat, float _value)
+    {
+        int slotIndex = FindSlot(_spellAsset);
+
+        if (slotIndex < 0 || !m_unlockedSlots[slotIndex] || m_runtimeSpells[slotIndex] == null)
+            return false;
+
+        m_runtimeSpells[slotIndex].ApplyStatUpgrade(_stat, _value);
+        return true;
+    }
 
     public bool IsSlotUnlocked(int _slotIndex) =>
         _slotIndex >= 0 && _slotIndex < m_unlockedSlots.Length && m_unlockedSlots[_slotIndex];
@@ -58,18 +93,56 @@ public class PlayerSpellCaster : MonoBehaviour
         return true;
     }
 
-    private int FindLockedSlot(SpellDefinition _spell)
+    private int FindLockedSlot(SpellDefinition _spellAsset)
     {
-        if (_spell == null || m_spells == null)
+        int slotIndex = FindSlot(_spellAsset);
+        return slotIndex >= 0 && !m_unlockedSlots[slotIndex] ? slotIndex : -1;
+    }
+
+    /// <summary>
+    /// Slot holding this asset. Matched against the assets rather than the
+    /// runtime copies, because upgrade cards reference the assets.
+    /// </summary>
+    private int FindSlot(SpellDefinition _spellAsset)
+    {
+        if (_spellAsset == null || m_spells == null)
             return -1;
 
         for (int i = 0; i < m_spells.Length && i < m_unlockedSlots.Length; i++)
         {
-            if (m_spells[i] == _spell && !m_unlockedSlots[i])
+            if (m_spells[i] == _spellAsset)
                 return i;
         }
 
         return -1;
+    }
+
+    private void CreateRuntimeSpells()
+    {
+        m_runtimeSpells = new SpellDefinition[m_spells != null ? m_spells.Length : 0];
+
+        for (int i = 0; i < m_runtimeSpells.Length; i++)
+        {
+            if (m_spells[i] == null)
+                continue;
+
+            // Cloned once at startup. Upgrades write into this copy, and writing
+            // into the asset instead would persist the change in the project.
+            m_runtimeSpells[i] = Instantiate(m_spells[i]);
+            m_runtimeSpells[i].name = m_spells[i].name;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (m_runtimeSpells == null)
+            return;
+
+        foreach (SpellDefinition runtimeSpell in m_runtimeSpells)
+        {
+            if (runtimeSpell != null)
+                Destroy(runtimeSpell);
+        }
     }
 
     private void Awake()
@@ -85,6 +158,8 @@ public class PlayerSpellCaster : MonoBehaviour
 
         if (m_movement == null)
             m_movement = GetComponent<PlayerMovementHandler>();
+
+        CreateRuntimeSpells();
     }
 
     private void Update()
@@ -122,10 +197,9 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private void TryCast(int _slotIndex)
     {
-        if (m_spells == null || _slotIndex < 0 || _slotIndex >= m_spells.Length)
-            return;
-
-        SpellDefinition spell = m_spells[_slotIndex];
+        // The runtime copy, not the asset. Everything the cast reads has to be
+        // the upgraded values.
+        SpellDefinition spell = GetSpell(_slotIndex);
 
         if (spell == null)
             return;
@@ -162,8 +236,11 @@ public class PlayerSpellCaster : MonoBehaviour
             _ => CastProjectile(spell, target)
         };
 
-        if (wasCast)
-            m_nextCastTime[_slotIndex] = Time.time + spell.Cooldown;
+        if (!wasCast)
+            return;
+
+        m_nextCastTime[_slotIndex] = Time.time + spell.Cooldown;
+        OnSpellCast?.Invoke(spell);
     }
 
     private bool CastNova(SpellDefinition _spell)

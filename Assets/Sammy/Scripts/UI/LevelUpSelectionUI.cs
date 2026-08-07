@@ -350,7 +350,7 @@ public class LevelUpSelectionUI : MonoBehaviour
         if (m_playerUpgradeHandler == null)
             yield break;
 
-        foreach (UpgradeDefinition upgrade in m_playerUpgradeHandler.SpellUnlockUpgrades)
+        foreach (UpgradeDefinition upgrade in m_playerUpgradeHandler.SpellUpgrades)
             yield return upgrade;
     }
 

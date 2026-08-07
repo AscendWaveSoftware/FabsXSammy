@@ -12,6 +12,9 @@ public class UpgradeDefinition : ScriptableObject
     public UpgradeType UpgradeType;
     public float Value;
 
-    [Tooltip("Only used by UNLOCKSPELL. The spell this card hands to the player.")]
-    public SpellDefinition SpellToUnlock;
+    [Header("Spell Cards")]
+    [Tooltip("Used by UNLOCKSPELL and SPELLPOWER. The spell asset this card refers to.")]
+    public SpellDefinition Spell;
+    [Tooltip("Only used by SPELLPOWER. Which value of the spell the card improves. For Cooldown, Value is the reduction.")]
+    public SpellStat SpellStat;
 }

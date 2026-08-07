@@ -2,12 +2,113 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 /// <summary>
-/// All combat sounds the player makes. They share one voice on purpose, so a
-/// swing and a block can never talk over each other.
+/// All combat sounds the player makes, split across two independent voices.
+/// Melee holds the short, constant sounds; spells hold the long, rare ones. Each
+/// voice only ever plays one clip, but they never cut each other, so a sword
+/// swing cannot silence a spell that is still ringing out.
 /// </summary>
 [DisallowMultipleComponent]
 public class PlayerCombatAudio : MonoBehaviour
 {
+    /// <summary>
+    /// One audible slot. A second source takes over whatever was still running
+    /// and fades it, which keeps a cut free of clicks without ever letting two
+    /// clips play at full volume.
+    /// </summary>
+    private sealed class AudioVoice
+    {
+        private readonly AudioSource m_source;
+        private readonly AudioSource m_cutOffSource;
+        private float m_cutOffDuration;
+        private float m_cutOffRemaining;
+        private float m_cutOffStartVolume;
+
+        public AudioVoice(AudioSource _source, AudioSource _cutOffSource)
+        {
+            m_source = _source;
+            m_cutOffSource = _cutOffSource;
+        }
+
+        public void Play(AudioClip _clip, float _volume, float _pitch, float _cutOffFade)
+        {
+            if (_clip == null || m_source == null)
+                return;
+
+            CutOffRunningClip(_cutOffFade);
+
+            m_source.clip = _clip;
+            m_source.volume = _volume;
+            m_source.pitch = _pitch;
+            m_source.Play();
+        }
+
+        public void Update(float _unscaledDeltaTime)
+        {
+            if (m_cutOffRemaining <= 0f)
+                return;
+
+            m_cutOffRemaining -= _unscaledDeltaTime;
+
+            if (m_cutOffRemaining <= 0f)
+            {
+                StopCutOffClip();
+                return;
+            }
+
+            if (m_cutOffSource != null)
+                m_cutOffSource.volume = m_cutOffStartVolume * (m_cutOffRemaining / m_cutOffDuration);
+        }
+
+        public void StopAll()
+        {
+            if (m_source != null)
+            {
+                m_source.Stop();
+                m_source.clip = null;
+            }
+
+            StopCutOffClip();
+        }
+
+        private void CutOffRunningClip(float _cutOffFade)
+        {
+            if (!m_source.isPlaying)
+                return;
+
+            AudioClip runningClip = m_source.clip;
+
+            if (_cutOffFade <= 0f || m_cutOffSource == null || runningClip == null)
+            {
+                m_source.Stop();
+                return;
+            }
+
+            StopCutOffClip();
+            m_cutOffSource.clip = runningClip;
+            m_cutOffSource.pitch = m_source.pitch;
+            m_cutOffSource.volume = m_source.volume;
+            m_cutOffSource.timeSamples = Mathf.Clamp(m_source.timeSamples, 0, runningClip.samples - 1);
+            m_cutOffSource.Play();
+
+            m_cutOffStartVolume = m_cutOffSource.volume;
+            m_cutOffDuration = _cutOffFade;
+            m_cutOffRemaining = _cutOffFade;
+            m_source.Stop();
+        }
+
+        private void StopCutOffClip()
+        {
+            m_cutOffRemaining = 0f;
+            m_cutOffDuration = 0f;
+
+            if (m_cutOffSource == null)
+                return;
+
+            m_cutOffSource.Stop();
+            m_cutOffSource.clip = null;
+        }
+    }
+
     [Header("Swing Clips")]
     [SerializeField, Tooltip("One clip per combo step. Index 0 belongs to Attack1, index 1 to Attack2, index 2 to Attack3.")]
     private AudioClip[] m_swingClips = new AudioClip[PlayerAnimationController.ComboStepCount];
@@ -18,25 +119,26 @@ public class PlayerCombatAudio : MonoBehaviour
     [SerializeField, Min(0f), Tooltip("Several enemies can land on the guard in the same moment. Blocks closer together than this share a single sound.")]
     private float m_minimumBlockInterval = 0.09f;
 
+    [Header("Spells")]
+    [SerializeField, Range(0f, 1f)] private float m_spellVolume = 0.9f;
+
     [Header("Playback")]
     [SerializeField] private AudioMixerGroup m_outputMixerGroup;
     [SerializeField, Range(0f, 1f)] private float m_volume = 0.8f;
-    [SerializeField, Range(0f, 0.25f), Tooltip("Random pitch offset so repeated swings do not sound identical.")]
+    [SerializeField, Range(0f, 0.25f), Tooltip("Random pitch offset so repeated swings do not sound identical. Spells are left unpitched.")]
     private float m_pitchVariation = 0.05f;
-    [SerializeField, Range(0f, 1f), Tooltip("0 keeps the swing fully 2D, which suits the player's own weapon.")]
+    [SerializeField, Range(0f, 1f), Tooltip("0 keeps the sound fully 2D, which suits the player's own actions.")]
     private float m_spatialBlend;
-    [SerializeField, Min(0f), Tooltip("Fade applied to a running swing when the next combo swing cuts it off.")]
+    [SerializeField, Min(0f), Tooltip("Fade applied to a running clip when the next one cuts it off.")]
     private float m_cutOffFade = 0.06f;
 
     [Header("References")]
     [SerializeField] private PlayerAnimationController m_playerAnimation;
     [SerializeField] private PlayerHealth m_playerHealth;
+    [SerializeField] private PlayerSpellCaster m_playerSpellCaster;
 
-    private AudioSource m_combatSource;
-    private AudioSource m_cutOffSource;
-    private float m_cutOffDuration;
-    private float m_cutOffRemaining;
-    private float m_cutOffStartVolume;
+    private AudioVoice m_meleeVoice;
+    private AudioVoice m_spellVoice;
     private float m_nextBlockSoundTime;
     private bool m_hasLoggedMissingClip;
     private bool m_hasLoggedMissingAnimationController;
@@ -49,14 +151,20 @@ public class PlayerCombatAudio : MonoBehaviour
         if (m_playerHealth == null)
             m_playerHealth = GetComponent<PlayerHealth>();
 
-        m_combatSource = CreateCombatSource();
-        m_cutOffSource = CreateCombatSource();
+        if (m_playerSpellCaster == null)
+            m_playerSpellCaster = GetComponent<PlayerSpellCaster>();
+
+        m_meleeVoice = new AudioVoice(CreateCombatSource(), CreateCombatSource());
+        m_spellVoice = new AudioVoice(CreateCombatSource(), CreateCombatSource());
     }
 
     private void OnEnable()
     {
         if (m_playerHealth != null)
             m_playerHealth.OnDamageBlocked += HandleDamageBlocked;
+
+        if (m_playerSpellCaster != null)
+            m_playerSpellCaster.OnSpellCast += HandleSpellCast;
 
         if (m_playerAnimation != null)
         {
@@ -79,31 +187,26 @@ public class PlayerCombatAudio : MonoBehaviour
         if (m_playerHealth != null)
             m_playerHealth.OnDamageBlocked -= HandleDamageBlocked;
 
-        StopCombatAudio();
+        if (m_playerSpellCaster != null)
+            m_playerSpellCaster.OnSpellCast -= HandleSpellCast;
+
+        m_meleeVoice?.StopAll();
+        m_spellVoice?.StopAll();
     }
 
     private void Update()
     {
-        if (m_cutOffRemaining <= 0f)
-            return;
-
         // Audio ignores Time.timeScale, so the combat hit slow motion must not
-        // stretch this fade out of sync with what the player hears.
-        m_cutOffRemaining -= Time.unscaledDeltaTime;
+        // stretch these fades out of sync with what the player hears.
+        float unscaledDeltaTime = Time.unscaledDeltaTime;
 
-        if (m_cutOffRemaining <= 0f)
-        {
-            StopCutOffClip();
-            return;
-        }
-
-        if (m_cutOffSource != null)
-            m_cutOffSource.volume = m_cutOffStartVolume * (m_cutOffRemaining / m_cutOffDuration);
+        m_meleeVoice?.Update(unscaledDeltaTime);
+        m_spellVoice?.Update(unscaledDeltaTime);
     }
 
     private void HandleAttackSwingStarted(int _comboStep)
     {
-        PlayCombatClip(GetSwingClip(_comboStep), m_volume);
+        m_meleeVoice.Play(GetSwingClip(_comboStep), m_volume, GetVariedPitch(), m_cutOffFade);
     }
 
     private void HandleDamageBlocked(int _blockedDamage, Vector3 _attackerPosition)
@@ -118,76 +221,22 @@ public class PlayerCombatAudio : MonoBehaviour
             return;
 
         m_nextBlockSoundTime = Time.unscaledTime + m_minimumBlockInterval;
-        PlayCombatClip(m_blockClip, m_blockVolume);
+        m_meleeVoice.Play(m_blockClip, m_blockVolume, GetVariedPitch(), m_cutOffFade);
     }
 
-    private void PlayCombatClip(AudioClip _clip, float _volume)
+    private void HandleSpellCast(SpellDefinition _spell)
     {
-        if (_clip == null || m_combatSource == null)
+        if (_spell == null || _spell.CastClip == null)
             return;
 
-        // A combat clip outlasts the action that triggered it, so whatever is
-        // still running has to give way. Exactly one is ever audible.
-        CutOffRunningClip();
-
-        m_combatSource.clip = _clip;
-        m_combatSource.volume = _volume;
-        m_combatSource.pitch = m_pitchVariation > 0f
-            ? 1f + Random.Range(-m_pitchVariation, m_pitchVariation)
-            : 1f;
-        m_combatSource.Play();
+        // Played at a fixed pitch. A wavering pitch on a long magical sound reads
+        // as a broken tape, not as variation.
+        m_spellVoice.Play(_spell.CastClip, m_spellVolume, 1f, m_cutOffFade);
     }
 
-    private void CutOffRunningClip()
-    {
-        if (!m_combatSource.isPlaying)
-            return;
-
-        AudioClip runningClip = m_combatSource.clip;
-
-        if (m_cutOffFade <= 0f || m_cutOffSource == null || runningClip == null)
-        {
-            m_combatSource.Stop();
-            return;
-        }
-
-        // Handing the running clip over to the second source keeps the cut free
-        // of clicks without ever letting two clips play at full volume.
-        StopCutOffClip();
-        m_cutOffSource.clip = runningClip;
-        m_cutOffSource.pitch = m_combatSource.pitch;
-        m_cutOffSource.volume = m_combatSource.volume;
-        m_cutOffSource.timeSamples = Mathf.Clamp(m_combatSource.timeSamples, 0, runningClip.samples - 1);
-        m_cutOffSource.Play();
-
-        m_cutOffStartVolume = m_cutOffSource.volume;
-        m_cutOffDuration = m_cutOffFade;
-        m_cutOffRemaining = m_cutOffFade;
-        m_combatSource.Stop();
-    }
-
-    private void StopCombatAudio()
-    {
-        if (m_combatSource != null)
-        {
-            m_combatSource.Stop();
-            m_combatSource.clip = null;
-        }
-
-        StopCutOffClip();
-    }
-
-    private void StopCutOffClip()
-    {
-        m_cutOffRemaining = 0f;
-        m_cutOffDuration = 0f;
-
-        if (m_cutOffSource == null)
-            return;
-
-        m_cutOffSource.Stop();
-        m_cutOffSource.clip = null;
-    }
+    private float GetVariedPitch() => m_pitchVariation > 0f
+        ? 1f + Random.Range(-m_pitchVariation, m_pitchVariation)
+        : 1f;
 
     private AudioClip GetSwingClip(int _comboStep)
     {

@@ -15,6 +15,7 @@ MonoBehaviour:
   SpellName: Astral
   Delivery: 0
   UiColor: {r: 0.72, g: 0.45, b: 1, a: 1}
+  CastClip: {fileID: 0}
   Frames:
   - {fileID: -74038244, guid: be203c0d45bdf9e4ab91726f8e6d78f1, type: 3}
   - {fileID: 1152421360, guid: be203c0d45bdf9e4ab91726f8e6d78f1, type: 3}

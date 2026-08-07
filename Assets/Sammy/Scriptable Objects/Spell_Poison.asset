@@ -15,6 +15,7 @@ MonoBehaviour:
   SpellName: Poison
   Delivery: 1
   UiColor: {r: 0.45, g: 0.95, b: 0.3, a: 1}
+  CastClip: {fileID: 8300000, guid: e90b2e9440de60846a181c4aa5d0ab9d, type: 3}
   Frames:
   - {fileID: -1411907229, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}
   - {fileID: 1105885459, guid: 79b15c4784e412f4fa72f86f8e3a5715, type: 3}

@@ -9,7 +9,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class PlayerAnimationAssetBuilder
 {
-    private const string SessionKey = "Sammy.PlayerAnimationAssets.V10";
+    private const string SessionKey = "Sammy.PlayerAnimationAssets.V11";
     private const string TextureRoot = "Assets/Sammy/Textures/Player";
     private const string AudioRoot = "Assets/Sammy/Audio";
     private const string OutputRoot = "Assets/Sammy/Animations/Player";
@@ -499,6 +499,7 @@ public static class PlayerAnimationAssetBuilder
         SerializedObject serializedCombatAudio = new(combatAudio);
         prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerAnimation"), _animationController);
         prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerHealth"), _root.GetComponent<PlayerHealth>());
+        prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_playerSpellCaster"), _root.GetComponent<PlayerSpellCaster>());
         prefabChanged |= SetObjectReference(serializedCombatAudio.FindProperty("m_blockClip"), LoadCombatClip(BlockClipPath));
 
         SerializedProperty swingClips = serializedCombatAudio.FindProperty("m_swingClips");

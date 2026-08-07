@@ -13,9 +13,10 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class SpellAssetBuilder
 {
-    private const string SessionKey = "Sammy.SpellAssets.V4";
+    private const string SessionKey = "Sammy.SpellAssets.V5";
     private const string TextureRoot = "Assets/Sammy/Textures/Spells";
     private const string SpellAssetRoot = "Assets/Sammy/Scriptable Objects";
+    private const string AudioRoot = "Assets/Sammy/Audio";
     private const string PlayerPrefabPath = "Assets/Sammy/Prefabs/Player.prefab";
     private const float PixelsPerUnit = 100f;
 
@@ -35,6 +36,9 @@ public static class SpellAssetBuilder
         public int SlotIndex { get; }
         public string TexturePath => $"{TextureRoot}/{FileName}.png";
         public string AssetPath => $"{SpellAssetRoot}/Spell_{SpellName}.asset";
+
+        // Optional by convention: a spell without a matching file stays silent.
+        public string CastClipPath => $"{AudioRoot}/{SpellName}_Spell.wav";
     }
 
     private static readonly SpellSheet[] Sheets =
@@ -253,6 +257,14 @@ public static class SpellAssetBuilder
 
         for (int i = 0; i < frames.Length; i++)
             frameArray.GetArrayElementAtIndex(i).objectReferenceValue = frames[i];
+
+        // Wired only when a clip with the matching name exists, so a spell that
+        // has no sound yet keeps its empty field instead of erroring out.
+        AudioClip castClip = AssetDatabase.LoadAssetAtPath<AudioClip>(_sheet.CastClipPath);
+        SerializedProperty castClipProperty = serializedSpell.FindProperty(nameof(SpellDefinition.CastClip));
+
+        if (castClip != null && castClipProperty != null && castClipProperty.objectReferenceValue != castClip)
+            castClipProperty.objectReferenceValue = castClip;
 
         if (serializedSpell.hasModifiedProperties)
         {

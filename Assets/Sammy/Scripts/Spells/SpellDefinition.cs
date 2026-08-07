@@ -13,6 +13,17 @@ public enum SpellDelivery
     Nova
 }
 
+/// <summary>A single value a spell upgrade card can improve.</summary>
+public enum SpellStat
+{
+    Damage,
+    Radius,
+    Cooldown,
+    PoisonDamage,
+    PoisonDuration,
+    StunDuration
+}
+
 /// <summary>
 /// Data for a single castable spell. The sprite sheet is split into a travelling
 /// projectile frame and the impact frames that play where the spell detonates.
@@ -26,6 +37,8 @@ public class SpellDefinition : ScriptableObject
     public SpellDelivery Delivery = SpellDelivery.Projectile;
     [Tooltip("Accent colour used by the HUD slot for this spell.")]
     public Color UiColor = new(0.72f, 0.45f, 1f, 1f);
+    [Tooltip("Played once when the spell is cast. Optional, a spell without one stays silent.")]
+    public AudioClip CastClip;
 
     [Header("Frames")]
     [Tooltip("Sliced sprite sheet, filled by the spell asset builder.")]
@@ -121,6 +134,38 @@ public class SpellDefinition : ScriptableObject
     }
 
     public Sprite GetImpactFrame(int _impactIndex) => GetFrame(ImpactStartFrame + _impactIndex);
+
+    /// <summary>
+    /// Improves one value of this spell. Only ever call this on the runtime copy
+    /// held by <see cref="PlayerSpellCaster"/>: writing to the asset itself would
+    /// bake the upgrade into the project file and survive leaving play mode.
+    /// </summary>
+    public void ApplyStatUpgrade(SpellStat _stat, float _value)
+    {
+        switch (_stat)
+        {
+            case SpellStat.Damage:
+                Damage = Mathf.Max(1, Damage + Mathf.RoundToInt(_value));
+                break;
+            case SpellStat.Radius:
+                ImpactRadius = Mathf.Max(0.1f, ImpactRadius + _value);
+                break;
+            case SpellStat.Cooldown:
+                // A positive value shortens the cooldown, which is what an upgrade
+                // card means by "faster".
+                Cooldown = Mathf.Max(0.25f, Cooldown - _value);
+                break;
+            case SpellStat.PoisonDamage:
+                PoisonDamagePerTick = Mathf.Max(0, PoisonDamagePerTick + Mathf.RoundToInt(_value));
+                break;
+            case SpellStat.PoisonDuration:
+                PoisonDuration = Mathf.Max(0f, PoisonDuration + _value);
+                break;
+            case SpellStat.StunDuration:
+                NovaStunDuration = Mathf.Max(0f, NovaStunDuration + _value);
+                break;
+        }
+    }
 
     private Sprite GetFrame(int _index) =>
         Frames != null && _index >= 0 && _index < Frames.Length ? Frames[_index] : null;

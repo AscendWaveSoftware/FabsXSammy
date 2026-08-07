@@ -18,4 +18,5 @@ MonoBehaviour:
   Icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   UpgradeType: 10
   Value: 0
-  SpellToUnlock: {fileID: 11400000, guid: 1d1eb61b95e8415a85566a05be8e4f31, type: 2}
+  Spell: {fileID: 11400000, guid: 1d1eb61b95e8415a85566a05be8e4f31, type: 2}
+  SpellStat: 0

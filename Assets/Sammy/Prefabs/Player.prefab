@@ -417,10 +417,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 318a1150739ad6d4eade85f33378c771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgradeHandler
-  m_spellUnlockUpgrades:
+  m_spellUpgrades:
   - {fileID: 11400000, guid: 5c3d3647cadc47949425f9c81561357c, type: 2}
   - {fileID: 11400000, guid: 4fa59b09572e44a0af6f70a5e23c427c, type: 2}
   - {fileID: 11400000, guid: ced8fc6b117a4c04974d680a414e5af8, type: 2}
+  - {fileID: 11400000, guid: 134e34bd4cdc43c59f8b1f29901ccd20, type: 2}
+  - {fileID: 11400000, guid: 5a961271af4b446aa3c6bf909baaecef, type: 2}
+  - {fileID: 11400000, guid: 1d553e5095ca475c9cad5082858601a8, type: 2}
+  - {fileID: 11400000, guid: 2a48e3c2f987469db9faf0154370bb0e, type: 2}
+  - {fileID: 11400000, guid: 0468ca06a1e440088430a2da5be4a194, type: 2}
+  - {fileID: 11400000, guid: b4e12b4634d047caaa3ead43c5e0bfd5, type: 2}
+  - {fileID: 11400000, guid: fa0c30cb7ccb4ff488fbc920da1a217e, type: 2}
+  - {fileID: 11400000, guid: 63fcceb5a4e540e3b1313093d8e84e02, type: 2}
+  - {fileID: 11400000, guid: 181f17469d474ba58478a392193418c1, type: 2}
   m_playerMovementHandler: {fileID: 7453557029405839637}
   m_playerHealth: {fileID: 2666698548747110859}
   m_playerCombat: {fileID: 5135860194248459096}
@@ -515,6 +524,7 @@ MonoBehaviour:
   m_blockClip: {fileID: 8300000, guid: 1ab3f4245dc76bd4aada6a3911a3a616, type: 3}
   m_blockVolume: 0.85
   m_minimumBlockInterval: 0.09
+  m_spellVolume: 0.9
   m_outputMixerGroup: {fileID: 0}
   m_volume: 0.8
   m_pitchVariation: 0.05
@@ -522,6 +532,7 @@ MonoBehaviour:
   m_cutOffFade: 0.06
   m_playerAnimation: {fileID: 6991371757986253784}
   m_playerHealth: {fileID: 2666698548747110859}
+  m_playerSpellCaster: {fileID: 4711829365002174886}
 --- !u!114 &4711829365002174884
 MonoBehaviour:
   m_ObjectHideFlags: 0
