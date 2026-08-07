@@ -24,6 +24,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float obstacleProbeRadius = 0.3f;
     [SerializeField] private float stuckTimeBeforeRecovery = 0.8f;
 
+    [Header("Knockback")]
+    [SerializeField, Min(0.02f), Tooltip("How long a knockback push takes to cover its distance.")]
+    private float knockbackDuration = 0.18f;
+
     [Header("Target")]
     [SerializeField] private Transform playerTarget;
 
@@ -54,6 +58,61 @@ public class EnemyMovement : MonoBehaviour
     private int m_orbitDirection;
     private bool m_usesNavMesh;
     private Vector3 m_lastPosition;
+    private Vector3 m_knockbackVelocity;
+    private float m_knockbackEndsAt;
+
+    public bool IsKnockedBack => Time.time < m_knockbackEndsAt;
+
+    /// <summary>
+    /// Pushes this enemy away over a short moment. Goes through the NavMeshAgent
+    /// rather than the rigidbody, because the agent drives a kinematic body and
+    /// would ignore a physics force outright.
+    /// </summary>
+    public void ApplyKnockback(Vector3 _direction, float _distance)
+    {
+        if (_distance <= 0f || knockbackDuration <= 0f)
+            return;
+
+        Vector3 flatDirection = _direction;
+        flatDirection.y = 0f;
+
+        if (flatDirection.sqrMagnitude < 0.0001f)
+            return;
+
+        m_knockbackVelocity = flatDirection.normalized * (_distance / knockbackDuration);
+        m_knockbackEndsAt = Time.time + knockbackDuration;
+
+        // The agent steers along its own path every frame. Without dropping that
+        // path first it would simply walk straight back through the push.
+        if (m_usesNavMesh && m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
+        {
+            m_agent.ResetPath();
+            m_agent.velocity = Vector3.zero;
+        }
+
+        // Repath the moment the push is over instead of waiting out the interval.
+        m_nextRepathTime = 0f;
+    }
+
+    private bool UpdateKnockback(float _deltaTime)
+    {
+        if (!IsKnockedBack)
+            return false;
+
+        if (m_usesNavMesh)
+        {
+            // Move keeps the agent on the navmesh, so a push can never shove an
+            // enemy through a wall or off the walkable area.
+            if (m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
+                m_agent.Move(m_knockbackVelocity * _deltaTime);
+        }
+        else if (m_rb != null && !m_rb.isKinematic)
+        {
+            m_rb.linearVelocity = new Vector3(m_knockbackVelocity.x, 0f, m_knockbackVelocity.z);
+        }
+
+        return true;
+    }
 
     private void Awake()
     {
@@ -85,6 +144,11 @@ public class EnemyMovement : MonoBehaviour
         if (m_usesNavMesh)
             return;
 
+        // Checked before CanMove, because a knockback drives the movement itself
+        // and StopMoving would cancel it straight away.
+        if (UpdateKnockback(Time.fixedDeltaTime))
+            return;
+
         if (!CanMove())
         {
             StopMoving();
@@ -97,6 +161,9 @@ public class EnemyMovement : MonoBehaviour
     private void Update()
     {
         if (!m_usesNavMesh)
+            return;
+
+        if (UpdateKnockback(Time.deltaTime))
             return;
 
         if (!CanMove())
@@ -211,7 +278,7 @@ public class EnemyMovement : MonoBehaviour
 
         return playerTarget != null &&
                (m_enemyStats == null || !m_enemyStats.IsDead) &&
-               (m_enemyAttack == null || !m_enemyAttack.IsWindingUp);
+               (m_enemyAttack == null || (!m_enemyAttack.IsWindingUp && !m_enemyAttack.IsStaggered));
     }
 
     private void UpdateNavMeshMovement()

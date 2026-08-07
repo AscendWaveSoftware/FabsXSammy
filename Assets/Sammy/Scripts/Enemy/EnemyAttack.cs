@@ -14,11 +14,18 @@ public class EnemyAttack : MonoBehaviour
     private float m_hitStunDuration = 0.24f;
     [SerializeField] private Color m_windupTint = new(1f, 0.28f, 0.18f, 1f);
 
+    [Header("Blocked Reaction")]
+    [SerializeField, Min(0f), Tooltip("How long this enemy is dazed after the player blocks its attack. It stops moving and attacking.")]
+    private float m_blockedStaggerDuration = 0.75f;
+    [SerializeField, Min(0f), Tooltip("How far a blocked enemy is pushed away from the player.")]
+    private float m_blockedKnockbackDistance = 1.1f;
+
     [Header("Target")]
     [SerializeField] private Transform m_playerTarget;
 
     private EnemyStats m_stats;
     private EnemyAttackTelegraph m_telegraph;
+    private EnemyMovement m_movement;
     private PlayerHealth m_playerHealth;
     private SpriteRenderer[] m_renderers;
     private Color[] m_baseColors;
@@ -26,10 +33,17 @@ public class EnemyAttack : MonoBehaviour
     private float m_stunnedUntil;
     private float m_windupStartedAt;
     private float m_attackExecutesAt;
+    private float m_staggeredUntil;
     private bool m_isWindingUp;
 
     public float AttackRange => m_attackRange;
     public bool IsWindingUp => m_isWindingUp;
+
+    /// <summary>
+    /// True while this enemy is dazed. Unlike a plain stun this also stops it
+    /// from moving, which is what makes a blocked attack visibly cost something.
+    /// </summary>
+    public bool IsStaggered => Time.time < m_staggeredUntil;
 
     private void Awake()
     {
@@ -41,6 +55,8 @@ public class EnemyAttack : MonoBehaviour
 
         if (m_telegraph == null)
             m_telegraph = gameObject.AddComponent<EnemyAttackTelegraph>();
+
+        m_movement = GetComponent<EnemyMovement>();
 
         CacheBodyRenderers();
     }
@@ -150,6 +166,20 @@ public class EnemyAttack : MonoBehaviour
         CancelWindup();
     }
 
+    /// <summary>
+    /// A stun that also roots the enemy in place. Kept separate from
+    /// <see cref="Stun"/> so hit reactions and the Hollow wave keep behaving
+    /// exactly as before.
+    /// </summary>
+    public void Stagger(float _duration)
+    {
+        if (_duration <= 0f || (m_stats != null && m_stats.IsDead))
+            return;
+
+        m_staggeredUntil = Mathf.Max(m_staggeredUntil, Time.time + _duration);
+        Stun(_duration);
+    }
+
     private void BeginWindup()
     {
         m_isWindingUp = true;
@@ -172,7 +202,24 @@ public class EnemyAttack : MonoBehaviour
         if (m_playerHealth == null || !m_playerHealth.IsAlive || !IsPlayerInRange())
             return;
 
-        m_playerHealth.TakeDamage(m_stats.AttackDamage, transform.position);
+        if (m_playerHealth.TakeDamage(m_stats.AttackDamage, transform.position))
+            ReactToBlockedAttack();
+    }
+
+    /// <summary>
+    /// The guard threw the attack back. The enemy is pushed off, loses its
+    /// footing for a moment and visibly wonders what just happened.
+    /// </summary>
+    private void ReactToBlockedAttack()
+    {
+        Stagger(m_blockedStaggerDuration);
+
+        if (m_movement != null && m_playerTarget != null)
+            m_movement.ApplyKnockback(transform.position - m_playerTarget.position, m_blockedKnockbackDistance);
+
+        // Held for exactly as long as the stagger, so the sign and the frozen
+        // enemy tell the same story.
+        m_telegraph?.ShowStagger(m_blockedStaggerDuration);
     }
 
     private void CancelWindup()
@@ -236,5 +283,7 @@ public class EnemyAttack : MonoBehaviour
         m_attackCooldown = Mathf.Max(0f, m_attackCooldown);
         m_attackWindup = Mathf.Max(0f, m_attackWindup);
         m_hitStunDuration = Mathf.Max(0f, m_hitStunDuration);
+        m_blockedStaggerDuration = Mathf.Max(0f, m_blockedStaggerDuration);
+        m_blockedKnockbackDistance = Mathf.Max(0f, m_blockedKnockbackDistance);
     }
 }

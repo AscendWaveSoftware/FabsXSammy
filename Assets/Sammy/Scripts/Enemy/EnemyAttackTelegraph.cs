@@ -24,8 +24,16 @@ public class EnemyAttackTelegraph : MonoBehaviour
     [SerializeField] private Color m_warningStartColor = new(1f, 0.78f, 0.25f, 1f);
     [SerializeField] private Color m_warningEndColor = new(1f, 0.26f, 0.14f, 1f);
     [SerializeField] private Color m_warningOutlineColor = new(0.24f, 0.04f, 0f, 1f);
-    [SerializeField, Min(0.05f)] private float m_warningScale = 0.42f;
+    [SerializeField, Min(0.05f)] private float m_warningScale = 0.65f;
     [SerializeField, Min(0f)] private float m_warningHeightOffset = 0.32f;
+
+    [Header("Stagger Sign")]
+    [SerializeField] private string m_staggerMessage = "?";
+    [SerializeField] private Color m_staggerColor = new(1f, 0.93f, 0.6f, 1f);
+    [SerializeField] private Color m_staggerOutlineColor = new(0.18f, 0.1f, 0f, 1f);
+    [SerializeField, Min(0.05f), Tooltip("Sized to match the damage numbers, a single glyph needs the room to read at a glance.")]
+    private float m_staggerScale = 0.75f;
+    [SerializeField, Min(0f)] private float m_staggerHeightOffset = 0.45f;
 
     [Header("Strike Flash")]
     [SerializeField] private Color m_strikeFlashColor = new(1f, 0.32f, 0.16f, 1f);
@@ -37,12 +45,17 @@ public class EnemyAttackTelegraph : MonoBehaviour
     private SpriteRenderer m_rangeRing;
     private SpriteRenderer m_closingRing;
     private TextMeshPro m_warningText;
+    private TextMeshPro m_staggerText;
     private Transform m_cameraTransform;
     private float m_feetOffset;
     private float m_headOffset;
     private float m_ringDiameter;
     private float m_windupProgress;
+    private float m_staggerStartedAt;
+    private float m_staggerEndsAt;
     private bool m_isVisible;
+
+    private bool IsStaggerSignVisible => Time.time < m_staggerEndsAt;
 
     private void Awake()
     {
@@ -50,16 +63,45 @@ public class EnemyAttackTelegraph : MonoBehaviour
         MeasureBounds();
         BuildGroundRings();
         BuildWarningSign();
+        BuildStaggerSign();
         SetVisible(false);
+        HideStagger();
     }
 
     private void OnDisable()
     {
         SetVisible(false);
+        HideStagger();
+    }
+
+    /// <summary>
+    /// Shows the dazed sign above this enemy for as long as the stagger lasts.
+    /// Held in place on purpose: a sign that floats away reads as "something
+    /// happened", while the player needs to see "this one is out right now".
+    /// </summary>
+    public void ShowStagger(float _duration)
+    {
+        if (_duration <= 0f || m_staggerText == null)
+            return;
+
+        m_staggerStartedAt = Time.time;
+        m_staggerEndsAt = Mathf.Max(m_staggerEndsAt, Time.time + _duration);
+        m_staggerText.gameObject.SetActive(true);
+        UpdateStaggerSign();
+    }
+
+    public void HideStagger()
+    {
+        m_staggerEndsAt = 0f;
+
+        if (m_staggerText != null)
+            m_staggerText.gameObject.SetActive(false);
     }
 
     private void LateUpdate()
     {
+        UpdateStaggerVisibility();
+
         if (!m_isVisible)
             return;
 
@@ -79,6 +121,9 @@ public class EnemyAttackTelegraph : MonoBehaviour
             m_cameraTransform.rotation * Vector3.up
         );
     }
+
+    /// <summary>Height of this enemy's head above its pivot, measured once at startup.</summary>
+    public float HeadOffset => m_headOffset;
 
     /// <summary>
     /// True when the renderer belongs to this telegraph instead of the enemy
@@ -215,6 +260,86 @@ public class EnemyAttackTelegraph : MonoBehaviour
         warningRenderer.lightProbeUsage = LightProbeUsage.Off;
         warningRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
         warningRenderer.sortingOrder = 252;
+    }
+
+    private void BuildStaggerSign()
+    {
+        GameObject staggerObject = new GameObject("Stagger Sign", typeof(TextMeshPro));
+        staggerObject.transform.SetParent(transform, false);
+        staggerObject.transform.localPosition = Vector3.up * (m_headOffset + m_staggerHeightOffset);
+
+        m_staggerText = staggerObject.GetComponent<TextMeshPro>();
+        m_staggerText.font = TMP_Settings.defaultFontAsset;
+        m_staggerText.text = m_staggerMessage;
+        m_staggerText.fontStyle = FontStyles.Bold;
+        m_staggerText.alignment = TextAlignmentOptions.Center;
+        m_staggerText.enableAutoSizing = false;
+        m_staggerText.fontSize = 6f;
+        m_staggerText.color = m_staggerColor;
+        m_staggerText.outlineColor = m_staggerOutlineColor;
+
+        // A single glyph has far less ink than a damage number, so it leans
+        // harder on the outline to stay readable against a bright arena.
+        m_staggerText.outlineWidth = 0.36f;
+        m_staggerText.rectTransform.sizeDelta = new Vector2(6f, 4f);
+        m_staggerText.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+        MeshRenderer staggerRenderer = staggerObject.GetComponent<MeshRenderer>();
+        staggerRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        staggerRenderer.receiveShadows = false;
+        staggerRenderer.lightProbeUsage = LightProbeUsage.Off;
+        staggerRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+        staggerRenderer.sortingOrder = 253;
+    }
+
+    private void UpdateStaggerVisibility()
+    {
+        if (m_staggerText == null)
+            return;
+
+        if (!IsStaggerSignVisible)
+        {
+            if (m_staggerText.gameObject.activeSelf)
+                HideStagger();
+
+            return;
+        }
+
+        UpdateStaggerSign();
+
+        if (m_cameraTransform == null)
+            ResolveCamera();
+
+        if (m_cameraTransform == null)
+            return;
+
+        Transform staggerTransform = m_staggerText.transform;
+        staggerTransform.LookAt(
+            staggerTransform.position + m_cameraTransform.rotation * -Vector3.forward,
+            m_cameraTransform.rotation * Vector3.up
+        );
+
+        // A lazy tilt back and forth sells "dazed" better than a rigid symbol.
+        float wobble = Mathf.Sin((Time.time - m_staggerStartedAt) * 8f) * 11f;
+        staggerTransform.rotation *= Quaternion.Euler(0f, 0f, wobble);
+    }
+
+    private void UpdateStaggerSign()
+    {
+        float elapsed = Time.time - m_staggerStartedAt;
+        float pop = EaseOutBack(Mathf.Clamp01(elapsed / 0.16f));
+        float bob = Mathf.Sin(elapsed * 6.5f) * 0.1f;
+
+        m_staggerText.transform.localPosition = Vector3.up * (m_headOffset + m_staggerHeightOffset + bob);
+        m_staggerText.transform.localScale = Vector3.one * (m_staggerScale * pop);
+    }
+
+    private static float EaseOutBack(float _value)
+    {
+        const float overshoot = 2.2f;
+        float shiftedValue = _value - 1f;
+        return 1f + (overshoot + 1f) * shiftedValue * shiftedValue * shiftedValue
+                  + overshoot * shiftedValue * shiftedValue;
     }
 
     private void SetVisible(bool _visible)

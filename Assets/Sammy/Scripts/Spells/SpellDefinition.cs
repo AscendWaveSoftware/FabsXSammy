@@ -102,6 +102,15 @@ public class SpellDefinition : ScriptableObject
     [Tooltip("How long caught enemies are unable to attack. Their windup is cancelled immediately.")]
     [Min(0f)] public float NovaStunDuration = 1.6f;
 
+    [Header("Chain Lightning (Delivery = Nova)")]
+    [Tooltip("How many times the bolt jumps on after the blast. 0 disables the chain entirely.")]
+    [Min(0)] public int ChainJumps;
+    [Tooltip("How far the bolt can reach for its next target, measured from the previous one.")]
+    [Min(0.5f)] public float ChainJumpRange = 5f;
+    [Tooltip("Damage left after each jump. 0.55 means the first arc deals 55% of the blast, the second 30%, and so on.")]
+    [Range(0.05f, 1f)] public float ChainDamageFalloff = 0.55f;
+    public Color ChainColor = new(1f, 0.9f, 0.55f, 1f);
+
     [Header("Impact")]
     [Min(1)] public int Damage = 45;
     [Tooltip("Everything inside this radius takes the full damage.")]

@@ -65,17 +65,21 @@ public class PlayerHealth : MonoBehaviour
         Heal(healthToRestore);
     }
 
-    public void TakeDamage(int _damageAmount) => TakeDamage(_damageAmount, transform.position);
+    public bool TakeDamage(int _damageAmount) => TakeDamage(_damageAmount, transform.position);
 
-    public void TakeDamage(int _damageAmount, Vector3 _attackerPosition)
+    /// <returns>
+    /// True when the guard absorbed the hit completely, so the attacker can
+    /// react to having been blocked.
+    /// </returns>
+    public bool TakeDamage(int _damageAmount, Vector3 _attackerPosition)
     {
-        if (!IsAlive) return;
-        if (_damageAmount <= 0) return;
+        if (!IsAlive) return false;
+        if (_damageAmount <= 0) return false;
 
         if (m_playerCombat != null && m_playerCombat.IsBlocking)
         {
             OnDamageBlocked?.Invoke(_damageAmount, _attackerPosition);
-            return;
+            return true;
         }
 
         int reducedDamage = Mathf.Max(1, Mathf.CeilToInt(_damageAmount * (1f - m_damageReduction)));
@@ -90,6 +94,8 @@ public class PlayerHealth : MonoBehaviour
 
         if (isLethal)
             Die();
+
+        return false;
     }
 
     public void Heal(int _healAmount)

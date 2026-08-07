@@ -53,6 +53,10 @@ MonoBehaviour:
   PoisonDuration: 5
   PoisonColor: {r: 0.45, g: 0.95, b: 0.3, a: 0.75}
   NovaStunDuration: 1.6
+  ChainJumps: 4
+  ChainJumpRange: 5
+  ChainDamageFalloff: 0.55
+  ChainColor: {r: 1, g: 0.9, b: 0.55, a: 1}
   Damage: 35
   ImpactRadius: 3.5
   ImpactVisualScale: 1.05
