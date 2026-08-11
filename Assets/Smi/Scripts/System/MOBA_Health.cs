@@ -114,11 +114,14 @@ public class MOBA_Health : MonoBehaviour, IDamageable
                 gameObject.SetActive(false);
         }
 
-        if (m_tower)
-            m_tower.OnDamage(_damage);
-        else if(m_factory)
-            m_factory.OnDamage(_damage);
-          
+        if (!m_aiMinion)
+        {
+            if (m_tower)
+                m_tower.OnDamage(_damage);
+            else if (m_factory)
+                m_factory.OnDamage(_damage);
+        }
+
     }
 
     private void ResetHealth()

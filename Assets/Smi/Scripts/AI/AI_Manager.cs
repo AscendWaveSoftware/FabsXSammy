@@ -55,6 +55,8 @@ public class AI_Manager : MonoBehaviour
 
         if (m_incomeTimer >= m_incomeInterval)
         {
+            m_incomeAmount += m_playerXP.CurrentLevel;
+
             m_aiScrap += m_incomeAmount;
             m_incomeTimer = 0f;
         }
