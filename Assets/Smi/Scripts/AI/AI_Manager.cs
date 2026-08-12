@@ -14,7 +14,9 @@ public class AI_Manager : MonoBehaviour
     [Header("AI Economy")]
     [SerializeField] private int m_aiScrap = 0;
     [SerializeField] private int m_incomeAmount = 10;
+    [SerializeField] private int m_startIncomeAmount;
     [SerializeField] private float m_incomeInterval = 5f;
+    [SerializeField] private int m_maxIncomeAmount = 20;
 
     [Header("Wave Settings")]
     [SerializeField] private int m_maxUnitsPerWave = 4;
@@ -39,6 +41,7 @@ public class AI_Manager : MonoBehaviour
     private void Start()
     {
         m_playerXP = FindAnyObjectByType<PlayerExperience>();
+        m_startIncomeAmount = m_incomeAmount;
     }
 
 
@@ -55,7 +58,8 @@ public class AI_Manager : MonoBehaviour
 
         if (m_incomeTimer >= m_incomeInterval)
         {
-            m_incomeAmount += m_playerXP.CurrentLevel;
+            if (m_incomeAmount < m_maxIncomeAmount)
+                m_incomeAmount = m_startIncomeAmount + m_playerXP.CurrentLevel;
 
             m_aiScrap += m_incomeAmount;
             m_incomeTimer = 0f;

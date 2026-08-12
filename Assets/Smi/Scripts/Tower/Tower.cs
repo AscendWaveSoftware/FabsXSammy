@@ -33,7 +33,7 @@ public class Tower : MonoBehaviour
     }
 
     private void Start()
-    {   
+    {
         if (m_towerStats)
             currentHealth = m_towerStats.m_targetHealth;
     }
@@ -43,9 +43,7 @@ public class Tower : MonoBehaviour
         currentHealth -= _damage;
 
         if (MOBA_Manager.Instance != null)
-        {
             MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
-        }
 
         if (currentHealth <= m_towerStats.m_targetHealth / 2)
         {
