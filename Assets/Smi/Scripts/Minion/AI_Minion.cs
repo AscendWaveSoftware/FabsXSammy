@@ -13,6 +13,7 @@ public class AI_Minion : MonoBehaviour
     private float m_destinationUpdateTimer;
     [SerializeField] private AudioClip m_clip;
     private AudioSource m_audioSource;
+    [SerializeField] private AudioSource m_audioKette;
 
     private void OnEnable()
     {
@@ -23,6 +24,12 @@ public class AI_Minion : MonoBehaviour
             EntityManager.BlueMinions.Add(this);
         else
             EntityManager.RedMinions.Add(this);
+
+        if (m_audioKette)
+        {
+            m_audioKette.pitch = Random.Range(0.25f, 0.5f);
+            m_audioKette.Play();
+        }
 
         FindAndSetTarget();
 
@@ -163,5 +170,10 @@ public class AI_Minion : MonoBehaviour
             EntityManager.BlueMinions.Remove(this);
         else
             EntityManager.RedMinions.Remove(this);
+
+        if (m_audioKette)
+        {
+            m_audioKette.Stop();
+        }
     }
 }

@@ -29,7 +29,7 @@ public class ScrapShop : MonoBehaviour
             m_playerResources = FindAnyObjectByType<PlayerResources>();
             m_scrapText.text = "Current Scrap: " + m_playerResources.CurrentScrap.ToString();
             m_buyMiniText.text = "[Minion] Cost: " + m_prices.m_PriceForUnit1;
-            m_buyBigText.text = "[Minion] Cost: " + m_prices.m_PriceForUnit2;
+            m_buyBigText.text = "[Big Minion] Cost: " + m_prices.m_PriceForUnit2;
 
             canvas = GetComponentInChildren<Canvas>();
             canvas.enabled = true;

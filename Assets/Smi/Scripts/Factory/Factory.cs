@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 [RequireComponent(typeof(MOBA_Health))]
 public class Factory : MonoBehaviour, IMinionPool
@@ -10,9 +11,15 @@ public class Factory : MonoBehaviour, IMinionPool
     [SerializeField] private SO_FactoryStats m_stats;
     private float m_currentHealth;
 
+    [SerializeField] private ParticleSystem mainModule;
+    [SerializeField] private MainModule main;
+
     private void OnEnable()
     {
         RegisterFactory();
+
+        main = mainModule.main;
+
         if (m_stats != null && MOBA_Manager.Instance != null)
         {
             m_currentHealth = m_stats.m_targetHealth;
@@ -23,11 +30,8 @@ public class Factory : MonoBehaviour, IMinionPool
     public void OnDamage(float _damage)
     {
         MOBA_Manager.Instance.OnDamage(_damage, m_stats.m_isEnemyBuilding);
-    }
-
-    private void LoseState()
-    {
-        Debug.Log("YOU LOSE");
+        if (mainModule)
+            main.startLifetimeMultiplier++;
     }
 
     private void RegisterFactory()
@@ -80,15 +84,16 @@ public class Factory : MonoBehaviour, IMinionPool
         return pool;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (m_stats.m_isEnemyBuilding && PlaytestAnalyticsManager.Instance != null)
         {
+            MOBA_Manager.Instance.WinGame();
             PlaytestAnalyticsManager.Instance.RegisterVictory();
             PlaytestAnalyticsManager.Instance.EndRun();
         }
-        else
-            LoseState();
+        else if (!m_stats.m_isEnemyBuilding)
+            MOBA_Manager.Instance.LoseGame();
     }
 
 }

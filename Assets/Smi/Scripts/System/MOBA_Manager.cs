@@ -1,4 +1,6 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class MOBA_Manager : MonoBehaviour
@@ -10,6 +12,10 @@ public class MOBA_Manager : MonoBehaviour
     public float m_enemyHealth;
     [SerializeField] private Slider[] m_Slider;
     [SerializeField] private GameObject[] m_DestroyedTower;
+    [SerializeField] UnityEvent m_WinEvent;
+    [SerializeField] UnityEvent m_LoseEvent;
+
+    Canvas m_stateCanvas;
 
     private void Awake()
     {
@@ -81,6 +87,22 @@ public class MOBA_Manager : MonoBehaviour
                 destTowerEnemy.transform.position = _position;
                 break;
         }
+    }
+
+    public void WinGame()
+    {
+        m_stateCanvas = GetComponentInChildren<Canvas>();
+        m_stateCanvas.enabled = true;
+        m_WinEvent.Invoke();
+        Time.timeScale = 0;
+    }
+
+    public void LoseGame()
+    {
+        m_stateCanvas = GetComponentInChildren<Canvas>();
+        m_stateCanvas.enabled = true;
+        m_LoseEvent.Invoke();
+        Time.timeScale = 0;
     }
 }
 
