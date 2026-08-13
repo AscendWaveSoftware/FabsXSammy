@@ -86,13 +86,17 @@ public class Factory : MonoBehaviour, IMinionPool
 
     private void OnDisable()
     {
-        if (m_stats.m_isEnemyBuilding && PlaytestAnalyticsManager.Instance != null)
+        if (PlaytestAnalyticsManager.Instance != null)
         {
-            MOBA_Manager.Instance.WinGame();
             PlaytestAnalyticsManager.Instance.RegisterVictory();
             PlaytestAnalyticsManager.Instance.EndRun();
         }
-        else if (!m_stats.m_isEnemyBuilding)
+
+        if (m_stats.m_isEnemyBuilding)
+        {
+            MOBA_Manager.Instance.WinGame();
+        }
+        else
             MOBA_Manager.Instance.LoseGame();
     }
 
