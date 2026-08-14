@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7099ef5f8f258af44bbd2d43efd80b0e, type: 3}
   m_Name: EnemyTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerCombat
-  m_targetHealth: 500
+  m_targetHealth: 1000
+  m_isEnemyBuilding: 1
   m_team: 1
   m_damage: 25
   m_projectileSpeed: 20
   m_attackRange: 15
   m_attackCooldown: 2
-  m_isEnemyBuilding: 1
-  maxValue: 100

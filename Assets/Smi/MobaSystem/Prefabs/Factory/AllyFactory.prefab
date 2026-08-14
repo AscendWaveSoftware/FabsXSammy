@@ -9905,8 +9905,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1171384612527714937}
   - component: {fileID: 7517560261858270348}
-  - component: {fileID: 7124952478596879520}
   - component: {fileID: 7814723661155000487}
+  - component: {fileID: 3824289239618899976}
   m_Layer: 0
   m_Name: AllyFactory
   m_TagString: Untagged
@@ -9947,20 +9947,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Factory
   m_stats: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
   mainModule: {fileID: 6936092543486441227}
---- !u!114 &7124952478596879520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878547187031522997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 974917895536c7d45bfdeff3594074dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
-  m_damageDuration: 0.25
-  m_data: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
 --- !u!114 &7814723661155000487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9981,6 +9967,21 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &3824289239618899976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878547187031522997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eff4d3ed55f08d74e8c56c751334d678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health_Building
+  m_destroyed: 0
+  m_damageDuration: 0.25
+  m_data: {fileID: 11400000, guid: baf538f08e2ee244e81d55c0e4ac2400, type: 2}
 --- !u!1 &4696537747955294444
 GameObject:
   m_ObjectHideFlags: 0
@@ -25361,6 +25362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
   m_towerStats: {fileID: 11400000, guid: c499d4edf3ed49648b80aff5497eca9e, type: 2}
+  m_rotationSpeed: 300
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 4195847143376266184}
 --- !u!82 &2742053448846995431
@@ -25565,6 +25567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
   m_towerStats: {fileID: 11400000, guid: c499d4edf3ed49648b80aff5497eca9e, type: 2}
+  m_rotationSpeed: 300
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 4064978578194262959}
 --- !u!82 &3524446292961589225

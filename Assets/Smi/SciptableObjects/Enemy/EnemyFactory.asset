@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f551f7e309296e448af831591cf4d2dd, type: 3}
   m_Name: EnemyFactory
   m_EditorClassIdentifier: Assembly-CSharp::SO_FactoryStats
-  m_targetHealth: 1000
-  m_team: 1
+  m_targetHealth: 2000
   m_isEnemyBuilding: 1
+  m_team: 1

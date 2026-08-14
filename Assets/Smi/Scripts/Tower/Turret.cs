@@ -5,6 +5,7 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     [SerializeField] private SO_TowerStats m_towerStats;
+    [SerializeField] private float m_rotationSpeed = 300f;
 
     public GameObject m_projectilePrefab;
     public Transform m_projectileSpawnPoint;
@@ -84,9 +85,26 @@ public class Turret : MonoBehaviour
 
     private void RotateTowardsTarget()
     {
-        transform.LookAt(m_currentTarget.transform.position);
-        transform.Rotate(0f, -90f, 0f);
+        if (m_currentTarget == null) return;
+
+        Vector3 direction = m_currentTarget.transform.position - transform.position;
+
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion baseLookRotation = Quaternion.LookRotation(direction);
+
+            Quaternion targetRotation = baseLookRotation * Quaternion.Euler(0f, -90f, 0f);
+
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                m_rotationSpeed * Time.deltaTime
+            );
+        }
     }
+
     private void AttackCurrentTarget()
     {
         if (m_currentTarget == null)

@@ -10222,7 +10222,7 @@ GameObject:
   - component: {fileID: 3631403305993523408}
   - component: {fileID: 8712509823497295379}
   - component: {fileID: 1638943076894369285}
-  - component: {fileID: 8604600594981403041}
+  - component: {fileID: 2298113580382466900}
   - component: {fileID: 2680783848035729666}
   - component: {fileID: 1497717147568308400}
   - component: {fileID: 6148629941322944438}
@@ -10331,7 +10331,7 @@ MonoBehaviour:
   m_stats: {fileID: 11400000, guid: cd992adf3093079448c16ae6deb0b898, type: 2}
   m_clip: {fileID: 8300000, guid: 0d008ecf2edce774e8894590ec7abc08, type: 3}
   m_audioKette: {fileID: 1571972356764863265}
---- !u!114 &8604600594981403041
+--- !u!114 &2298113580382466900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10340,9 +10340,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5534292133629273596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 974917895536c7d45bfdeff3594074dd, type: 3}
+  m_Script: {fileID: 11500000, guid: 7564385d9dbf0074489a06bf1d15db3e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MOBA_Health
+  m_EditorClassIdentifier: Assembly-CSharp::Health_Minion
+  m_destroyed: 0
+  m_currentHealth: 0
   m_damageDuration: 0.25
   m_data: {fileID: 11400000, guid: cd992adf3093079448c16ae6deb0b898, type: 2}
 --- !u!136 &2680783848035729666
@@ -20422,9 +20424,17 @@ PrefabInstance:
       value: -180
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: eb6c31d581e133948a9781aceb788eae, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: eb6c31d581e133948a9781aceb788eae, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 17b9c15e63a29c34b86f2350cf079208, type: 2}
+    - target: {fileID: -7511558181221131132, guid: eb6c31d581e133948a9781aceb788eae, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 39c6eac645939e34e84a432daf519df4, type: 2}
     - target: {fileID: 919132149155446097, guid: eb6c31d581e133948a9781aceb788eae, type: 3}
       propertyPath: m_Name
       value: 'Asset_Minion_small '

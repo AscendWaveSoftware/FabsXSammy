@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -11,11 +10,10 @@ public class MOBA_Manager : MonoBehaviour
     public float m_allyHealth;
     public float m_enemyHealth;
     [SerializeField] private Slider[] m_Slider;
+    [SerializeField] private Animation[] m_Animation;
     [SerializeField] private GameObject[] m_DestroyedTower;
     [SerializeField] UnityEvent m_WinEvent;
     [SerializeField] UnityEvent m_LoseEvent;
-
-    Canvas m_stateCanvas;
 
     private void Awake()
     {
@@ -62,11 +60,13 @@ public class MOBA_Manager : MonoBehaviour
                 {
                     m_allyHealth -= _damage;
                     m_Slider[0].value = m_allyHealth;
+                    m_Animation[0].Play();
                 }
                 else
                 {
                     m_enemyHealth -= _damage;
                     m_Slider[1].value = m_enemyHealth;
+                    m_Animation[1].Play();
                 }
             }
         }
@@ -91,18 +91,16 @@ public class MOBA_Manager : MonoBehaviour
 
     public void WinGame()
     {
-        m_stateCanvas = GetComponentInChildren<Canvas>();
-        m_stateCanvas.enabled = true;
         m_WinEvent.Invoke();
         Time.timeScale = 0;
+        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
     }
 
     public void LoseGame()
     {
-        m_stateCanvas = GetComponentInChildren<Canvas>();
-        m_stateCanvas.enabled = true;
         m_LoseEvent.Invoke();
         Time.timeScale = 0;
+        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
     }
 }
 

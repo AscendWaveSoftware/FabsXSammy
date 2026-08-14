@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7099ef5f8f258af44bbd2d43efd80b0e, type: 3}
   m_Name: AllyTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerStats
-  m_targetHealth: 500
+  m_targetHealth: 1000
   m_isEnemyBuilding: 0
   m_team: 0
   m_damage: 25

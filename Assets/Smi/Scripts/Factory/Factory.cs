@@ -2,7 +2,7 @@
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
-[RequireComponent(typeof(MOBA_Health))]
+[RequireComponent(typeof(Health_Building))]
 public class Factory : MonoBehaviour, IMinionPool
 {
     private Dictionary<GameObject, Queue<GameObject>> m_spawnPools =
@@ -55,7 +55,7 @@ public class Factory : MonoBehaviour, IMinionPool
 
         GameObject newMinion = Instantiate(minionPrefab, transform.position, Quaternion.identity, transform);
 
-        var health = newMinion.GetComponent<MOBA_Health>();
+        var health = newMinion.GetComponent<Health_Minion>();
         if (health != null)
             health.SetPool(this, minionPrefab);
 
@@ -92,12 +92,13 @@ public class Factory : MonoBehaviour, IMinionPool
             PlaytestAnalyticsManager.Instance.EndRun();
         }
 
-        if (m_stats.m_isEnemyBuilding)
+        if (MOBA_Manager.Instance != null)
         {
-            MOBA_Manager.Instance.WinGame();
-        }
-        else
-            MOBA_Manager.Instance.LoseGame();
-    }
+            if (m_stats.m_isEnemyBuilding)
+                MOBA_Manager.Instance.WinGame();
 
+            else
+                MOBA_Manager.Instance.LoseGame();
+        }
+    }
 }
