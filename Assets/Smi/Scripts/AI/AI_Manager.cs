@@ -33,7 +33,6 @@ public class AI_Manager : MonoBehaviour
 
     [SerializeField] private SO_CurrencySystem m_prices;
 
-
     private float m_incomeTimer;
     private bool m_isSpawning;
 

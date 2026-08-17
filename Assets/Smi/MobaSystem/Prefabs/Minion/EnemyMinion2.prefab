@@ -10180,6 +10180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health_Minion
   m_destroyed: 0
+  m_currentHealth: 0
   m_damageDuration: 0.25
   m_data: {fileID: 11400000, guid: d61257833097bc74bb76f31ed5023b3d, type: 2}
 --- !u!136 &1132125119030131986
@@ -10214,12 +10215,12 @@ AudioSource:
   m_GameObject: {fileID: 5534292133629273596}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 5cf6ffeff792e47448c97708f840460e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.1
-  m_Pitch: 1
+  m_Pitch: 0.75
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -10227,7 +10228,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 200
+  MaxDistance: 250
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -15288,7 +15289,7 @@ AudioSource:
   m_GameObject: {fileID: 8715782091776388407}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: e86cfb1f5cbdd914681cb7031ed76288, type: 3}
   m_PlayOnAwake: 0

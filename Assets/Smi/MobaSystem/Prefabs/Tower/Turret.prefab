@@ -5026,6 +5026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
   m_towerStats: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
+  m_rotationSpeed: 300
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 6656959339085216756}
 --- !u!82 &2675517412769926848
@@ -5037,7 +5038,7 @@ AudioSource:
   m_GameObject: {fileID: 564727702841232926}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: e851e79618322ef4e865627efd8b09e5, type: 3}
   m_PlayOnAwake: 0
