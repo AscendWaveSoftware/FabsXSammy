@@ -15,7 +15,7 @@ MonoBehaviour:
   m_targetHealth: 0
   m_isEnemyBuilding: 0
   m_team: 0
-  m_damage: 10
+  m_damage: 25
   m_projectileSpeed: 20
   m_attackRange: 25
   m_attackCooldown: 2

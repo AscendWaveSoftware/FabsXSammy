@@ -17,5 +17,5 @@ MonoBehaviour:
   m_team: 0
   m_damage: 25
   m_projectileSpeed: 20
-  m_attackRange: 15
+  m_attackRange: 25
   m_attackCooldown: 2

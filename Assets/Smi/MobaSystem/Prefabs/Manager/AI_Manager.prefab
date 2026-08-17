@@ -55,13 +55,13 @@ MonoBehaviour:
   m_incomeAmount: 10
   m_startIncomeAmount: 0
   m_incomeInterval: 3
-  m_maxIncomeAmount: 25
+  m_maxIncomeAmount: 30
   m_maxUnitsPerWave: 5
-  m_spawnDelay: 0.5
+  m_spawnDelay: 1
   m_bigUnitUnlockLevel: 10
-  m_startBigUnitChance: 0.5
-  m_bigChanceIncreasePerLevel: 0.05
-  m_maxBigUnitChance: 1
+  m_startBigUnitChance: 0.15
+  m_bigChanceIncreasePerLevel: 0.03
+  m_maxBigUnitChance: 0.5
   m_prices: {fileID: 11400000, guid: 1a877b9232a92ef4b907de8a9d919da7, type: 2}
 --- !u!1 &4362034969082383676
 GameObject:

@@ -36,13 +36,13 @@ public class AI_Manager : MonoBehaviour
     private float m_incomeTimer;
     private bool m_isSpawning;
 
+    private bool m_wantsBigUnit;
 
     private void Start()
     {
         m_playerXP = FindAnyObjectByType<PlayerExperience>();
         m_startIncomeAmount = m_incomeAmount;
     }
-
 
     private void Update()
     {
@@ -82,26 +82,36 @@ public class AI_Manager : MonoBehaviour
     {
         m_isSpawning = true;
 
-        yield return new WaitForSeconds(Random.Range(m_minSpawnTime, m_maxSpawnTime));
+        yield return new WaitForSeconds(
+            Random.Range(m_minSpawnTime, m_maxSpawnTime)
+        );
 
         int spawnedUnits = 0;
+
+        bool wantsBigUnit = RollForBigUnit();
+
+        if (wantsBigUnit)
+        {
+            if (m_aiScrap < m_prices.m_PriceForUnit2)
+            {
+                m_isSpawning = false;
+                yield break;
+            }
+
+            factory.GetMinion(m_units[1]);
+            m_aiScrap -= m_prices.m_PriceForUnit2;
+
+            spawnedUnits++;
+
+            yield return new WaitForSeconds(m_spawnDelay);
+        }
 
         while (m_aiScrap >= m_prices.m_PriceForUnit1 &&
                spawnedUnits < m_maxUnitsPerWave)
         {
-            bool spawnBig = CanSpawnBigUnit();
+            factory.GetMinion(m_units[0]);
+            m_aiScrap -= m_prices.m_PriceForUnit1;
 
-
-            if (spawnBig)
-            {
-                factory.GetMinion(m_units[1]);
-                m_aiScrap -= m_prices.m_PriceForUnit2;
-            }
-            else
-            {
-                factory.GetMinion(m_units[0]);
-                m_aiScrap -= m_prices.m_PriceForUnit1;
-            }
             spawnedUnits++;
 
             yield return new WaitForSeconds(m_spawnDelay);
@@ -110,21 +120,16 @@ public class AI_Manager : MonoBehaviour
         m_isSpawning = false;
     }
 
-
-    private bool CanSpawnBigUnit()
+    private bool RollForBigUnit()
     {
-        if (m_playerXP)
-        {
-            if (m_playerXP.CurrentLevel < m_bigUnitUnlockLevel)
-                return false;
+        if (!m_playerXP)
+            return false;
 
-            if (m_aiScrap < m_prices.m_PriceForUnit2)
-                return false;
+        if (m_playerXP.CurrentLevel < m_bigUnitUnlockLevel)
+            return false;
 
-            float chance = Mathf.Clamp(m_startBigUnitChance + ((m_playerXP.CurrentLevel - m_bigUnitUnlockLevel) * m_bigChanceIncreasePerLevel), 0f, m_maxBigUnitChance);
+        float chance = Mathf.Clamp(m_startBigUnitChance + ((m_playerXP.CurrentLevel - m_bigUnitUnlockLevel) * m_bigChanceIncreasePerLevel), 0f, m_maxBigUnitChance);
 
-            return Random.value < chance;
-        }
-        return false;
+        return Random.value < chance;
     }
 }
