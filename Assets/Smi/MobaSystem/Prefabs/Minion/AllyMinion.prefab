@@ -9969,7 +9969,7 @@ AudioSource:
   m_GameObject: {fileID: 3178506412283921809}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: e86cfb1f5cbdd914681cb7031ed76288, type: 3}
   m_PlayOnAwake: 0
@@ -10225,7 +10225,6 @@ GameObject:
   - component: {fileID: 2298113580382466900}
   - component: {fileID: 2680783848035729666}
   - component: {fileID: 1497717147568308400}
-  - component: {fileID: 6148629941322944438}
   m_Layer: 6
   m_Name: AllyMinion
   m_TagString: Untagged
@@ -10379,7 +10378,7 @@ AudioSource:
   m_GameObject: {fileID: 5534292133629273596}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 5cf6ffeff792e47448c97708f840460e, type: 3}
   m_PlayOnAwake: 0
@@ -10392,7 +10391,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 200
+  MaxDistance: 250
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -10467,28 +10466,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!95 &6148629941322944438
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5534292133629273596}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 618e890fb690d3d44ab4d8beb29a6b45, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5749843667204060206
 GameObject:
   m_ObjectHideFlags: 0

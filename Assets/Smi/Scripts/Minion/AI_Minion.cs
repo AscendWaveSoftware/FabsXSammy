@@ -51,8 +51,6 @@ public class AI_Minion : MonoBehaviour
             UpdateDestination();
             m_destinationUpdateTimer = 0.0f;
         }
-
-
     }
 
     private void UpdateDestination()

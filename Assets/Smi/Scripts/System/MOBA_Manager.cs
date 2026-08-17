@@ -93,14 +93,12 @@ public class MOBA_Manager : MonoBehaviour
     {
         m_WinEvent.Invoke();
         Time.timeScale = 0;
-        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
     }
 
     public void LoseGame()
     {
         m_LoseEvent.Invoke();
         Time.timeScale = 0;
-        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
     }
 }
 

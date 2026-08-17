@@ -5704,7 +5704,7 @@ MonoBehaviour:
         m_CallState: 2
   OnDestroyed: {fileID: 2154483426113847005, guid: 2f109fa782f56e04e81e3cc29ea45d46, type: 3}
   mainModule: {fileID: 7173770578723372336}
-  currentHealth: 0
+  m_currentHealth: 0
 --- !u!114 &7420534770678345649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5718,6 +5718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health_Building
   m_destroyed: 0
+  m_currentHealth: 0
   m_damageDuration: 0.25
   m_data: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
 --- !u!114 &3664779979612992221
@@ -5899,6 +5900,10 @@ PrefabInstance:
       propertyPath: rolloffMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10831,7 +10836,7 @@ AudioSource:
   m_GameObject: {fileID: 6907190553762421820}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 2d89b4e5603b2544ab41777983d0fabc, type: 3}
   m_PlayOnAwake: 0
