@@ -7,9 +7,6 @@ public class MOBA_Manager : MonoBehaviour
 {
     public static MOBA_Manager Instance { get; private set; }
 
-    [Header("GameState")]
-    public bool isGameOver = false;
-
     [Header("Health")]
     public float m_allyHealth;
     public float m_enemyHealth;
@@ -58,11 +55,15 @@ public class MOBA_Manager : MonoBehaviour
         {
             m_allyHealth -= _damage;
             m_Slider[0].OnDamage(m_allyHealth);
+            if (m_allyHealth <= 0)
+                LoseGame();
         }
         else
         {
             m_enemyHealth -= _damage;
             m_Slider[1].OnDamage(m_enemyHealth);
+            if (m_enemyHealth <= 0)
+                WinGame();
         }
     }
 
@@ -83,18 +84,30 @@ public class MOBA_Manager : MonoBehaviour
                 m_text.text = "Enemy + 1000 Scraps";
                 break;
         }
-   
+
         m_destroyedAnimation.Play();
     }
 
     public void WinGame()
     {
+        if (PlaytestAnalyticsManager.Instance != null)
+        {
+            PlaytestAnalyticsManager.Instance.RegisterVictory();
+            PlaytestAnalyticsManager.Instance.EndRun();
+        }
+
         m_WinEvent.Invoke();
         Time.timeScale = 0;
     }
 
     public void LoseGame()
     {
+        if (PlaytestAnalyticsManager.Instance != null)
+        {
+            PlaytestAnalyticsManager.Instance.RegisterVictory();
+            PlaytestAnalyticsManager.Instance.EndRun();
+        }
+
         m_LoseEvent.Invoke();
         Time.timeScale = 0;
     }

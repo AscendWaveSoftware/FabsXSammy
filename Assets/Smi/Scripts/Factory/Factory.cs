@@ -19,13 +19,18 @@ public class Factory : MonoBehaviour, IMinionPool
         RegisterFactory();
 
         main = mainModule.main;
+    }
 
+
+    private void Start()
+    {
         if (m_stats != null && MOBA_Manager.Instance != null)
         {
             m_currentHealth = m_stats.m_targetHealth;
             MOBA_Manager.Instance.SetSlider(m_currentHealth, m_stats.m_isEnemyBuilding);
         }
     }
+
 
     public void OnDamage(float _damage)
     {
@@ -83,23 +88,5 @@ public class Factory : MonoBehaviour, IMinionPool
         }
 
         return pool;
-    }
-
-    private void OnDisable()
-    {
-        if (PlaytestAnalyticsManager.Instance != null)
-        {
-            PlaytestAnalyticsManager.Instance.RegisterVictory();
-            PlaytestAnalyticsManager.Instance.EndRun();
-        }
-
-        if (MOBA_Manager.Instance != null)
-        {
-            if (m_stats.m_isEnemyBuilding)
-                MOBA_Manager.Instance.WinGame();
-
-            else
-                MOBA_Manager.Instance.LoseGame();
-        }
     }
 }

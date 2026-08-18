@@ -24,19 +24,19 @@ public class Tower : MonoBehaviour
     private void OnEnable()
     {
         RegisterTower();
-        main = mainModule.main;
-
-        if (m_towerStats != null && MOBA_Manager.Instance != null)
-        {
-            m_currentHealth = m_towerStats.m_targetHealth;
-            MOBA_Manager.Instance.SetSlider(m_currentHealth, m_towerStats.m_isEnemyBuilding);
-        }
+        main = mainModule.main; 
     }
 
     private void Start()
     {
         if (m_towerStats)
             m_currentHealth = m_towerStats.m_targetHealth;
+
+        if (m_towerStats != null && MOBA_Manager.Instance != null)
+        {
+            m_currentHealth = m_towerStats.m_targetHealth;
+            MOBA_Manager.Instance.SetSlider(m_currentHealth, m_towerStats.m_isEnemyBuilding);
+        }
 
         m_aiResources = FindAnyObjectByType<AI_Manager>();
         m_resources = FindAnyObjectByType<PlayerResources>();
@@ -46,17 +46,23 @@ public class Tower : MonoBehaviour
     {
         m_currentHealth -= _damage;
 
-        MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+        if (m_currentHealth <= 0)
+            TowerDestroyed();
 
-        if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
+        else
         {
-            if (mainModule)
-                main.startLifetimeMultiplier = 10f * (1f - (m_currentHealth / m_towerStats.m_targetHealth));
+            MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
 
-            if (!m_bIsDamaged)
+            if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
             {
-                OnDamagedEvent?.Invoke();
-                m_bIsDamaged = true;
+                if (mainModule)
+                    main.startLifetimeMultiplier = 10f * (1f - (m_currentHealth / m_towerStats.m_targetHealth));
+
+                if (!m_bIsDamaged)
+                {
+                    OnDamagedEvent?.Invoke();
+                    m_bIsDamaged = true;
+                }
             }
         }
     }
@@ -83,7 +89,7 @@ public class Tower : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void TowerDestroyed()
     {
         if (MOBA_Manager.Instance != null)
             MOBA_Manager.Instance.DestroyedTower(new Vector3(this.transform.position.x, -0.5f, this.transform.position.z), m_towerStats.m_isEnemyBuilding);
