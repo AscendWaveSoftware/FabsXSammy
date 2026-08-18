@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9071275939783784490}
   - component: {fileID: 3255452648474649464}
   - component: {fileID: 677930048126018608}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 5346276395987256774}
   - component: {fileID: 2966346852289308383}
   - component: {fileID: 3416156251045301852}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3865402454131255988}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1519479611853213806}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6180565688941199634}
   - component: {fileID: 3811568403452460052}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DamageSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -541,7 +541,7 @@ GameObject:
   - component: {fileID: 1031842127868254804}
   - component: {fileID: 3465185083093406625}
   - component: {fileID: 5133850301312443195}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5435,7 +5435,7 @@ GameObject:
   - component: {fileID: 1462623507015536907}
   - component: {fileID: 5415966888857744492}
   - component: {fileID: 5430291549268689229}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5509,7 +5509,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5736521050342214449}
   - component: {fileID: 869270094030883346}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5600,7 +5600,7 @@ GameObject:
   - component: {fileID: 2720883750146283067}
   - component: {fileID: 7420534770678345649}
   - component: {fileID: 3664779979612992221}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AllyTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5638,6 +5638,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   m_team: 0
+  m_aiResources: {fileID: 0}
+  m_resources: {fileID: 0}
   m_towerStats: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
   OnDamagedEvent:
     m_PersistentCalls:
@@ -5821,6 +5823,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Asset_Tower_Bottom
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c1c3afe9276153046882eae492171bd2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5847,6 +5853,10 @@ PrefabInstance:
     - target: {fileID: 564727702841232926, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_Name
       value: Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 564727702841232926, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 909023944363529380, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5888,6 +5898,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 988916446741633901, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_Volume
       value: 0.1
@@ -5897,6 +5911,10 @@ PrefabInstance:
       value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: MinDistance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: rolloffMode
       value: 1
       objectReference: {fileID: 0}
@@ -5904,6 +5922,10 @@ PrefabInstance:
       propertyPath: OutputAudioMixerGroup
       value: 
       objectReference: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
+    - target: {fileID: 4485043229982225624, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5989,6 +6011,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 44d498bf87bd956459eb32698e21dfd7, type: 3}
       propertyPath: m_Name
       value: Tower_Bottom_Damaged_var1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 44d498bf87bd956459eb32698e21dfd7, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 44d498bf87bd956459eb32698e21dfd7, type: 3}
       propertyPath: m_IsActive

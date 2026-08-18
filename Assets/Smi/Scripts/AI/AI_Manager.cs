@@ -4,34 +4,35 @@ using System.Collections;
 public class AI_Manager : MonoBehaviour
 {
     [Header("Units")]
-    [SerializeField] private GameObject[] m_units;
-    [SerializeField] private Factory factory;
+    [SerializeField] public GameObject[] m_units;
+    [SerializeField] public Factory factory;
 
     [Header("Spawn Timing")]
-    [SerializeField] private float m_minSpawnTime = 8f;
-    [SerializeField] private float m_maxSpawnTime = 15f;
+    [SerializeField] public float m_minSpawnTime = 8f;
+    [SerializeField] public float m_maxSpawnTime = 15f;
 
     [Header("AI Economy")]
-    [SerializeField] private int m_aiScrap = 0;
-    [SerializeField] private int m_incomeAmount = 10;
-    [SerializeField] private int m_startIncomeAmount;
-    [SerializeField] private float m_incomeInterval = 5f;
-    [SerializeField] private int m_maxIncomeAmount = 20;
+    [SerializeField] public int m_aiScrap = 0;
+    [SerializeField] public int m_incomeAmount = 10;
+    [SerializeField] public int m_startIncomeAmount;
+    [SerializeField] public float m_incomeInterval = 3f;
+    [SerializeField] public int m_maxIncomeAmount = 50;
 
     [Header("Wave Settings")]
-    [SerializeField] private int m_maxUnitsPerWave = 4;
-    [SerializeField] private float m_spawnDelay = 0.5f;
+    [SerializeField] public int m_maxUnitsPerWave = 4;
+    [SerializeField] public float m_spawnDelay = 0.5f;
 
     [Header("Big Units")]
-    [SerializeField] private int m_bigUnitUnlockLevel = 10;
-    [SerializeField] private float m_startBigUnitChance = 0.15f;
-    [SerializeField] private float m_bigChanceIncreasePerLevel = 0.03f;
-    [SerializeField] private float m_maxBigUnitChance = 0.5f;
+    [SerializeField] public int m_bigUnitUnlockLevel = 10;
+    [SerializeField] public float m_startBigUnitChance = 0.15f;
+    [SerializeField] public float m_bigChanceIncreasePerLevel = 0.03f;
+    [SerializeField] public float m_maxBigUnitChance = 0.5f;
+
+    [Header("Shop Prices")]
+    [SerializeField] public SO_CurrencySystem m_prices;
 
     [Header("References")]
     private PlayerExperience m_playerXP;
-
-    [SerializeField] private SO_CurrencySystem m_prices;
 
     private float m_incomeTimer;
     private bool m_isSpawning;
@@ -41,7 +42,7 @@ public class AI_Manager : MonoBehaviour
     private void Start()
     {
         m_playerXP = FindAnyObjectByType<PlayerExperience>();
-        m_startIncomeAmount = m_incomeAmount;
+       m_startIncomeAmount = m_incomeAmount;
     }
 
     private void Update()
@@ -60,11 +61,17 @@ public class AI_Manager : MonoBehaviour
             if (m_incomeAmount < m_maxIncomeAmount)
                 m_incomeAmount = m_startIncomeAmount + m_playerXP.CurrentLevel;
 
-            m_aiScrap += m_incomeAmount;
+           m_aiScrap += m_incomeAmount;
             m_incomeTimer = 0f;
         }
     }
 
+    public void AddScrap(int _amount)
+    {
+        if (_amount <= 0) return;
+
+        m_aiScrap += _amount;
+    }
 
     private void HandleSpawning()
     {
@@ -82,9 +89,7 @@ public class AI_Manager : MonoBehaviour
     {
         m_isSpawning = true;
 
-        yield return new WaitForSeconds(
-            Random.Range(m_minSpawnTime, m_maxSpawnTime)
-        );
+        yield return new WaitForSeconds(Random.Range(m_minSpawnTime, m_maxSpawnTime));
 
         int spawnedUnits = 0;
 

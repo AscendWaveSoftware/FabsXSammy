@@ -6,6 +6,10 @@ using static UnityEngine.ParticleSystem;
 public class Tower : MonoBehaviour
 {
     public Team m_team;
+    [Header("Resource Data")]
+    [SerializeField] private AI_Manager m_aiResources;
+    [SerializeField] private PlayerResources m_resources;
+
     [SerializeField] private SO_TowerStats m_towerStats;
     public UnityEvent OnDamagedEvent;
     [SerializeField] private GameObject OnDestroyed;
@@ -14,7 +18,6 @@ public class Tower : MonoBehaviour
     [SerializeField] private MainModule main;
 
     [SerializeField] private float m_currentHealth;
-
 
     private bool m_bIsDamaged = false;
 
@@ -34,14 +37,16 @@ public class Tower : MonoBehaviour
     {
         if (m_towerStats)
             m_currentHealth = m_towerStats.m_targetHealth;
+
+        m_aiResources = FindAnyObjectByType<AI_Manager>();
+        m_resources = FindAnyObjectByType<PlayerResources>();
     }
 
     public void OnDamage(float _damage)
     {
         m_currentHealth -= _damage;
 
-        if (MOBA_Manager.Instance != null)
-            MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+        MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
 
         if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
         {
@@ -67,9 +72,15 @@ public class Tower : MonoBehaviour
     private void UnregisterTower()
     {
         if (m_team == Team.Blue)
+        {
             EntityManager.BlueTowers.Remove(this);
+            m_resources.AddScrap(1000);
+        }
         else
+        {
             EntityManager.RedTowers.Remove(this);
+            m_aiResources.AddScrap(1000);
+        }
     }
 
     private void OnDisable()

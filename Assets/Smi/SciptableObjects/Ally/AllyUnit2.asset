@@ -18,7 +18,7 @@ MonoBehaviour:
   m_moveSpeed: 3
   m_attackDamage: 50
   m_attackCooldown: 3
-  m_stopDistance: 4
+  m_stopDistance: 3
   m_detectRange: 15
   m_targetSwitchInterval: 0.5
   m_hitAudioPitchMax: 0.6

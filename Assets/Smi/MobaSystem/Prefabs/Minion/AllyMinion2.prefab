@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3576034141919135113}
   - component: {fileID: 3914832247264889455}
   - component: {fileID: 6477029121030553363}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5048,7 +5048,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8635280383646425207}
   - component: {fileID: 7267069616177546413}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5140,7 +5140,7 @@ GameObject:
   - component: {fileID: 4077681161950461908}
   - component: {fileID: 2541178851609839041}
   - component: {fileID: 2342881893804659044}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5252,7 +5252,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22226905726000618}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10439,7 +10439,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1160421604299872953}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Effects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15440,7 +15440,7 @@ GameObject:
   - component: {fileID: 2491754712142674982}
   - component: {fileID: 3468092411100171191}
   - component: {fileID: 5918343081325179266}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20419,6 +20419,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b844b10972d650b49972227c1260caeb, type: 3}
       propertyPath: m_Name
       value: Asset_Minion_middle
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b844b10972d650b49972227c1260caeb, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

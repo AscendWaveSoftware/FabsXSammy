@@ -1,19 +1,35 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+
 
 public class MOBA_Manager : MonoBehaviour
 {
     public static MOBA_Manager Instance { get; private set; }
 
+    [Header("GameState")]
     public bool isGameOver = false;
+
+    [Header("Health")]
     public float m_allyHealth;
     public float m_enemyHealth;
-    [SerializeField] private Slider[] m_Slider;
+
+    [Header("Team Sliders")]
+    [SerializeField] public TeamSliderSetup[] m_Slider;
+
+    [Header("Slider Animations")]
     [SerializeField] private Animation[] m_Animation;
+
+    [Header("Destroyed Tower Animation")]
+    [SerializeField] private Animation m_destroyedAnimation;
+    [SerializeField] private TextMeshProUGUI m_text;
+
+    [Header("Destroyed Tower Prefab")]
     [SerializeField] private GameObject[] m_DestroyedTower;
+
     [SerializeField] UnityEvent m_WinEvent;
     [SerializeField] UnityEvent m_LoseEvent;
+
 
     private void Awake()
     {
@@ -28,47 +44,25 @@ public class MOBA_Manager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void SetSlider(float _health, bool _isEnemy)
+    public void SetSlider(float _value, bool _isEnemy)
     {
         if (!_isEnemy)
-        {
-            if (m_Slider[0] != null)
-            {
-                m_allyHealth += _health;
-                m_Slider[0].maxValue = m_allyHealth;
-                m_Slider[0].value = m_Slider[0].maxValue;
-            }
-        }
+            m_Slider[0].SetSliderValue(_value);
         else
-        {
-            if (m_Slider[1] != null)
-            {
-                m_enemyHealth += _health;
-                m_Slider[1].maxValue = m_enemyHealth;
-                m_Slider[1].value = m_Slider[1].maxValue;
-            }
-        }
+            m_Slider[1].SetSliderValue(_value);
     }
 
     public void OnDamage(float _damage, bool _isEnemy)
     {
-        for (int i = 0; i < m_Slider.Length; i++)
+        if (!_isEnemy)
         {
-            if (m_Slider[i])
-            {
-                if (!_isEnemy)
-                {
-                    m_allyHealth -= _damage;
-                    m_Slider[0].value = m_allyHealth;
-                    m_Animation[0].Play();
-                }
-                else
-                {
-                    m_enemyHealth -= _damage;
-                    m_Slider[1].value = m_enemyHealth;
-                    m_Animation[1].Play();
-                }
-            }
+            m_allyHealth -= _damage;
+            m_Slider[0].OnDamage(m_allyHealth);
+        }
+        else
+        {
+            m_enemyHealth -= _damage;
+            m_Slider[1].OnDamage(m_enemyHealth);
         }
     }
 
@@ -80,13 +74,17 @@ public class MOBA_Manager : MonoBehaviour
                 var destTowerAlly = Instantiate(m_DestroyedTower[0], this.transform);
                 destTowerAlly.transform.position = _position;
                 destTowerAlly.transform.Rotate(0, Random.Range(0, 355), 0);
+                m_text.text = "You + 1000 Scraps";
                 break;
 
             case true:
                 var destTowerEnemy = Instantiate(m_DestroyedTower[1], this.transform);
                 destTowerEnemy.transform.position = _position;
+                m_text.text = "Enemy + 1000 Scraps";
                 break;
         }
+   
+        m_destroyedAnimation.Play();
     }
 
     public void WinGame()

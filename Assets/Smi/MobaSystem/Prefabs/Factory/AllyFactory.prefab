@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4195847143376266184}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ProjectSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 5412759354934123193}
   - component: {fileID: 5359705198005725035}
   - component: {fileID: 3428576022061344867}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 6235416093862922436}
   - component: {fileID: 1965295043318524065}
   - component: {fileID: 8386272228230365768}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5012,7 +5012,7 @@ GameObject:
   - component: {fileID: 2142266502643905940}
   - component: {fileID: 6268421261196311312}
   - component: {fileID: 4255166656489767719}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9995,7 +9995,7 @@ GameObject:
   - component: {fileID: 6033063462890209856}
   - component: {fileID: 7949946291599589102}
   - component: {fileID: 641702333652712449}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10106,7 +10106,7 @@ GameObject:
   - component: {fileID: 1808091332674410545}
   - component: {fileID: 5392816070951433496}
   - component: {fileID: 8441601827702545132}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15054,7 +15054,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6451678289499765786}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15091,7 +15091,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5776402629179827134}
   - component: {fileID: 3960609007933463765}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24913,7 +24913,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4064978578194262959}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ProjectSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24991,6 +24991,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6a1b74247a1d8654e9b2d59e40146322, type: 3}
       propertyPath: m_Name
       value: Factory_Tower_Bottom
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a1b74247a1d8654e9b2d59e40146322, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25170,6 +25174,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Factory_Tower_Bottom (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a1b74247a1d8654e9b2d59e40146322, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -25267,6 +25275,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 57953a7181e373c4da0161c714f6eb3b, type: 3}
       propertyPath: m_Name
       value: Factory
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 57953a7181e373c4da0161c714f6eb3b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25406,6 +25418,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5aff32ff5cba89347b1c513c19b5297f, type: 3}
       propertyPath: m_Name
       value: Asset_Factory_Tower_Top (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5aff32ff5cba89347b1c513c19b5297f, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25611,6 +25627,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5aff32ff5cba89347b1c513c19b5297f, type: 3}
       propertyPath: m_Name
       value: Asset_Factory_Tower_Top
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5aff32ff5cba89347b1c513c19b5297f, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25821,6 +25841,18 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2467505905257712684, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2524047885602195655, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3002655104609311432, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3281081805704235936, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_SizeDelta.x
       value: 512
@@ -25852,6 +25884,10 @@ PrefabInstance:
     - target: {fileID: 3860132309339924191, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4038416287256955775, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4475023494415750321, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_SizeDelta.x
@@ -25917,6 +25953,10 @@ PrefabInstance:
       propertyPath: m_factory
       value: 
       objectReference: {fileID: 7517560261858270348}
+    - target: {fileID: 5066725602127169799, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5117399936665944585, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_SizeDelta.x
       value: 512
@@ -25964,6 +26004,10 @@ PrefabInstance:
     - target: {fileID: 5434007308664958522, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_Name
       value: Scrapshop
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819432030625127456, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6019930354063286700, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -26025,6 +26069,14 @@ PrefabInstance:
       propertyPath: m_SpriteState.m_HighlightedSprite
       value: 
       objectReference: {fileID: 21300000, guid: 88e50311cc3161444a569c89eef6c094, type: 3}
+    - target: {fileID: 8402068269591939883, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9068692307121232489, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9092582711368699633, guid: 57be8b220096f7d4597faa0da18dbcf0, type: 3}
       propertyPath: m_fontSize
       value: 24

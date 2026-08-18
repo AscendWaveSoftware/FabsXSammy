@@ -30,6 +30,7 @@ public class Factory : MonoBehaviour, IMinionPool
     public void OnDamage(float _damage)
     {
         MOBA_Manager.Instance.OnDamage(_damage, m_stats.m_isEnemyBuilding);
+
         if (mainModule)
             main.startLifetimeMultiplier++;
     }
