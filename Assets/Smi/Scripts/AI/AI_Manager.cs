@@ -56,7 +56,7 @@ public class AI_Manager : MonoBehaviour
     {
         m_incomeTimer += Time.deltaTime;
 
-        if (m_incomeTimer >= m_incomeInterval)
+        if (m_incomeTimer >= m_incomeInterval && m_playerXP)
         {
             if (m_incomeAmount < m_maxIncomeAmount)
                 m_incomeAmount = m_startIncomeAmount + m_playerXP.CurrentLevel;
