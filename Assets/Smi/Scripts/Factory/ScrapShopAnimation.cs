@@ -1,5 +1,6 @@
-using UnityEngine;
+//Code by Fabian Schmiedel
 
+using UnityEngine;
 public class ScrapShopAnimation : MonoBehaviour
 {
     Animation m_animation;

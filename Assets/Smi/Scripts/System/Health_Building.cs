@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using UnityEngine;
 
 public class Health_Building : MOBA_Health, IDamageable
@@ -21,13 +23,13 @@ public class Health_Building : MOBA_Health, IDamageable
 
         UpdateSlider(m_currentHealth);
 
-        if (m_currentHealth <= 0)
-            gameObject.SetActive(false);
-
         if (m_tower)
             m_tower.OnDamage(_damage);
         else if (m_factory)
             m_factory.OnDamage(_damage);
+
+        if (m_currentHealth <= 0)
+            gameObject.SetActive(false);
 
     }
 }

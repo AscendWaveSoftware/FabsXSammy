@@ -1,4 +1,5 @@
-using System;
+//Code by Fabian Schmiedel
+
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TowerCombat", menuName = "Scriptable Objects/TowerCombat")]

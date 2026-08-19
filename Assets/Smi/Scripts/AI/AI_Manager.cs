@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//Code by Fabian Schmiedel
+
+using UnityEngine;
 using System.Collections;
 
 public class AI_Manager : MonoBehaviour

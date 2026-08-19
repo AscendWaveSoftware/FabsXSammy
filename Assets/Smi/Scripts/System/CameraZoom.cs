@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;

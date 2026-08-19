@@ -1,5 +1,8 @@
+//Code by Fabian Schmiedel
+
 using TMPro;
 using UnityEngine;
+using UnityEngine.Video;
 
 
 public class ScrapShop : MonoBehaviour
@@ -11,6 +14,8 @@ public class ScrapShop : MonoBehaviour
     [SerializeField] string m_nameUnit1 = "Small Unit";
     [SerializeField] string m_nameUnit2 = "Big Unit";
     [SerializeField] Canvas canvas;
+    [SerializeField] VideoPlayer[] m_minionsVid;
+
     [Header("Factory Objects")]
     [SerializeField] Factory m_factory;
     [SerializeField] GameObject[] m_minions;
@@ -26,10 +31,15 @@ public class ScrapShop : MonoBehaviour
         {
             PveRuntime.SetPaused(true);
             m_playerResources = FindAnyObjectByType<PlayerResources>();
-            m_scrapText.text = "Current Scrap: " + m_playerResources.CurrentScrap.ToString();
+            m_scrapText.text = "Current Scrap:\n" + m_playerResources.CurrentScrap.ToString();
             m_buyMiniText.text = $"[{m_nameUnit1}] \nCost: " + m_prices.m_PriceForUnit1;
             m_buyBigText.text = $"[{m_nameUnit2}] \nCost: " + m_prices.m_PriceForUnit2;
             canvas.enabled = true;
+
+            for (int i = 0; i < m_minionsVid.Length; i++)
+            {
+                m_minionsVid[i].Play();
+            }
         }
     }
 
@@ -38,9 +48,8 @@ public class ScrapShop : MonoBehaviour
         if (m_playerResources.CurrentScrap >= m_prices.m_PriceForUnit1)
         {
             m_playerResources.DecreaseScrap(m_prices.m_PriceForUnit1, Resources.SCRAP);
-            m_scrapText.text = "Current Scrap: " + m_playerResources.CurrentScrap.ToString();
+            m_scrapText.text = "Current Scrap:\n" + m_playerResources.CurrentScrap.ToString();
             m_factory.GetMinion(m_minions[0]);
-
         }
     }
 
@@ -49,7 +58,7 @@ public class ScrapShop : MonoBehaviour
         if (m_playerResources.CurrentScrap >= m_prices.m_PriceForUnit2)
         {
             m_playerResources.DecreaseScrap(m_prices.m_PriceForUnit2, Resources.SCRAP);
-            m_scrapText.text = "Current Scrap: " + m_playerResources.CurrentScrap.ToString();
+            m_scrapText.text = "Current Scrap:\n" + m_playerResources.CurrentScrap.ToString();
             m_factory.GetMinion(m_minions[1]);
         }
     }
@@ -58,5 +67,9 @@ public class ScrapShop : MonoBehaviour
     {
         PveRuntime.SetPaused(false);
         canvas.enabled = false;
+        for (int i = 0; i < m_minionsVid.Length; i++)
+        {
+            m_minionsVid[i].Stop();
+        }
     }
 }

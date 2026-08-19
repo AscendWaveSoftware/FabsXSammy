@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿//Code by Fabian Schmiedel
+
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
