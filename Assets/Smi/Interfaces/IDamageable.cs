@@ -1,4 +1,4 @@
-using UnityEngine;
+//Code by Fabian Schmiedel
 
 public interface IDamageable
 {

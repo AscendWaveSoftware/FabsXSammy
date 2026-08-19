@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MinionStats", menuName = "Scriptable Objects/MinionStats")]

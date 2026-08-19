@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5386309427216151551}
   - component: {fileID: 4594610315561702958}
   - component: {fileID: 6229420924727908841}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ExplosionEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4905,7 +4905,7 @@ GameObject:
   - component: {fileID: 2352548425383731442}
   - component: {fileID: 1143730999767185152}
   - component: {fileID: 6404458339558534771}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmokeEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9785,6 +9785,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e62a5dd8e84e306418681794b751a97d, type: 3}
       propertyPath: m_Name
       value: Tower_Destroyed_Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e62a5dd8e84e306418681794b751a97d, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

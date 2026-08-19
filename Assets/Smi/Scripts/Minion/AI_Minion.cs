@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -51,8 +53,6 @@ public class AI_Minion : MonoBehaviour
             UpdateDestination();
             m_destinationUpdateTimer = 0.0f;
         }
-
-
     }
 
     private void UpdateDestination()

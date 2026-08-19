@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43dea7f81000cb4ab0d6b83e72f326c, type: 3}
   m_Name: SO_CurrencySystem
   m_EditorClassIdentifier: Assembly-CSharp::SO_CurrencySystem
-  m_PriceForUnit1: 100
+  m_PriceForUnit1: 200
   m_PriceForUnit2: 500

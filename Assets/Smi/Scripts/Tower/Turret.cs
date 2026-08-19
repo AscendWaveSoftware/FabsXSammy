@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -127,8 +129,8 @@ public class Turret : MonoBehaviour
 
     private IEnumerator DestroyProjectile(Projectile _projectile)
     {
-        yield return new WaitForSeconds(1);
-        if (m_currentTarget == null && _projectile != null)
+        yield return new WaitForSeconds(2);
+        if (_projectile != null)
             Destroy(_projectile.gameObject);
     }
 
