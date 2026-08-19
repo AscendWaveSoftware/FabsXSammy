@@ -1,3 +1,5 @@
+//Code by Fabian Schmiedel
+
 using UnityEngine;
 using System.Collections;
 

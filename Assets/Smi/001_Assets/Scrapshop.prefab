@@ -413,7 +413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5e9ab6dd2f2f7a140967b781483ea7f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4d5b9d75b16b58f4d975ae44c19fec2b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1544,6 +1544,8 @@ GameObject:
   - component: {fileID: 7603787717111513904}
   - component: {fileID: 7462815285557741235}
   - component: {fileID: 3565826310777678271}
+  - component: {fileID: 1056304704952288929}
+  - component: {fileID: 506916163580196493}
   m_Layer: 0
   m_Name: ShopCanvas
   m_TagString: Untagged
@@ -1641,6 +1643,35 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &1056304704952288929
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7290853049378649561}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!111 &506916163580196493
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7290853049378649561}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Animation: {fileID: 7400000, guid: 33a82a14aef36cc469fd54265933fd84, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 33a82a14aef36cc469fd54265933fd84, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0
 --- !u!1 &7291165880617556929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,7 +1806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5e9ab6dd2f2f7a140967b781483ea7f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4d5b9d75b16b58f4d975ae44c19fec2b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2134,7 +2165,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5e9ab6dd2f2f7a140967b781483ea7f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4d5b9d75b16b58f4d975ae44c19fec2b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2443,6 +2474,8 @@ Animation:
   m_Animations:
   - {fileID: 7400000, guid: 7d5bcb76a02f8c047998e44d08de49d8, type: 2}
   - {fileID: 7400000, guid: 1a6f9aecdcd82994f9cd303c1d02699d, type: 2}
+  - {fileID: 0}
+  - {fileID: 7400000, guid: 33a82a14aef36cc469fd54265933fd84, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0

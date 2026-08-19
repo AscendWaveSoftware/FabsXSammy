@@ -17,16 +17,25 @@ public class SettingsMenu : MonoBehaviour
     [Header("UI References")]
     public TMP_Dropdown m_resolutionDropDown;
     public TMP_Dropdown m_qualityDropDown;
+    public TMP_Dropdown m_fpsDropDown;
+    public TMP_Dropdown m_hzDropDown;
+
     public Toggle m_fullscreenToggle;
+    public Toggle m_vsyncToggle;
 
     Canvas m_canvas;
     bool bIsOpen = false;
 
     Resolution[] m_resolutions;
 
+    readonly int[] m_fpsOptions = { 30, 60, 120, 144, 165, 240, -1 };
+
     private void Start()
     {
         SetupResolutions();
+        SetupFPS();
+        SetupHZ();
+
         LoadSettings();
 
         m_canvas = GetComponent<Canvas>();
@@ -35,7 +44,9 @@ public class SettingsMenu : MonoBehaviour
     private void SetupResolutions()
     {
         m_resolutions = Screen.resolutions;
+
         m_resolutionDropDown.ClearOptions();
+
         List<string> options = new List<string>();
 
         int savedResolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", -1);
@@ -44,6 +55,7 @@ public class SettingsMenu : MonoBehaviour
         for (int i = 0; i < m_resolutions.Length; i++)
         {
             string option = $"{m_resolutions[i].width} x {m_resolutions[i].height}";
+
             options.Add(option);
 
             if (savedResolutionIndex == -1)
@@ -56,65 +68,335 @@ public class SettingsMenu : MonoBehaviour
             }
         }
 
-        if (savedResolutionIndex != -1)
+        if (savedResolutionIndex >= 0 &&
+            savedResolutionIndex < m_resolutions.Length)
         {
             currentResolutionIndex = savedResolutionIndex;
         }
 
         m_resolutionDropDown.AddOptions(options);
+
         m_resolutionDropDown.value = currentResolutionIndex;
         m_resolutionDropDown.RefreshShownValue();
     }
 
+
+    public void SetResoltuion(int _index)
+    {
+        if (_index < 0 || _index >= m_resolutions.Length)
+            return;
+
+        Resolution resolution = m_resolutions[_index];
+
+        RefreshRate refreshRate = resolution.refreshRateRatio;
+
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode, refreshRate);
+
+        PlayerPrefs.SetInt("ResolutionIndex", _index);
+        PlayerPrefs.Save();
+
+        SetupHZ();
+    }
+
+    private void SetupFPS()
+    {
+        if (m_fpsDropDown == null)
+            return;
+
+        m_fpsDropDown.ClearOptions();
+
+        List<string> options = new List<string>();
+
+        foreach (int fps in m_fpsOptions)
+        {
+            if (fps == -1)
+                options.Add("Unlimited");
+            else
+                options.Add(fps + " FPS");
+        }
+
+        m_fpsDropDown.AddOptions(options);
+
+        int savedFPSIndex = PlayerPrefs.GetInt("FPSIndex", 1);
+
+        if (savedFPSIndex < 0 ||
+            savedFPSIndex >= m_fpsOptions.Length)
+        {
+            savedFPSIndex = 1;
+        }
+
+        m_fpsDropDown.value = savedFPSIndex;
+        m_fpsDropDown.RefreshShownValue();
+    }
+
+
+    public void SetFPS(int _index)
+    {
+        if (_index < 0 || _index >= m_fpsOptions.Length)
+            return;
+
+        int fps = m_fpsOptions[_index];
+
+        Application.targetFrameRate = fps;
+
+        PlayerPrefs.SetInt("FPSIndex", _index);
+        PlayerPrefs.Save();
+    }
+
+    public void SetVSync(bool _enabled)
+    {
+        if (_enabled)
+        {
+            QualitySettings.vSyncCount = 1;
+
+            Application.targetFrameRate = -1;
+        }
+        else
+        {
+            QualitySettings.vSyncCount = 0;
+
+            int fpsIndex = PlayerPrefs.GetInt("FPSIndex", 1);
+
+            if (fpsIndex >= 0 &&
+                fpsIndex < m_fpsOptions.Length)
+            {
+                Application.targetFrameRate =
+                    m_fpsOptions[fpsIndex];
+            }
+        }
+
+        PlayerPrefs.SetInt("VSync", _enabled ? 1 : 0);
+        PlayerPrefs.Save();
+
+        if (m_vsyncToggle != null)
+            m_vsyncToggle.isOn = _enabled;
+    }
+
+    private void SetupHZ()
+    {
+        if (m_hzDropDown == null || m_resolutions == null)
+            return;
+
+        m_hzDropDown.ClearOptions();
+
+        List<int> refreshRates = new List<int>();
+
+        int resolutionIndex = m_resolutionDropDown.value;
+
+        if (resolutionIndex >= 0 &&
+            resolutionIndex < m_resolutions.Length)
+        {
+            Resolution selectedResolution =
+                m_resolutions[resolutionIndex];
+
+            int selectedWidth = selectedResolution.width;
+            int selectedHeight = selectedResolution.height;
+
+            for (int i = 0; i < m_resolutions.Length; i++)
+            {
+                if (m_resolutions[i].width == selectedWidth &&
+                    m_resolutions[i].height == selectedHeight)
+                {
+                    int hz = GetRefreshRate(m_resolutions[i]);
+
+                    if (!refreshRates.Contains(hz))
+                    {
+                        refreshRates.Add(hz);
+                    }
+                }
+            }
+        }
+
+        if (refreshRates.Count == 0)
+        {
+            refreshRates.Add(
+                GetRefreshRate(Screen.currentResolution)
+            );
+        }
+
+        refreshRates.Sort();
+
+        List<string> options = new List<string>();
+
+        foreach (int hz in refreshRates)
+        {
+            options.Add(hz + " Hz");
+        }
+
+        m_hzDropDown.AddOptions(options);
+
+        int savedHZ = PlayerPrefs.GetInt("RefreshRate", -1);
+
+        int selectedIndex = 0;
+
+        if (savedHZ != -1)
+        {
+            for (int i = 0; i < refreshRates.Count; i++)
+            {
+                if (refreshRates[i] == savedHZ)
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            int currentHZ =
+                GetRefreshRate(Screen.currentResolution);
+
+            for (int i = 0; i < refreshRates.Count; i++)
+            {
+                if (refreshRates[i] == currentHZ)
+                {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        m_hzDropDown.value = selectedIndex;
+        m_hzDropDown.RefreshShownValue();
+    }
+
+
+    public void SetHZ(int _index)
+    {
+        if (m_hzDropDown == null)
+            return;
+
+        if (_index < 0 || _index >= m_hzDropDown.options.Count)
+            return;
+
+        string selectedText =
+            m_hzDropDown.options[_index].text;
+
+        string hzString =
+            selectedText.Replace(" Hz", "");
+
+        if (!int.TryParse(hzString, out int hz))
+            return;
+
+        Resolution resolution =
+            m_resolutions[m_resolutionDropDown.value];
+
+        RefreshRate refreshRate = new RefreshRate
+        {
+            numerator = (uint)hz,
+            denominator = 1
+        };
+
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode, refreshRate);
+
+        PlayerPrefs.SetInt("RefreshRate", hz);
+        PlayerPrefs.Save();
+    }
+
+    private int GetRefreshRate(Resolution resolution)
+    {
+        return Mathf.RoundToInt(
+            (float)resolution.refreshRateRatio.value
+        );
+    }
+
     private void LoadSettings()
     {
-        float savedVolume = PlayerPrefs.GetFloat("Volume", 0f);
-        if (m_volumeSlider != null) m_volumeSlider.value = savedVolume;
+
+        float savedVolume =
+            PlayerPrefs.GetFloat("Volume", 0f);
+
+        if (m_volumeSlider != null)
+            m_volumeSlider.value = savedVolume;
+
         SetVolume(savedVolume);
 
-        int savedQuality = PlayerPrefs.GetInt("QualityIndex", 2);
-        if (m_qualityDropDown != null) m_qualityDropDown.value = savedQuality;
+        int savedQuality =
+            PlayerPrefs.GetInt("QualityIndex", 2);
+
+        if (m_qualityDropDown != null)
+            m_qualityDropDown.value = savedQuality;
+
         SetQuality(savedQuality);
 
-        bool savedFullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
-        if (m_fullscreenToggle != null) m_fullscreenToggle.isOn = savedFullscreen;
+        bool savedFullscreen =
+            PlayerPrefs.GetInt("Fullscreen", 1) == 1;
+
+        if (m_fullscreenToggle != null)
+            m_fullscreenToggle.isOn = savedFullscreen;
+
         SetFullscreen(savedFullscreen);
 
-        if (m_resolutionDropDown.value < m_resolutions.Length)
+        if (m_resolutionDropDown != null &&
+            m_resolutionDropDown.value < m_resolutions.Length)
         {
-            SetResoltuion(m_resolutionDropDown.value);
+            SetResoltuion(
+                m_resolutionDropDown.value
+            );
+        }
+
+        int savedFPSIndex =
+            PlayerPrefs.GetInt("FPSIndex", 1);
+
+        if (m_fpsDropDown != null)
+        {
+            m_fpsDropDown.value = savedFPSIndex;
+            m_fpsDropDown.RefreshShownValue();
+        }
+
+        bool savedVSync =
+            PlayerPrefs.GetInt("VSync", 0) == 1;
+
+        if (m_vsyncToggle != null)
+            m_vsyncToggle.isOn = savedVSync;
+
+        SetVSync(savedVSync);
+
+
+        if (!savedVSync)
+        {
+            SetFPS(savedFPSIndex);
         }
     }
 
     public void SetVolume(float _volume)
     {
         m_audioMixer.SetFloat("volume", _volume);
-        PlayerPrefs.SetFloat("Volume", _volume);
+
+        PlayerPrefs.SetFloat(
+            "Volume",
+            _volume
+        );
+
         PlayerPrefs.Save();
     }
 
+
     public void SetQuality(int _index)
     {
-        QualitySettings.SetQualityLevel(_index);
-        if (m_qualityDropDown != null) m_qualityDropDown.value = _index;
-        PlayerPrefs.SetInt("QualityIndex", _index);
+        QualitySettings.SetQualityLevel(
+            _index
+        );
+
+        if (m_qualityDropDown != null)
+            m_qualityDropDown.value = _index;
+
+        PlayerPrefs.SetInt(
+            "QualityIndex",
+            _index
+        );
+
         PlayerPrefs.Save();
     }
 
     public void SetFullscreen(bool _fullscreen)
     {
-        Screen.fullScreen = _fullscreen;
-        if (m_fullscreenToggle != null) m_fullscreenToggle.isOn = _fullscreen;
+        Screen.fullScreenMode = _fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+
+        if (m_fullscreenToggle != null)
+            m_fullscreenToggle.isOn = _fullscreen;
+
         PlayerPrefs.SetInt("Fullscreen", _fullscreen ? 1 : 0);
-        PlayerPrefs.Save();
-    }
 
-    public void SetResoltuion(int _index)
-    {
-        Resolution _resolution = m_resolutions[_index];
-        Screen.SetResolution(_resolution.width, _resolution.height, Screen.fullScreen);
-
-        PlayerPrefs.SetInt("ResolutionIndex", _index);
         PlayerPrefs.Save();
     }
 
@@ -127,54 +409,72 @@ public class SettingsMenu : MonoBehaviour
             else
                 CloseMenu();
         }
-
     }
 
     public void OpenMenu()
     {
         bIsOpen = true;
+
         m_canvas.enabled = true;
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
         Time.timeScale = 0f;
     }
+
 
     public void CloseMenu()
     {
         bIsOpen = false;
+
         m_canvas.enabled = false;
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
         Time.timeScale = 1f;
     }
-
     public void RestartGame()
     {
         CloseMenu();
-        var currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.buildIndex);
+
+        var currentScene =
+            SceneManager.GetActiveScene();
+
+        SceneManager.LoadScene(
+            currentScene.buildIndex
+        );
     }
 
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
-        Destroy(MOBA_Manager.Instance.gameObject);
+
+        Destroy(
+            MOBA_Manager.Instance.gameObject
+        );
     }
 
     public void FeedbackButton()
     {
-        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
+        Application.OpenURL(
+            "https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf"
+        );
     }
 
     public void Mute(bool _status)
     {
         if (_status)
         {
-            m_audioMixer.SetFloat("volume", -60);
+            m_audioMixer.SetFloat(
+                "volume",
+                -60
+            );
+
             m_volumeSlider.value = -60;
             m_volumeSlider.enabled = false;
         }
-
         else
         {
             m_volumeSlider.enabled = true;
