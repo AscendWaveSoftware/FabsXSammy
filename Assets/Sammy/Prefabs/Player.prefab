@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &860730545794832904
 GameObject:
@@ -431,6 +431,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fa0c30cb7ccb4ff488fbc920da1a217e, type: 2}
   - {fileID: 11400000, guid: 63fcceb5a4e540e3b1313093d8e84e02, type: 2}
   - {fileID: 11400000, guid: 181f17469d474ba58478a392193418c1, type: 2}
+  - {fileID: 11400000, guid: f94a2355a9814dc44b02508afcda6168, type: 2}
+  - {fileID: 11400000, guid: b87ee8a635ffe4e4985c7fd3c5eca650, type: 2}
+  - {fileID: 11400000, guid: 234c384a480f1bc4da4b2877564f94ef, type: 2}
+  - {fileID: 11400000, guid: 105c6cfcd3fff5446b8e66ee2bed39dd, type: 2}
+  - {fileID: 11400000, guid: cc611add51919c34e9d378cec75ab470, type: 2}
   m_playerMovementHandler: {fileID: 7453557029405839637}
   m_playerHealth: {fileID: 2666698548747110859}
   m_playerCombat: {fileID: 5135860194248459096}
@@ -609,6 +614,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7e5082dacaa341248e30444ab150a898, type: 2}
   - {fileID: 11400000, guid: e7f285edb0194112ac55b73626446139, type: 2}
   - {fileID: 11400000, guid: 1d1eb61b95e8415a85566a05be8e4f31, type: 2}
+  - {fileID: 11400000, guid: 97cd717ac2bec494fbce117ca1bca924, type: 2}
   m_enemyLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -626,7 +632,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 571533d5e699472498628afc2e9eebfd, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpellBarUI
   m_spellCaster: {fileID: 4711829365002174886}
   m_uiHandler: {fileID: 1514402343732450852}
@@ -645,7 +651,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 041c496e32d0499d87f47a64571d8fdd, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDropShadow
   m_diameter: 1.35
   m_opacity: 0.6

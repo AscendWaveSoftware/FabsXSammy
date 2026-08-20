@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9461092c4bca4557a67f4e6fc39241b9, type: 3}
+  m_Name: Spell_Vortex
+  m_EditorClassIdentifier: Assembly-CSharp::SpellDefinition
+  SpellName: Vortex
+  Delivery: 3
+  UiColor: {r: 0.62, g: 0.36, b: 0.96, a: 1}
+  CastClip: {fileID: 8300000, guid: d14f183c9c7a146468944e4ab377c60f, type: 3}
+  EmissiveMaterial: {fileID: 2100000, guid: 9f4c8b2e1a7d40539c6e0b3d85a1f724, type: 2}
+  EmissionIntensity: 3.2
+  Frames:
+  - {fileID: -1120785700, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: 316370552, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: 1839488741, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: 1968027904, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: -1859468115, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: -393200757, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: -586247149, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: -781572245, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  - {fileID: 307691996, guid: 09216aed64c3ef04cbac21d8cb9b3c54, type: 3}
+  ProjectileFrame: 0
+  ImpactStartFrame: 0
+  ImpactFrameRate: 12
+  Cooldown: 16
+  TargetSearchRange: 18
+  SpawnHeight: 0.25
+  Speed: 14
+  TurnRate: 220
+  Lifetime: 2.5
+  HitRadius: 0.5
+  CoreScale: 9
+  GlowDiameter: 1.2
+  GlowPulse: 0.12
+  SpawnPopDuration: 0.12
+  TrailSpacing: 0.22
+  TrailLifetime: 0.35
+  CastFlashDiameter: 0
+  CastFlashFrames: 3
+  CastFlashFrameRate: 26
+  CloudTickInterval: 0.4
+  CloudVisualScale: 1.15
+  CloudGroundOffset: 0
+  CloudPlacementDistance: 4.5
+  PoisonDamagePerTick: 9
+  PoisonTickInterval: 0.5
+  PoisonDuration: 5
+  PoisonColor: {r: 0.45, g: 0.95, b: 0.3, a: 0.75}
+  NovaStunDuration: 1.6
+  ChainJumps: 0
+  ChainJumpRange: 5
+  ChainDamageFalloff: 0.55
+  ChainColor: {r: 1, g: 0.9, b: 0.55, a: 1}
+  VortexPeakFrame: 4
+  VortexFormDuration: 0.5
+  VortexHoldDuration: 1.7
+  VortexCollapseDuration: 0.8
+  VortexPullRangeScale: 2.2
+  VortexPullSpeed: 4.4
+  VortexSpiral: 0.9
+  VortexDamagePerTick: 7
+  VortexTickInterval: 0.3
+  VortexSpinSpeed: -95
+  VortexGroundOffset: 1.15
+  VortexTetherWidth: 0.17
+  VortexDebrisPerSecond: 30
+  Damage: 110
+  ImpactRadius: 3.2
+  ImpactVisualScale: 1.45
+  GlowColor: {r: 0.74, g: 0.44, b: 1, a: 0.95}
+  TrailColor: {r: 0.55, g: 0.3, b: 0.95, a: 0.8}
