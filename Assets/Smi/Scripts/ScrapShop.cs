@@ -78,9 +78,9 @@ public class ScrapShop : MonoBehaviour
             m_playerResources.DecreaseScrap(m_prices.m_PriceForUnit2, Resources.SCRAP);
             m_scrapText.text = "Current Scrap:\n" + m_playerResources.CurrentScrap.ToString();
             m_factory.GetMinion(m_minions[1]);
-
+            m_buyAnim = m_bigMinionButton.GetComponent<Animation>();
+            m_buyAnim.Play();
         }
-        m_bigMinionButton.interactable = false;
     }
 
     public void CloseShop()
