@@ -109920,12 +109920,20 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1683133744469874554, guid: 80ff1dec78f666042a1ea997e0e0826f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3a08f006caace924181f2feb20b14910, type: 3}
     - target: {fileID: 3182013754206193178, guid: 80ff1dec78f666042a1ea997e0e0826f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3182013754206193178, guid: 80ff1dec78f666042a1ea997e0e0826f, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455044745847825745, guid: 80ff1dec78f666042a1ea997e0e0826f, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4643112579249837911, guid: 80ff1dec78f666042a1ea997e0e0826f, type: 3}
