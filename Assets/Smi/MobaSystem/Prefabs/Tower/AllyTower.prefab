@@ -442,7 +442,7 @@ AudioSource:
   m_GameObject: {fileID: 3972289188574909656}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1475787982256552312, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 0d008ecf2edce774e8894590ec7abc08, type: 3}
   m_PlayOnAwake: 0
@@ -5854,10 +5854,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret
       objectReference: {fileID: 0}
-    - target: {fileID: 564727702841232926, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 909023944363529380, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5897,34 +5893,6 @@ PrefabInstance:
     - target: {fileID: 909023944363529380, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 988916446741633901, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: m_Volume
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: MaxDistance
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: MinDistance
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: rolloffMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 24300002, guid: ba565ae5302e8364480616c81a47df32, type: 2}
-    - target: {fileID: 4485043229982225624, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

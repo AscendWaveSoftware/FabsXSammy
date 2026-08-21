@@ -12,7 +12,9 @@ public class SettingsMenu : MonoBehaviour
 {
     [Header("Audio Settings")]
     public AudioMixer m_audioMixer;
-    public Slider m_volumeSlider;
+    public Slider m_masterSlider;
+    public Slider m_musicSlider;
+    public Slider m_sfxSlider;
 
     [Header("UI References")]
     public TMP_Dropdown m_resolutionDropDown;
@@ -23,10 +25,12 @@ public class SettingsMenu : MonoBehaviour
     public Toggle m_fullscreenToggle;
     public Toggle m_vsyncToggle;
 
-    Canvas m_canvas;
-    bool bIsOpen = false;
+    private Canvas m_canvas;
+    private bool bIsOpen = false;
 
-    Resolution[] m_resolutions;
+    private Resolution[] m_resolutions;
+
+    private string m_groupName = "master";
 
     readonly int[] m_fpsOptions = { 30, 60, 120, 144, 165, 240, -1 };
 
@@ -242,8 +246,7 @@ public class SettingsMenu : MonoBehaviour
         }
         else
         {
-            int currentHZ =
-                GetRefreshRate(Screen.currentResolution);
+            int currentHZ = GetRefreshRate(Screen.currentResolution);
 
             for (int i = 0; i < refreshRates.Count; i++)
             {
@@ -301,17 +304,11 @@ public class SettingsMenu : MonoBehaviour
 
     private void LoadSettings()
     {
+        LoadSliderValue(m_masterSlider, "master");
+        LoadSliderValue(m_musicSlider, "music");
+        LoadSliderValue(m_sfxSlider, "sfx");
 
-        float savedVolume =
-            PlayerPrefs.GetFloat("Volume", 0f);
-
-        if (m_volumeSlider != null)
-            m_volumeSlider.value = savedVolume;
-
-        SetVolume(savedVolume);
-
-        int savedQuality =
-            PlayerPrefs.GetInt("QualityIndex", 2);
+        int savedQuality = PlayerPrefs.GetInt("QualityIndex", 2);
 
         if (m_qualityDropDown != null)
             m_qualityDropDown.value = savedQuality;
@@ -358,14 +355,22 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
+    private void LoadSliderValue(Slider _slider, string _groupName)
+    {
+        float value = PlayerPrefs.GetFloat(_groupName, 0f);
+
+        if (_slider != null)
+            _slider.value = value;
+
+        m_groupName = _groupName;
+        SetVolume(value);
+    }
+
     public void SetVolume(float _volume)
     {
-        m_audioMixer.SetFloat("volume", _volume);
+        m_audioMixer.SetFloat(m_groupName, _volume);
 
-        PlayerPrefs.SetFloat(
-            "Volume",
-            _volume
-        );
+        PlayerPrefs.SetFloat(m_groupName, _volume);
 
         PlayerPrefs.Save();
     }
@@ -380,10 +385,7 @@ public class SettingsMenu : MonoBehaviour
         if (m_qualityDropDown != null)
             m_qualityDropDown.value = _index;
 
-        PlayerPrefs.SetInt(
-            "QualityIndex",
-            _index
-        );
+        PlayerPrefs.SetInt("QualityIndex", _index);
 
         PlayerPrefs.Save();
     }
@@ -422,7 +424,6 @@ public class SettingsMenu : MonoBehaviour
 
         Time.timeScale = 0f;
     }
-
 
     public void CloseMenu()
     {
@@ -467,17 +468,19 @@ public class SettingsMenu : MonoBehaviour
     {
         if (_status)
         {
-            m_audioMixer.SetFloat(
-                "volume",
-                -60
-            );
+            m_audioMixer.SetFloat(m_groupName, -60);
 
-            m_volumeSlider.value = -60;
-            m_volumeSlider.enabled = false;
+            m_masterSlider.value = -60;
+            m_masterSlider.enabled = false;
         }
         else
         {
-            m_volumeSlider.enabled = true;
+            m_masterSlider.enabled = true;
         }
+    }
+
+    public void SetAudioGroup(string _group)
+    {
+        m_groupName = _group;
     }
 }

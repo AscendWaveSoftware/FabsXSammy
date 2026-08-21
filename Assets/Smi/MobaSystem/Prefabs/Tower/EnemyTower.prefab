@@ -130,7 +130,7 @@ AudioSource:
   m_GameObject: {fileID: 3562669931889522002}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -1475787982256552312, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 0d008ecf2edce774e8894590ec7abc08, type: 3}
   m_PlayOnAwake: 0
@@ -10832,6 +10832,10 @@ PrefabInstance:
       propertyPath: rolloffMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2675517412769926848, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -1475787982256552312, guid: ba565ae5302e8364480616c81a47df32, type: 2}
     - target: {fileID: 3095559016919446335, guid: 107f720741c977b4f855d1cd32f80a5e, type: 3}
       propertyPath: m_towerStats
       value: 
