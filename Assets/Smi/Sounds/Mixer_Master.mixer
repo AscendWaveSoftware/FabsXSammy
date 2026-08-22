@@ -68,6 +68,10 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: 9906353ed99015542a118b9d342b894c
+    name: arena
+  - guid: 5c8343fc1d5cbfc4ebe0e5fb3b68e221
+    name: lane
   - guid: ad76b9d861f292849aacb6dbd2090858
     name: master
   - guid: c0344b2cda5b6d1488837d3c3df97c7d
@@ -128,7 +132,8 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: 8aae415cac43c334bb46e09befa6b6cb
-  m_FloatValues: {}
+  m_FloatValues:
+    5c8343fc1d5cbfc4ebe0e5fb3b68e221: -5.4218063
   m_TransitionOverrides: {}
 --- !u!244 &296204573105305840
 AudioMixerEffectController:

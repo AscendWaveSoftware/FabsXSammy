@@ -1,6 +1,7 @@
 //Code by Fabian Schmiedel
 
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -96,6 +97,8 @@ public class MOBA_Manager : MonoBehaviour
             PlaytestAnalyticsManager.Instance.RegisterVictory();
             PlaytestAnalyticsManager.Instance.EndRun();
         }
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         m_WinEvent.Invoke();
         Time.timeScale = 0;
@@ -108,6 +111,8 @@ public class MOBA_Manager : MonoBehaviour
             PlaytestAnalyticsManager.Instance.RegisterVictory();
             PlaytestAnalyticsManager.Instance.EndRun();
         }
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         m_LoseEvent.Invoke();
         Time.timeScale = 0;

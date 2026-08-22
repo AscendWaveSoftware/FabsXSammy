@@ -99,11 +99,7 @@ public class Turret : MonoBehaviour
 
             Quaternion targetRotation = baseLookRotation * Quaternion.Euler(0f, -90f, 0f);
 
-            transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
-                targetRotation,
-                m_rotationSpeed * Time.deltaTime
-            );
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, m_rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -129,7 +125,7 @@ public class Turret : MonoBehaviour
 
     private IEnumerator DestroyProjectile(Projectile _projectile)
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         if (_projectile != null)
             Destroy(_projectile.gameObject);
     }
@@ -155,7 +151,8 @@ public class Turret : MonoBehaviour
     private void PlayAttackSound()
     {
         GameObject audioObj = new GameObject("AttackSound");
-        audioObj.transform.position = transform.position;
+        audioObj.transform.parent = this.transform;
+        audioObj.transform.localPosition = Vector3.zero;
 
         AudioSource source = audioObj.AddComponent<AudioSource>();
         source.clip = m_audioSource.clip;
@@ -169,8 +166,19 @@ public class Turret : MonoBehaviour
 
         source.Play();
 
-        Destroy(audioObj, source.clip.length / source.pitch);
+        float duration = source.clip.length / source.pitch;
+        StartCoroutine(DisableAfterTime(audioObj, duration));
     }
+
+    private IEnumerator DisableAfterTime(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj != null)
+        {
+            obj.SetActive(false);
+        }
+    }
+
     private void OnDisable()
     {
         StopAllCoroutines();

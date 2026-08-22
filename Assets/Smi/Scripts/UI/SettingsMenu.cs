@@ -27,6 +27,7 @@ public class SettingsMenu : MonoBehaviour
 
     private Canvas m_canvas;
     private bool bIsOpen = false;
+    private float m_muteVolume;
 
     private Resolution[] m_resolutions;
 
@@ -315,8 +316,7 @@ public class SettingsMenu : MonoBehaviour
 
         SetQuality(savedQuality);
 
-        bool savedFullscreen =
-            PlayerPrefs.GetInt("Fullscreen", 1) == 1;
+        bool savedFullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
 
         if (m_fullscreenToggle != null)
             m_fullscreenToggle.isOn = savedFullscreen;
@@ -326,13 +326,10 @@ public class SettingsMenu : MonoBehaviour
         if (m_resolutionDropDown != null &&
             m_resolutionDropDown.value < m_resolutions.Length)
         {
-            SetResoltuion(
-                m_resolutionDropDown.value
-            );
+            SetResoltuion(m_resolutionDropDown.value);
         }
 
-        int savedFPSIndex =
-            PlayerPrefs.GetInt("FPSIndex", 1);
+        int savedFPSIndex = PlayerPrefs.GetInt("FPSIndex", 1);
 
         if (m_fpsDropDown != null)
         {
@@ -416,58 +413,45 @@ public class SettingsMenu : MonoBehaviour
     public void OpenMenu()
     {
         bIsOpen = true;
-
-        m_canvas.enabled = true;
-
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
+        m_canvas.enabled = true;
         Time.timeScale = 0f;
     }
 
     public void CloseMenu()
     {
         bIsOpen = false;
-
-        m_canvas.enabled = false;
-
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
+        m_canvas.enabled = false;
         Time.timeScale = 1f;
     }
     public void RestartGame()
     {
         CloseMenu();
 
-        var currentScene =
-            SceneManager.GetActiveScene();
-
-        SceneManager.LoadScene(
-            currentScene.buildIndex
-        );
+        var currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.buildIndex);
     }
 
     public void BackToMenu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0);
-
-        Destroy(
-            MOBA_Manager.Instance.gameObject
-        );
+        Destroy(MOBA_Manager.Instance.gameObject);
     }
 
     public void FeedbackButton()
     {
-        Application.OpenURL(
-            "https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf"
-        );
+        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
     }
 
     public void Mute(bool _status)
     {
         if (_status)
         {
+            m_muteVolume = PlayerPrefs.GetFloat("master", 0f);
             m_audioMixer.SetFloat(m_groupName, -60);
 
             m_masterSlider.value = -60;
@@ -476,6 +460,8 @@ public class SettingsMenu : MonoBehaviour
         else
         {
             m_masterSlider.enabled = true;
+            m_masterSlider.value = m_muteVolume;
+            SetVolume(m_muteVolume);
         }
     }
 

@@ -26,7 +26,7 @@ public class Tower : MonoBehaviour
     private void OnEnable()
     {
         RegisterTower();
-        main = mainModule.main; 
+        main = mainModule.main;
     }
 
     private void Start()
@@ -53,7 +53,8 @@ public class Tower : MonoBehaviour
 
         else
         {
-            MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+            if (MOBA_Manager.Instance != null)
+                MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
 
             if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
             {

@@ -68,6 +68,8 @@ public class ScrapShop : MonoBehaviour
             m_factory.GetMinion(m_minions[0]);
             m_buyAnim = m_smallMinionButton.GetComponent<Animation>();
             m_buyAnim.Play();
+
+            m_bigMinionButton.interactable = PriceCheck(m_playerResources.CurrentScrap, m_prices.m_PriceForUnit2);
         }
     }
 
@@ -80,6 +82,8 @@ public class ScrapShop : MonoBehaviour
             m_factory.GetMinion(m_minions[1]);
             m_buyAnim = m_bigMinionButton.GetComponent<Animation>();
             m_buyAnim.Play();
+
+            m_smallMinionButton.interactable = PriceCheck(m_playerResources.CurrentScrap, m_prices.m_PriceForUnit1);
         }
     }
 
