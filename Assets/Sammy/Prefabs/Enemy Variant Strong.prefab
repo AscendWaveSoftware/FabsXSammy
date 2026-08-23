@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &883173139186161293
 GameObject:
@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: 5134217613761303598}
   - component: {fileID: 5501229384710033472}
   - component: {fileID: 5501229384710033474}
+  - component: {fileID: 7365454483919011733}
+  - component: {fileID: 5543129610569815247}
+  - component: {fileID: 5319760910583031972}
   m_Layer: 3
   m_Name: Enemy Variant Strong
   m_TagString: Enemy
@@ -109,6 +112,7 @@ MonoBehaviour:
   damageTextScale: 1
   criticalDamageTextScale: 1.2
   damageTextHeightOffset: 0.25
+  damageTextHeadOverride: 1.499995
 --- !u!114 &4344217055707033303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,6 +138,7 @@ MonoBehaviour:
   obstacleLookAhead: 2
   obstacleProbeRadius: 0.3
   stuckTimeBeforeRecovery: 0.8
+  knockbackDuration: 0.18
   playerTarget: {fileID: 0}
 --- !u!114 &5134217613761303598
 MonoBehaviour:
@@ -152,6 +157,8 @@ MonoBehaviour:
   m_attackWindup: 0.28
   m_hitStunDuration: 0.24
   m_windupTint: {r: 1, g: 0.28, b: 0.18, a: 1}
+  m_blockedStaggerDuration: 0.75
+  m_blockedKnockbackDistance: 1.1
   m_playerTarget: {fileID: 0}
 --- !u!114 &5501229384710033472
 MonoBehaviour:
@@ -163,7 +170,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 041c496e32d0499d87f47a64571d8fdd, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDropShadow
   m_diameter: 2.05
   m_opacity: 0.66
@@ -180,7 +187,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc80432929ae4b2ebeb50a2433abb1df, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathBurst
   m_sparkCount: 13
   m_sparkColor: {r: 0.85, g: 0.16, b: 0.3, a: 0.9}
@@ -192,6 +199,85 @@ MonoBehaviour:
   m_flashColor: {r: 1, g: 0.42, b: 0.42, a: 0.9}
   m_flashEndDiameter: 2
   m_flashDuration: 0.32
+--- !u!95 &7365454483919011733
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883173139186161293}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e91ccf54588801a439728957cfc258ef, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5543129610569815247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883173139186161293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be4e2633898245f18d20a23cb9cb8b85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationController
+  m_animator: {fileID: 7365454483919011733}
+  m_bodyRenderer: {fileID: 1233514483524198460}
+  m_movement: {fileID: 4344217055707033303}
+  m_attack: {fileID: 5134217613761303598}
+  m_stats: {fileID: 6736663344340708261}
+  m_attackClips:
+  - {fileID: 7400000, guid: 2016dd9cc4df8cc4da1e46cd658ddb42, type: 2}
+  - {fileID: 7400000, guid: f52f6a8c4f492d24d85f09e346574e6c, type: 2}
+  m_hurtClip: {fileID: 7400000, guid: 3da005ad082b09a4d809876107c030e8, type: 2}
+  m_idleSpeedThreshold: 0.12
+  m_transitionDuration: 0.06
+  m_artworkFacesRight: 1
+--- !u!114 &5319760910583031972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883173139186161293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da5e916875945ea89e88e7a1f74e7a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackTelegraph
+  m_rangeRingColor: {r: 1, g: 0.68, b: 0.16, a: 0.45}
+  m_closingRingStartColor: {r: 1, g: 0.74, b: 0.22, a: 0.8}
+  m_closingRingEndColor: {r: 1, g: 0.2, b: 0.1, a: 1}
+  m_groundClearance: 0.05
+  m_minimumClosingDiameter: 0.35
+  m_warningMessage: '!'
+  m_warningStartColor: {r: 1, g: 0.78, b: 0.25, a: 1}
+  m_warningEndColor: {r: 1, g: 0.26, b: 0.14, a: 1}
+  m_warningOutlineColor: {r: 0.24, g: 0.04, b: 0, a: 1}
+  m_warningScale: 0.65
+  m_warningHeightOffset: 0.32
+  m_staggerMessage: '?'
+  m_staggerColor: {r: 1, g: 0.93, b: 0.6, a: 1}
+  m_staggerOutlineColor: {r: 0.18, g: 0.1, b: 0, a: 1}
+  m_staggerScale: 0.75
+  m_staggerHeightOffset: 0.45
+  m_headOffsetOverride: 1.499995
+  m_strikeFlashColor: {r: 1, g: 0.32, b: 0.16, a: 1}
+  m_strikeFlashStartDiameter: 0.4
+  m_strikeFlashEndDiameter: 1.9
+  m_strikeFlashDuration: 0.26
 --- !u!1 &3133907622521765088
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,8 +484,8 @@ Transform:
   m_GameObject: {fileID: 8515173049387706918}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.25, z: 0}
-  m_LocalScale: {x: 7.46, y: 7.46, z: 7.46}
+  m_LocalPosition: {x: 0, y: 0.40908587, z: 0}
+  m_LocalScale: {x: 9.090909, y: 9.090909, z: 9.090909}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7054358999634562242}
@@ -453,8 +539,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
+  m_Sprite: {fileID: -1329479925, guid: 71dbeaff0687c334da7b8a3686556417, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -477,7 +563,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBillboard
   outlineMaterial: {fileID: 2100000, guid: 6f9a2b4c89ed4d09bfef5dd1e2dc65a6, type: 2}
   outlineColor: {r: 1, g: 0.16, b: 0.05, a: 1}
-  outlineWidth: 0.018
+  outlineWidth: 0.0099
 --- !u!114 &4115563712513037555
 MonoBehaviour:
   m_ObjectHideFlags: 0

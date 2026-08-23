@@ -10,7 +10,15 @@ public enum SpellDelivery
     Cloud,
 
     /// <summary>Bursts instantly around the caster.</summary>
-    Nova
+    Nova,
+
+    /// <summary>
+    /// Tears open a singularity that drags everything nearby into its centre and
+    /// then implodes. Appended last on purpose: the value is serialised as an
+    /// integer in the spell assets, so inserting it anywhere else would silently
+    /// turn every existing spell into a different delivery.
+    /// </summary>
+    Vortex
 }
 
 /// <summary>A single value a spell upgrade card can improve.</summary>
@@ -21,7 +29,10 @@ public enum SpellStat
     Cooldown,
     PoisonDamage,
     PoisonDuration,
-    StunDuration
+    StunDuration,
+    // Appended for the same reason as SpellDelivery.Vortex above.
+    VortexPull,
+    VortexDuration
 }
 
 /// <summary>
@@ -117,6 +128,33 @@ public class SpellDefinition : ScriptableObject
     [Range(0.05f, 1f)] public float ChainDamageFalloff = 0.55f;
     public Color ChainColor = new(1f, 0.9f, 0.55f, 1f);
 
+    [Header("Vortex (Delivery = Vortex)")]
+    [Tooltip("Frame the hole holds on while it pulls. Everything before it is the collapse inwards, everything after it the dissipation.")]
+    [Min(0)] public int VortexPeakFrame = 4;
+    [Tooltip("Time the singularity takes to tear open. The pull ramps up across it.")]
+    [Min(0.05f)] public float VortexFormDuration = 0.5f;
+    [Tooltip("How long the hole stays at full size dragging enemies in. This is the part the spell is about.")]
+    [Min(0.05f)] public float VortexHoldDuration = 1.9f;
+    [Tooltip("Time the hole takes to collapse again after the implosion.")]
+    [Min(0.05f)] public float VortexCollapseDuration = 0.6f;
+    [Tooltip("Reach of the pull relative to the damage radius. The hole grabs from much further out than it crushes.")]
+    [Min(1f)] public float VortexPullRangeScale = 2.2f;
+    [Tooltip("How fast an enemy at the rim is dragged inwards, in units per second. The pull grows towards the centre.")]
+    [Min(0f)] public float VortexPullSpeed = 4.4f;
+    [Tooltip("Sideways share of the pull. 0 drags straight in, higher values make enemies spiral around the hole.")]
+    [Range(0f, 2f)] public float VortexSpiral = 0.9f;
+    [Tooltip("Damage dealt to everything inside the crush radius on every tick while the hole is open.")]
+    [Min(0)] public int VortexDamagePerTick = 7;
+    [Min(0.05f)] public float VortexTickInterval = 0.3f;
+    [Tooltip("Degrees per second the disc turns on screen. Negative spins the other way.")]
+    public float VortexSpinSpeed = -95f;
+    [Tooltip("Lifts the hole off the ground so it hangs in the air rather than lying in the dirt.")]
+    public float VortexGroundOffset = 1.15f;
+    [Tooltip("Width of the streak drawn from a caught enemy into the hole. 0 disables the streaks.")]
+    [Min(0f)] public float VortexTetherWidth = 0.17f;
+    [Tooltip("Debris drawn towards the centre per second. 0 disables the accretion particles.")]
+    [Min(0f)] public float VortexDebrisPerSecond = 30f;
+
     [Header("Impact")]
     [Min(1)] public int Damage = 45;
     [Tooltip("Everything inside this radius takes the full damage.")]
@@ -179,8 +217,23 @@ public class SpellDefinition : ScriptableObject
             case SpellStat.StunDuration:
                 NovaStunDuration = Mathf.Max(0f, NovaStunDuration + _value);
                 break;
+            case SpellStat.VortexPull:
+                VortexPullSpeed = Mathf.Max(0f, VortexPullSpeed + _value);
+                break;
+            case SpellStat.VortexDuration:
+                VortexHoldDuration = Mathf.Max(0.05f, VortexHoldDuration + _value);
+                break;
         }
     }
+
+    /// <summary>
+    /// Total time the vortex exists, which the cast needs in order to stagger
+    /// everything it catches for exactly as long as the hole is open.
+    /// </summary>
+    public float VortexLifetime => VortexFormDuration + VortexHoldDuration + VortexCollapseDuration;
+
+    /// <summary>How far out the pull reaches, as opposed to how far it damages.</summary>
+    public float VortexPullRadius => ImpactRadius * Mathf.Max(1f, VortexPullRangeScale);
 
     private Sprite GetFrame(int _index) =>
         Frames != null && _index >= 0 && _index < Frames.Length ? Frames[_index] : null;
@@ -190,5 +243,10 @@ public class SpellDefinition : ScriptableObject
         ImpactStartFrame = Mathf.Max(0, ImpactStartFrame);
         ProjectileFrame = Mathf.Max(0, ProjectileFrame);
         ImpactFrameRate = Mathf.Max(1f, ImpactFrameRate);
+
+        // A peak past the last frame would leave the hold phase with nothing to
+        // show and the collapse with no frames at all.
+        if (Frames != null && Frames.Length > 0)
+            VortexPeakFrame = Mathf.Clamp(VortexPeakFrame, 0, Frames.Length - 1);
     }
 }

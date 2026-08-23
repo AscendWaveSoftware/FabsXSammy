@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8a15b4f46a764d8478b6c917f7838538
+guid: 50c3d4480d6d1e84e95b9acc311c4f03
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -93,30 +93,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hollow_00
+      name: MonsterB_Walk_00
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -125,20 +112,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 196fdb5ffe513f849b9afbe28950b0d4
-      internalID: 1486259599
+      spriteID: ace3ba3b80872764c945b7c18bfdc4e4
+      internalID: 1095018878
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_01
+      name: MonsterB_Walk_01
       rect:
         serializedVersion: 2
-        x: 48
+        x: 100
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd7ee075e242b72478b59c29652bdace
-      internalID: -1368355537
+      spriteID: c3c72756d7ae26d4699b77b40744ecf3
+      internalID: -508909473
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_02
+      name: MonsterB_Walk_02
       rect:
         serializedVersion: 2
-        x: 96
+        x: 200
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e7e11d2af881b0e4392b8a0c79ab72d3
-      internalID: -377098855
+      spriteID: dd60f5b14742425498c8fb8d5a83e8f8
+      internalID: -1794266811
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_03
+      name: MonsterB_Walk_03
       rect:
         serializedVersion: 2
-        x: 144
+        x: 300
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,20 +178,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 942810baf764c4a45a04ecab6cb52aa8
-      internalID: 688563581
+      spriteID: 2a2a31818e7d2a24480d4effeccefeea
+      internalID: -2071230824
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_04
+      name: MonsterB_Walk_04
       rect:
         serializedVersion: 2
-        x: 192
+        x: 400
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,20 +200,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb6316c284e636540bf2b612973dd280
-      internalID: 159641869
+      spriteID: e0a4f0842de7aeb499f9f426c5e133f0
+      internalID: -78339083
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_05
+      name: MonsterB_Walk_05
       rect:
         serializedVersion: 2
-        x: 240
+        x: 500
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,20 +222,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3440c06a3970c4d4cb0c4b0873307533
-      internalID: -263661489
+      spriteID: 915a577f1e087424caff4d863586bf3b
+      internalID: -1221350581
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_06
+      name: MonsterB_Walk_06
       rect:
         serializedVersion: 2
-        x: 288
+        x: 600
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,20 +244,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5311706ae3886f447b820e1e731e2561
-      internalID: -728101549
+      spriteID: bc31144e7474c6a4d9971ef92044641a
+      internalID: -1621225869
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_07
+      name: MonsterB_Walk_07
       rect:
         serializedVersion: 2
-        x: 336
+        x: 700
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,8 +266,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d1ac8c910d9d2d439f0a2274d377008
-      internalID: 639922351
+      spriteID: 47a24322870a9424dbb50d9be134f6cf
+      internalID: -2114084477
       vertices: []
       indices: 
       edges: []
@@ -289,7 +276,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d83142ca765d5504e8d72b6470c1801e
+    spriteID: ef776bb328fd17742aba44e60f0b5af0
     internalID: 0
     vertices: []
     indices: 
@@ -299,14 +286,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Hollow_00: 1486259599
-      Hollow_01: -1368355537
-      Hollow_02: -377098855
-      Hollow_03: 688563581
-      Hollow_04: 159641869
-      Hollow_05: -263661489
-      Hollow_06: -728101549
-      Hollow_07: 639922351
+      MonsterB_Walk_00: 1095018878
+      MonsterB_Walk_01: -508909473
+      MonsterB_Walk_02: -1794266811
+      MonsterB_Walk_03: -2071230824
+      MonsterB_Walk_04: -78339083
+      MonsterB_Walk_05: -1221350581
+      MonsterB_Walk_06: -1621225869
+      MonsterB_Walk_07: -2114084477
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

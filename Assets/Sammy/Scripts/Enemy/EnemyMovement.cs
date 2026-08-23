@@ -117,6 +117,36 @@ public class EnemyMovement : MonoBehaviour
         m_nextRepathTime = 0f;
     }
 
+    /// <summary>
+    /// Drags this enemy along a velocity it did not choose, for slightly longer
+    /// than the caller's own frame. Meant to be refreshed continuously by a vortex:
+    /// the moment the caller stops renewing it the enemy walks again on its own.
+    ///
+    /// Rides on the same transport as the knockback, which already moves through
+    /// the NavMeshAgent and therefore cannot shove anyone off the walkable area.
+    /// </summary>
+    public void ApplyVortexPull(Vector3 _velocity, float _holdDuration)
+    {
+        if (_holdDuration <= 0f)
+            return;
+
+        Vector3 flatVelocity = _velocity;
+        flatVelocity.y = 0f;
+
+        // Dropping the agent's path is what stops it steering back out of the pull,
+        // but doing that on every refresh would throw away a fresh path each frame.
+        // Only the first application of an uninterrupted pull needs it.
+        if (!IsKnockedBack && m_usesNavMesh && m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
+        {
+            m_agent.ResetPath();
+            m_agent.velocity = Vector3.zero;
+        }
+
+        m_knockbackVelocity = flatVelocity;
+        m_knockbackEndsAt = PveRuntime.Time + _holdDuration;
+        m_nextRepathTime = 0f;
+    }
+
     private bool UpdateKnockback(float _deltaTime)
     {
         if (!IsKnockedBack)

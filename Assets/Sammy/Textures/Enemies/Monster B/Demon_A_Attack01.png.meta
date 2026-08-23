@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8a15b4f46a764d8478b6c917f7838538
+guid: 76f583ebd4faa9c42804c4e9ec5ff191
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -93,30 +93,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hollow_00
+      name: MonsterB_Attack1_00
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -125,20 +112,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 196fdb5ffe513f849b9afbe28950b0d4
-      internalID: 1486259599
+      spriteID: d6c79e8a3f307e54bad810a546b0428f
+      internalID: 69552545
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_01
+      name: MonsterB_Attack1_01
       rect:
         serializedVersion: 2
-        x: 48
+        x: 100
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd7ee075e242b72478b59c29652bdace
-      internalID: -1368355537
+      spriteID: df89d44733322a3438c1a11262b01b17
+      internalID: 1817947339
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_02
+      name: MonsterB_Attack1_02
       rect:
         serializedVersion: 2
-        x: 96
+        x: 200
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e7e11d2af881b0e4392b8a0c79ab72d3
-      internalID: -377098855
+      spriteID: f6daa2ed02ce50743826a84e7253e82b
+      internalID: -204319757
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_03
+      name: MonsterB_Attack1_03
       rect:
         serializedVersion: 2
-        x: 144
+        x: 300
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,20 +178,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 942810baf764c4a45a04ecab6cb52aa8
-      internalID: 688563581
+      spriteID: 9a5cac085d017de419da5fb172f0089e
+      internalID: 1209904570
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_04
+      name: MonsterB_Attack1_04
       rect:
         serializedVersion: 2
-        x: 192
+        x: 400
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,20 +200,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb6316c284e636540bf2b612973dd280
-      internalID: 159641869
+      spriteID: d971781d1e7ecba408d17ebe58ba2975
+      internalID: 794580061
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_05
+      name: MonsterB_Attack1_05
       rect:
         serializedVersion: 2
-        x: 240
+        x: 500
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,20 +222,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3440c06a3970c4d4cb0c4b0873307533
-      internalID: -263661489
+      spriteID: d252885ceafbd6640ba41818ca8d242f
+      internalID: 1151582115
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_06
+      name: MonsterB_Attack1_06
       rect:
         serializedVersion: 2
-        x: 288
+        x: 600
         y: 0
-        width: 48
-        height: 48
+        width: 100
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,30 +244,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5311706ae3886f447b820e1e731e2561
-      internalID: -728101549
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hollow_07
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9d1ac8c910d9d2d439f0a2274d377008
-      internalID: 639922351
+      spriteID: d1429b96f36e3774da1a5a73503d4059
+      internalID: -1775308862
       vertices: []
       indices: 
       edges: []
@@ -289,7 +254,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d83142ca765d5504e8d72b6470c1801e
+    spriteID: 41f8dafe805783745a9d406ee64935a5
     internalID: 0
     vertices: []
     indices: 
@@ -299,14 +264,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Hollow_00: 1486259599
-      Hollow_01: -1368355537
-      Hollow_02: -377098855
-      Hollow_03: 688563581
-      Hollow_04: 159641869
-      Hollow_05: -263661489
-      Hollow_06: -728101549
-      Hollow_07: 639922351
+      MonsterB_Attack1_00: 69552545
+      MonsterB_Attack1_01: 1817947339
+      MonsterB_Attack1_02: -204319757
+      MonsterB_Attack1_03: 1209904570
+      MonsterB_Attack1_04: 794580061
+      MonsterB_Attack1_05: 1151582115
+      MonsterB_Attack1_06: -1775308862
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

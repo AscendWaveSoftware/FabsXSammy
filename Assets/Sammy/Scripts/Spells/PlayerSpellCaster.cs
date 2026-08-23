@@ -9,10 +9,10 @@ using UnityEngine.InputSystem;
 [DisallowMultipleComponent]
 public class PlayerSpellCaster : MonoBehaviour
 {
-    public const int SpellSlotCount = 3;
+    public const int SpellSlotCount = 4;
 
     [Header("Spells")]
-    [SerializeField, Tooltip("Slot 0 is key 1, slot 1 is key 2, slot 2 is key 3. Empty slots are simply ignored.")]
+    [SerializeField, Tooltip("Slot 0 is key 1 through to slot 3 on key 4. Empty slots are simply ignored.")]
     private SpellDefinition[] m_spells = new SpellDefinition[SpellSlotCount];
 
     [Header("Targeting")]
@@ -68,6 +68,24 @@ public class PlayerSpellCaster : MonoBehaviour
 
         m_runtimeSpells[slotIndex].ApplyStatUpgrade(_stat, _value);
         return true;
+    }
+
+    /// <summary>
+    /// Passes a share of a melee damage upgrade on to the spells. Playtesting found
+    /// that a damage and crit build eventually left the spell slots behind for good,
+    /// so a spell was never worth casting; letting them ride along keeps the whole
+    /// kit growing together instead of one branch outrunning the other.
+    ///
+    /// Applied to every slot, locked ones included, so a spell unlocked late does
+    /// not arrive already behind the run it is joining.
+    /// </summary>
+    public void AddDamageToSpells(float _amount)
+    {
+        if (_amount <= 0f || m_runtimeSpells == null)
+            return;
+
+        foreach (SpellDefinition runtimeSpell in m_runtimeSpells)
+            runtimeSpell?.ApplyStatUpgrade(SpellStat.Damage, _amount);
     }
 
     public bool IsSlotUnlocked(int _slotIndex) =>
@@ -185,6 +203,9 @@ public class PlayerSpellCaster : MonoBehaviour
 
         if (keyboard.digit3Key.wasPressedThisFrame)
             TryCast(2);
+
+        if (keyboard.digit4Key.wasPressedThisFrame)
+            TryCast(3);
     }
 
     /// <summary>Seconds left on a slot's cooldown, 0 when it is ready.</summary>
@@ -234,6 +255,7 @@ public class PlayerSpellCaster : MonoBehaviour
         {
             SpellDelivery.Cloud => CastCloud(spell, target),
             SpellDelivery.Nova => CastNova(spell),
+            SpellDelivery.Vortex => CastVortex(spell, target),
             _ => CastProjectile(spell, target)
         };
 
@@ -268,6 +290,37 @@ public class PlayerSpellCaster : MonoBehaviour
     private bool CastCloud(SpellDefinition _spell, EnemyStats _target)
     {
         SpellCloud.Show(_spell, GetCloudGroundPosition(_spell, _target), m_enemyLayer, m_playerResources);
+        return true;
+    }
+
+    private bool CastVortex(SpellDefinition _spell, EnemyStats _target)
+    {
+        // Dropped on the ground the same way a cloud is, so the singularity opens
+        // in the middle of the pack rather than on top of a single enemy's chest.
+        Vector3 groundPosition = GetCloudGroundPosition(_spell, _target);
+
+        // Never right on top of the caster. The pull does not touch the player, but
+        // a hole opening inside them reads as a bug, and it would swallow the pack
+        // the player is trying to escape from instead of the one ahead.
+        Vector3 fromPlayer = groundPosition - transform.position;
+        fromPlayer.y = 0f;
+
+        float minimumDistance = _spell.ImpactRadius * 0.6f;
+
+        if (fromPlayer.sqrMagnitude < minimumDistance * minimumDistance)
+        {
+            Vector3 push = fromPlayer.sqrMagnitude > 0.0001f
+                ? fromPlayer.normalized
+                : GetFallbackDirection();
+
+            groundPosition = new Vector3(
+                transform.position.x + push.x * minimumDistance,
+                groundPosition.y,
+                transform.position.z + push.z * minimumDistance
+            );
+        }
+
+        SpellVortex.Show(_spell, groundPosition, m_enemyLayer, m_playerResources);
         return true;
     }
 

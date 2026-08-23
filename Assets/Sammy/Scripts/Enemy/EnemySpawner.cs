@@ -22,6 +22,10 @@ public class EnemySpawner : MonoBehaviour
     private int lateGameMaxEnemiesAlive = 20;
     [SerializeField, Min(0.05f), Tooltip("Seconds between two spawns once the ramp is finished.")]
     private float lateGameSpawnInterval = 1f;
+    [SerializeField, Min(1f), Tooltip("Enemy health once the ramp is finished, relative to the prefab. Keeps a pure damage build from one shotting everything for the whole run.")]
+    private float lateGameHealthMultiplier = 2.8f;
+    [SerializeField, Min(1f), Tooltip("Enemy attack damage once the ramp is finished, relative to the prefab. This is what eventually makes defensive upgrades worth taking.")]
+    private float lateGameDamageMultiplier = 1.8f;
     [SerializeField, Tooltip("Shapes the ramp between the starting and the late game values.")]
     private AnimationCurve difficultyCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
@@ -135,6 +139,18 @@ public class EnemySpawner : MonoBehaviour
         );
 
         m_currentEnemiesAlive++;
+
+        // Applied before anything else reads the stats, so the health bar and the
+        // first attack already use the scaled values.
+        EnemyStats enemyStats = spawnedEnemy.GetComponent<EnemyStats>();
+
+        if (enemyStats != null)
+        {
+            enemyStats.ApplyDifficultyScaling(
+                Mathf.Lerp(1f, lateGameHealthMultiplier, m_difficultyProgress),
+                Mathf.Lerp(1f, lateGameDamageMultiplier, m_difficultyProgress)
+            );
+        }
 
         EnemyMovement enemyMovement = spawnedEnemy.GetComponent<EnemyMovement>();
 

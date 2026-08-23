@@ -50,6 +50,29 @@ public class EnemyStats : MonoBehaviour
         OnHealthChanged?.Invoke(m_currentHealth, maxHealth);
     }
 
+    /// <summary>
+    /// Toughens this enemy according to how far the run has progressed. Called by
+    /// the spawner right after it creates the enemy.
+    ///
+    /// The arena used to scale only in how many enemies it sent and how fast, never
+    /// in what they could take. A player stacking damage and crit therefore stayed
+    /// able to delete a full health enemy in one swing for the entire run, which is
+    /// what made every defensive upgrade and every spell look pointless.
+    ///
+    /// Only ever touches the instance. Values are serialised on the prefab, but
+    /// Instantiate hands out a clone, so the asset itself is never written to.
+    /// </summary>
+    public void ApplyDifficultyScaling(float _healthMultiplier, float _damageMultiplier)
+    {
+        maxHealth = Mathf.Max(1, Mathf.RoundToInt(maxHealth * Mathf.Max(0.1f, _healthMultiplier)));
+        attackDamage = Mathf.Max(1, Mathf.RoundToInt(attackDamage * Mathf.Max(0.1f, _damageMultiplier)));
+
+        // Refilled rather than left where Awake put it, or a scaled enemy would
+        // walk in already missing the health it just gained.
+        m_currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(m_currentHealth, maxHealth);
+    }
+
     /// <param name="_interruptsEnemy">
     /// False for damage over time. A poison tick every half second would otherwise
     /// reset the hit stun forever and lock the enemy out of attacking entirely.

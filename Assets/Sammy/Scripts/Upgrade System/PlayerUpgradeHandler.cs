@@ -3,6 +3,14 @@ using UnityEngine;
 
 public class PlayerUpgradeHandler : MonoBehaviour
 {
+    /// <summary>
+    /// How much of a melee damage card the spells receive as well. Above one on
+    /// purpose: spell damage sits on a far larger base than a sword swing, so an
+    /// equal share would barely register on it.
+    /// </summary>
+    private const float SpellDamageShare = 1.5f;
+
+
     [Header("Spell Cards")]
     [SerializeField, Tooltip("Cards that unlock and strengthen the player's own spells. Kept here rather than in the scene pool so they stay in sync with the spell slots.")]
     private UpgradeDefinition[] m_spellUpgrades;
@@ -74,6 +82,10 @@ public class PlayerUpgradeHandler : MonoBehaviour
                 break;
             case UpgradeType.DAMAGE:
                 m_playerCombat?.AddDamage(Mathf.RoundToInt(_upgrade.Value));
+
+                // The spells ride along, so a damage build strengthens the whole
+                // kit rather than turning the spell slots into dead weight.
+                m_playerSpellCaster?.AddDamageToSpells(_upgrade.Value * SpellDamageShare);
                 break;
             case UpgradeType.ATTACKRANGE:
                 m_playerCombat?.AddAttackRange(_upgrade.Value);
