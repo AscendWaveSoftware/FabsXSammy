@@ -401,7 +401,7 @@ public class SettingsMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && Time.timeScale != 0)
         {
             if (!bIsOpen)
                 OpenMenu();
@@ -416,7 +416,7 @@ public class SettingsMenu : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         m_canvas.enabled = true;
-        Time.timeScale = 0f;
+        PveRuntime.SetPaused(true);
     }
 
     public void CloseMenu()
@@ -425,7 +425,7 @@ public class SettingsMenu : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         m_canvas.enabled = false;
-        Time.timeScale = 1f;
+        PveRuntime.SetPaused(false);
     }
     public void RestartGame()
     {
@@ -449,9 +449,11 @@ public class SettingsMenu : MonoBehaviour
 
     public void Mute(bool _status)
     {
+        m_groupName = "master";
+
         if (_status)
         {
-            m_muteVolume = PlayerPrefs.GetFloat("master", 0f);
+            m_muteVolume = PlayerPrefs.GetFloat(m_groupName, 0f);
             m_audioMixer.SetFloat(m_groupName, -60);
 
             m_masterSlider.value = -60;

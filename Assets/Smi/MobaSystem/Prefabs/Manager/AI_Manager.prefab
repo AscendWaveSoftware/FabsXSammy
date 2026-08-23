@@ -54,7 +54,7 @@ MonoBehaviour:
   m_aiScrap: 0
   m_incomeAmount: 10
   m_startIncomeAmount: 0
-  m_incomeInterval: 2
+  m_incomeInterval: 5
   m_maxIncomeAmount: 50
   m_maxUnitsPerWave: 4
   m_spawnDelay: 0.5

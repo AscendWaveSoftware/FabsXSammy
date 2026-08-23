@@ -1,5 +1,4 @@
-//Code by Fabian Schmiedel
-
+//Code by Fabian Schmiedel 
 using UnityEngine;
 
 public class MinionCombat : MonoBehaviour
@@ -10,9 +9,7 @@ public class MinionCombat : MonoBehaviour
 
     private float m_lastAttackTime;
     private bool m_isAttacking = false;
-
     private AI_Minion m_minionAI;
-
     private AudioSource m_audioSource;
 
     private void Start()
@@ -20,7 +17,6 @@ public class MinionCombat : MonoBehaviour
         m_minionAI = GetComponent<AI_Minion>();
         m_audioSource = GetComponent<AudioSource>();
         m_minonStats = m_minionAI.m_stats;
-
     }
 
     private void Update()
@@ -30,8 +26,25 @@ public class MinionCombat : MonoBehaviour
                 m_isAttacking = false;
 
         if (CanAttack())
+        {
+            LookAtTargetInstant();
             Attack();
+        }
     }
+
+    private void LookAtTargetInstant()
+    {
+        if (m_minionAI.m_currentTarget == null) return;
+
+        Vector3 direction = m_minionAI.m_currentTarget.position - transform.position;
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(direction);
+        }
+    }
+
     private bool CanAttack()
     {
         if (!m_isAttacking && m_minionAI.m_currentTarget != null)
@@ -48,14 +61,17 @@ public class MinionCombat : MonoBehaviour
         m_animator.SetBool("Attack", true);
         m_lastAttackTime = Time.time;
         m_isAttacking = true;
+
         m_audioSource.pitch = Random.Range(m_minonStats.m_hitAudioPitchMin, m_minonStats.m_hitAudioPitchMax);
         m_audioSource.Play();
         m_punchParticle.Play();
 
-        m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target);
-        target.TakeDamage(m_minonStats.m_attackDamage);
+        if (m_minionAI.m_currentTarget.TryGetComponent<IDamageable>(out var target))
+        {
+            target.TakeDamage(m_minonStats.m_attackDamage);
+        }
 
-        if (m_minionAI.m_currentTarget != enabled)
+        if (m_minionAI.m_currentTarget != null)
             m_minionAI.m_currentTarget = null;
     }
 }
