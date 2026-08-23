@@ -531,7 +531,7 @@ MonoBehaviour:
   m_blockVolume: 0.85
   m_minimumBlockInterval: 0.09
   m_spellVolume: 0.9
-  m_outputMixerGroup: {fileID: 0}
+  m_outputMixerGroup: {fileID: -4661859884040120875, guid: ba565ae5302e8364480616c81a47df32, type: 2}
   m_volume: 0.8
   m_pitchVariation: 0.05
   m_spatialBlend: 0
