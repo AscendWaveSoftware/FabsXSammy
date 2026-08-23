@@ -14,21 +14,27 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class EnemyAnimationAssetBuilder
 {
-    private const string SessionKey = "Sammy.EnemyAnimationAssets.V3";
-    private const string TextureRoot = "Assets/Sammy/Textures/Enemies/Monster A";
+    private const string SessionKey = "Sammy.EnemyAnimationAssets.V4";
+    private const string TextureRoot = "Assets/Sammy/Textures/Enemies";
     private const string OutputRoot = "Assets/Sammy/Animations/Enemy";
-    private const string ControllerPath = OutputRoot + "/Monster A.controller";
-    private const string EnemyPrefabPath = "Assets/Sammy/Prefabs/Enemy.prefab";
     private const int FrameSize = 100;
     private const float PixelsPerUnit = 100f;
 
-    /// <summary>Body height in world units. The player stands about 1.94, so this reads as smaller.</summary>
-    private const float TargetBodyHeight = 1.5f;
-
     private readonly struct SheetDefinition
     {
-        public SheetDefinition(string _fileName, string _stateName, int _frameCount, float _frameRate, bool _loop)
+        public SheetDefinition(
+            string _monsterName,
+            string _spritePrefix,
+            string _textureFolder,
+            string _fileName,
+            string _stateName,
+            int _frameCount,
+            float _frameRate,
+            bool _loop)
         {
+            MonsterName = _monsterName;
+            SpritePrefix = _spritePrefix;
+            TextureFolder = _textureFolder;
             FileName = _fileName;
             StateName = _stateName;
             FrameCount = _frameCount;
@@ -36,24 +42,72 @@ public static class EnemyAnimationAssetBuilder
             Loop = _loop;
         }
 
+        public string MonsterName { get; }
+        public string SpritePrefix { get; }
+        public string TextureFolder { get; }
         public string FileName { get; }
         public string StateName { get; }
         public int FrameCount { get; }
         public float FrameRate { get; }
         public bool Loop { get; }
-        public string TexturePath => $"{TextureRoot}/{FileName}.png";
-        public string ClipPath => $"{OutputRoot}/Monster A {StateName}.anim";
+        public string TexturePath => $"{TextureRoot}/{TextureFolder}/{FileName}.png";
+        public string ClipPath => $"{OutputRoot}/{MonsterName} {StateName}.anim";
     }
 
-    // Attack runs at roughly the 0.28s windup and hurt at the 0.24s hit stun, so
-    // the animation lines up with the gameplay it belongs to.
-    private static readonly SheetDefinition[] Sheets =
+    private readonly struct MonsterDefinition
     {
-        new("Blood Monster_A_Idle", "Idle", 6, 8f, true),
-        new("Blood Monster_A_Walk", "Walk", 8, 12f, true),
-        new("Blood Monster_A_Attack01", "Attack1", 8, 28f, false),
-        new("Blood Monster_A_Attack02", "Attack2", 8, 28f, false),
-        new("Blood Monster_A_Hurt", "Hurt", 4, 16f, false)
+        public MonsterDefinition(
+            string _name,
+            string _spritePrefix,
+            string _textureFolder,
+            string _filePrefix,
+            string _prefabPath,
+            float _targetBodyHeight,
+            int _attack1Frames,
+            int _attack2Frames)
+        {
+            Name = _name;
+            PrefabPath = _prefabPath;
+            TargetBodyHeight = _targetBodyHeight;
+
+            // Attack runs at roughly the 0.28s windup and hurt at the 0.24s hit
+            // stun, so the animation lines up with the gameplay it belongs to.
+            // The attack clips are time stretched onto the real windup anyway.
+            Sheets = new[]
+            {
+                new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Idle", "Idle", 6, 8f, true),
+                new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Walk", "Walk", 8, 12f, true),
+                new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Attack01", "Attack1", _attack1Frames, 28f, false),
+                new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Attack02", "Attack2", _attack2Frames, 28f, false),
+                new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Hurt", "Hurt", 4, 16f, false)
+            };
+        }
+
+        public string Name { get; }
+        public string PrefabPath { get; }
+
+        /// <summary>Body height in world units, measured from the artwork's own pixels.</summary>
+        public float TargetBodyHeight { get; }
+
+        public SheetDefinition[] Sheets { get; }
+        public string ControllerPath => $"{OutputRoot}/{Name}.controller";
+    }
+
+    /// <summary>
+    /// The sprite prefix is part of every sliced sprite's name, and a sprite's id
+    /// is looked up by that name on a reslice. Renaming one would hand out fresh
+    /// ids and leave the existing clips pointing at sprites that no longer exist,
+    /// so "MonsterA" has to stay exactly as it is.
+    /// </summary>
+    private static readonly MonsterDefinition[] Monsters =
+    {
+        new("Monster A", "MonsterA", "Monster A", "Blood Monster_A_",
+            "Assets/Sammy/Prefabs/Enemy.prefab", 1.5f, 8, 8),
+
+        // Taller than the player on purpose: this one carries twice the health, and
+        // the size is what tells the player that at a glance.
+        new("Monster B", "MonsterB", "Monster B", "Demon_A_",
+            "Assets/Sammy/Prefabs/Enemy Variant Strong.prefab", 2f, 7, 7)
     };
 
     static EnemyAnimationAssetBuilder()
@@ -88,18 +142,22 @@ public static class EnemyAnimationAssetBuilder
         {
             EnsureOutputFolders();
 
-            foreach (SheetDefinition sheet in Sheets)
-                ConfigureAndSliceSheet(sheet);
+            foreach (MonsterDefinition monster in Monsters)
+            {
+                foreach (SheetDefinition sheet in monster.Sheets)
+                    ConfigureAndSliceSheet(sheet);
 
-            Dictionary<string, AnimationClip> clips = new();
+                Dictionary<string, AnimationClip> clips = new();
 
-            foreach (SheetDefinition sheet in Sheets)
-                clips[sheet.StateName] = CreateOrUpdateClip(sheet);
+                foreach (SheetDefinition sheet in monster.Sheets)
+                    clips[sheet.StateName] = CreateOrUpdateClip(sheet);
 
-            AnimatorController controller = CreateOrUpdateController(clips);
-            ConfigureEnemyPrefab(controller, clips);
+                AnimatorController controller = CreateOrUpdateController(monster, clips);
+                ConfigureEnemyPrefab(monster, controller, clips);
+            }
+
             AssetDatabase.SaveAssets();
-            Debug.Log("Enemy animations rebuilt successfully.");
+            Debug.Log($"Enemy animations rebuilt successfully for {Monsters.Length} monsters.");
         }
         catch (Exception exception)
         {
@@ -213,6 +271,17 @@ public static class EnemyAnimationAssetBuilder
 
         textureSettings.spriteMeshType = SpriteMeshType.FullRect;
         textureSettings.spriteGenerateFallbackPhysicsShape = false;
+
+        // Repeated on the settings block rather than trusted to the properties
+        // above. SetTextureSettings writes this whole block back, and it still
+        // holds the values read before those properties were touched, so the read
+        // would quietly restore the old filter and blur the pixel art.
+        textureSettings.filterMode = FilterMode.Point;
+        textureSettings.mipmapEnabled = false;
+        textureSettings.wrapMode = TextureWrapMode.Clamp;
+        textureSettings.alphaIsTransparency = true;
+        textureSettings.npotScale = TextureImporterNPOTScale.None;
+
         _importer.SetTextureSettings(textureSettings);
         return true;
     }
@@ -350,14 +419,16 @@ public static class EnemyAnimationAssetBuilder
         return clip;
     }
 
-    private static AnimatorController CreateOrUpdateController(IReadOnlyDictionary<string, AnimationClip> _clips)
+    private static AnimatorController CreateOrUpdateController(
+        MonsterDefinition _monster,
+        IReadOnlyDictionary<string, AnimationClip> _clips)
     {
-        AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
+        AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(_monster.ControllerPath);
         bool controllerChanged = false;
 
         if (controller == null)
         {
-            controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
+            controller = AnimatorController.CreateAnimatorControllerAtPath(_monster.ControllerPath);
             controllerChanged = true;
         }
 
@@ -366,7 +437,7 @@ public static class EnemyAnimationAssetBuilder
             .Where(child => child.state != null)
             .GroupBy(child => child.state.name, StringComparer.Ordinal)
             .ToDictionary(group => group.Key, group => group.First().state, StringComparer.Ordinal);
-        HashSet<string> expectedStateNames = Sheets.Select(sheet => sheet.StateName).ToHashSet(StringComparer.Ordinal);
+        HashSet<string> expectedStateNames = _monster.Sheets.Select(sheet => sheet.StateName).ToHashSet(StringComparer.Ordinal);
 
         foreach (ChildAnimatorState childState in stateMachine.states.ToArray())
         {
@@ -380,7 +451,7 @@ public static class EnemyAnimationAssetBuilder
 
         AnimatorState idleState = null;
 
-        foreach (SheetDefinition sheet in Sheets)
+        foreach (SheetDefinition sheet in _monster.Sheets)
         {
             if (!existingStates.TryGetValue(sheet.StateName, out AnimatorState state) || state == null)
             {
@@ -421,9 +492,12 @@ public static class EnemyAnimationAssetBuilder
         return controller;
     }
 
-    private static void ConfigureEnemyPrefab(AnimatorController _controller, IReadOnlyDictionary<string, AnimationClip> _clips)
+    private static void ConfigureEnemyPrefab(
+        MonsterDefinition _monster,
+        AnimatorController _controller,
+        IReadOnlyDictionary<string, AnimationClip> _clips)
     {
-        GameObject root = PrefabUtility.LoadPrefabContents(EnemyPrefabPath);
+        GameObject root = PrefabUtility.LoadPrefabContents(_monster.PrefabPath);
         bool prefabChanged = false;
 
         try
@@ -431,17 +505,17 @@ public static class EnemyAnimationAssetBuilder
             Transform visual = root.transform.Find("Visual");
 
             if (visual == null)
-                throw new InvalidOperationException("Enemy prefab has no Visual child.");
+                throw new InvalidOperationException($"{_monster.PrefabPath} has no Visual child.");
 
             SpriteRenderer spriteRenderer = visual.GetComponent<SpriteRenderer>();
 
             if (spriteRenderer == null)
-                throw new InvalidOperationException("Enemy prefab Visual has no SpriteRenderer.");
+                throw new InvalidOperationException($"{_monster.PrefabPath} Visual has no SpriteRenderer.");
 
             // Measured from the collider, not from the prefab's own position: the
             // spawner drops the enemy at a spawn point and overwrites that, while
             // the collider bottom is what actually rests on the ground.
-            MonsterMetrics metrics = MeasureMonster();
+            MonsterMetrics metrics = MeasureMonster(_monster);
             float groundBelowRoot = GetColliderBottomOffset(root);
 
             // The feet rest on the ground line, so the top of the artwork ends up
@@ -450,7 +524,7 @@ public static class EnemyAnimationAssetBuilder
             // the sprite bounds, which report the empty frame around the artwork.
             float headAboveRoot = metrics.BodyHeightUnits - groundBelowRoot;
 
-            prefabChanged |= ApplyVisual(visual, spriteRenderer, metrics, groundBelowRoot);
+            prefabChanged |= ApplyVisual(_monster, visual, spriteRenderer, metrics, groundBelowRoot);
 
             Animator animator = root.GetComponent<Animator>();
 
@@ -484,7 +558,7 @@ public static class EnemyAnimationAssetBuilder
             prefabChanged |= EnsureComponent<EnemyDeathBurst>(root);
 
             if (prefabChanged)
-                PrefabUtility.SaveAsPrefabAsset(root, EnemyPrefabPath);
+                PrefabUtility.SaveAsPrefabAsset(root, _monster.PrefabPath);
         }
         finally
         {
@@ -503,11 +577,16 @@ public static class EnemyAnimationAssetBuilder
         return _root.transform.position.y - enemyCollider.bounds.min.y;
     }
 
-    private static bool ApplyVisual(Transform _visual, SpriteRenderer _renderer, MonsterMetrics _metrics, float _groundBelowRoot)
+    private static bool ApplyVisual(
+        MonsterDefinition _monster,
+        Transform _visual,
+        SpriteRenderer _renderer,
+        MonsterMetrics _metrics,
+        float _groundBelowRoot)
     {
         bool changed = false;
 
-        Sprite idleSprite = AssetDatabase.LoadAllAssetsAtPath(Sheets[0].TexturePath)
+        Sprite idleSprite = AssetDatabase.LoadAllAssetsAtPath(_monster.Sheets[0].TexturePath)
             .OfType<Sprite>()
             .OrderBy(sprite => sprite.name, StringComparer.Ordinal)
             .FirstOrDefault();
@@ -682,12 +761,14 @@ public static class EnemyAnimationAssetBuilder
     /// frame is mostly transparent padding, so every placement has to come from
     /// the pixels rather than from the sprite bounds.
     /// </summary>
-    private static MonsterMetrics MeasureMonster()
+    private static MonsterMetrics MeasureMonster(MonsterDefinition _monster)
     {
         int lowestOpaqueRow = int.MaxValue;
         int highestOpaqueRow = int.MinValue;
 
-        foreach (SheetDefinition sheet in Sheets.Where(sheet => sheet.Loop))
+        // Only the looping sheets. An attack frame reaches out with claws well past
+        // the body, and measuring that would shrink the monster to fit its lunge.
+        foreach (SheetDefinition sheet in _monster.Sheets.Where(sheet => sheet.Loop))
         {
             // Read straight off disk, which sidesteps having to mark the imported
             // texture readable just to measure it once.
@@ -721,17 +802,17 @@ public static class EnemyAnimationAssetBuilder
         }
 
         if (lowestOpaqueRow > highestOpaqueRow)
-            throw new InvalidOperationException("Enemy sheets contain no visible pixels.");
+            throw new InvalidOperationException($"{_monster.Name} sheets contain no visible pixels.");
 
         float bodyHeightPixels = Mathf.Max(1f, highestOpaqueRow - lowestOpaqueRow + 1);
-        float scale = TargetBodyHeight / (bodyHeightPixels / PixelsPerUnit);
+        float scale = _monster.TargetBodyHeight / (bodyHeightPixels / PixelsPerUnit);
 
         float pivotRow = FrameSize * 0.5f;
         return new MonsterMetrics(scale, pivotRow - lowestOpaqueRow, highestOpaqueRow + 1 - pivotRow);
     }
 
     private static string GetSpriteName(SheetDefinition _sheet, int _index) =>
-        $"MonsterA_{_sheet.StateName}_{_index:00}";
+        $"{_sheet.SpritePrefix}_{_sheet.StateName}_{_index:00}";
 
     private static bool KeyframesMatch(ObjectReferenceKeyframe[] _existing, ObjectReferenceKeyframe[] _expected)
     {
