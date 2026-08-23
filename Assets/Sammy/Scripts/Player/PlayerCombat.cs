@@ -61,11 +61,34 @@ public class PlayerCombat : MonoBehaviour
     private bool m_blockRequiresRelease;
     private float m_blockEndsAt;
     private float m_nextBlockAllowedAt;
+    private PlayerGuard m_playerGuard;
+
+    /// <summary>
+    /// Crits used to be able to reach certainty, and a crit already doubles the
+    /// hit. Guaranteed doubled damage is what let a pure offence build delete a
+    /// normal enemy in one swing for the whole run.
+    /// </summary>
+    private const float MaximumCriticalChance = 0.6f;
+
+    /// <summary>
+    /// Enemies a single swing may drain life from. The heal used to be paid out
+    /// once per enemy hit, so swinging into a pack healed more than the pack could
+    /// ever deal back and made every defensive upgrade pointless.
+    /// </summary>
+    private const int MaximumLifestealTargets = 2;
 
     private void Awake()
     {
         if (m_playerHealth == null)
             m_playerHealth = GetComponent<PlayerHealth>();
+
+        // Added here rather than wired into the prefab, matching how the enemy
+        // attack brings its own telegraph along. Dropping the component onto the
+        // player by hand still works and takes precedence for tuning.
+        m_playerGuard = GetComponent<PlayerGuard>();
+
+        if (m_playerGuard == null)
+            m_playerGuard = gameObject.AddComponent<PlayerGuard>();
 
         if (m_playerAnimation == null)
             m_playerAnimation = GetComponent<PlayerAnimationController>();
@@ -83,6 +106,9 @@ public class PlayerCombat : MonoBehaviour
     {
         if (m_playerHealth != null)
             m_playerHealth.OnDamageBlocked += HandleDamageBlocked;
+
+        if (m_playerGuard != null)
+            m_playerGuard.OnGuardBroken += HandleGuardBroken;
     }
 
     private void Update()
@@ -103,6 +129,9 @@ public class PlayerCombat : MonoBehaviour
     {
         if (m_playerHealth != null)
             m_playerHealth.OnDamageBlocked -= HandleDamageBlocked;
+
+        if (m_playerGuard != null)
+            m_playerGuard.OnGuardBroken -= HandleGuardBroken;
 
         StopBlocking(false);
 
@@ -156,7 +185,7 @@ public class PlayerCombat : MonoBehaviour
         if (_percentage <= 0f)
             return;
 
-        m_criticalChance = Mathf.Clamp01(m_criticalChance + _percentage);
+        m_criticalChance = Mathf.Clamp(m_criticalChance + _percentage, 0f, MaximumCriticalChance);
     }
 
     public void AddHealthOnHit(int _amount)
@@ -226,7 +255,12 @@ public class PlayerCombat : MonoBehaviour
         if (confirmedHitCount > 0)
         {
             if (m_healthOnHit > 0 && m_playerHealth != null)
-                m_playerHealth.Heal(m_healthOnHit * confirmedHitCount);
+            {
+                // Capped instead of paid per enemy. A wide swing into a pack used
+                // to out heal everything the pack could deal back.
+                int drainedTargets = Mathf.Min(confirmedHitCount, MaximumLifestealTargets);
+                m_playerHealth.Heal(m_healthOnHit * drainedTargets);
+            }
 
             PlayHitShake(combinedHitPosition / confirmedHitCount, isCriticalHit ? 1.45f : 1f);
             PlayHitSlowMotion(isCriticalHit);
@@ -272,11 +306,44 @@ public class PlayerCombat : MonoBehaviour
             return;
         }
 
+        // Charged before the timer is checked. A guard that empties this frame has
+        // to break rather than merely run out of block duration, because the two
+        // carry very different recovery times.
+        if (m_playerGuard != null && !m_playerGuard.SpendOnHold(Time.deltaTime))
+            return;
+
         if (PveRuntime.Time >= m_blockEndsAt)
         {
             m_blockRequiresRelease = true;
             StopBlocking(true);
         }
+    }
+
+    /// <summary>
+    /// The guard gave out. The block is forced open and stays unavailable for the
+    /// recovery window, which is the opening the enemies were never given while
+    /// blocking was free.
+    /// </summary>
+    private void HandleGuardBroken()
+    {
+        m_blockRequiresRelease = true;
+        StopBlocking(false);
+
+        m_nextBlockAllowedAt = Mathf.Max(
+            m_nextBlockAllowedAt,
+            PveRuntime.Time + m_playerGuard.BreakRecoveryRemaining
+        );
+
+        PlayHitShake(transform.position, m_blockImpactShakeMultiplier * 1.6f);
+
+        CombatCalloutText.Show(
+            transform.position + Vector3.up * 1.3f,
+            "GUARD BROKEN",
+            new Color(1f, 0.42f, 0.3f, 1f),
+            new Color(0.24f, 0.03f, 0.02f, 1f),
+            0.85f,
+            0.8f
+        );
     }
 
     private bool TryStartBlocking()
@@ -289,6 +356,11 @@ public class PlayerCombat : MonoBehaviour
         {
             return false;
         }
+
+        // An empty or broken guard cannot be raised at all. This is what stops the
+        // player from simply tapping the button again to reset the block timer.
+        if (m_playerGuard != null && !m_playerGuard.CanBlock)
+            return false;
 
         if (!m_playerAnimation.RequestBlock())
             return false;
@@ -322,6 +394,10 @@ public class PlayerCombat : MonoBehaviour
         // Shaking from the attacker's side makes the block read directionally
         // instead of as a generic screen wobble.
         PlayHitShake(_attackerPosition, m_blockImpactShakeMultiplier);
+
+        // Charged last. Breaking here raises the event that forces the block open,
+        // so the feedback for the hit itself has already played.
+        m_playerGuard?.SpendOnBlockedHit(_incomingDamage);
     }
 
     private void PlayHitSlowMotion(bool _isCriticalHit)

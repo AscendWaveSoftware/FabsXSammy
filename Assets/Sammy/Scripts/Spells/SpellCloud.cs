@@ -117,14 +117,16 @@ public class SpellCloud : MonoBehaviour
             return;
 
         // Turns around the vertical axis only. A full billboard would tip the
-        // rising skull over as soon as the camera looks down at the arena.
+        // rising skull over as soon as the camera looks down at the arena. Along
+        // the camera forward rather than against it: facing the sprite's back at
+        // the camera draws the artwork mirrored.
         Vector3 cameraForward = m_cameraTransform.rotation * Vector3.forward;
         cameraForward.y = 0f;
 
         if (cameraForward.sqrMagnitude < 0.0001f)
             return;
 
-        transform.rotation = Quaternion.LookRotation(-cameraForward.normalized, Vector3.up);
+        transform.rotation = Quaternion.LookRotation(cameraForward.normalized, Vector3.up);
     }
 
     private void Initialize(

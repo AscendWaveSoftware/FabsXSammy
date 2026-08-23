@@ -8,7 +8,7 @@ public class MainMenuHandler : MonoBehaviour
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _quitButton;
 
-    private const string PLAY_SCENE_STRING = "BetaScene";
+    private const string PLAY_SCENE_STRING = "goldscene";
 
     private void Awake()
     {

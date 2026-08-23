@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8a15b4f46a764d8478b6c917f7838538
+guid: 09216aed64c3ef04cbac21d8cb9b3c54
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -93,30 +93,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hollow_00
+      name: Vortex_00
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -125,20 +112,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 196fdb5ffe513f849b9afbe28950b0d4
-      internalID: 1486259599
+      spriteID: e058d3122b6c531499af30263e738f9f
+      internalID: -1120785700
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_01
+      name: Vortex_01
       rect:
         serializedVersion: 2
-        x: 48
+        x: 272
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd7ee075e242b72478b59c29652bdace
-      internalID: -1368355537
+      spriteID: 200be9cd026e67c468d5b25b10a3f71a
+      internalID: 316370552
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_02
+      name: Vortex_02
       rect:
         serializedVersion: 2
-        x: 96
+        x: 544
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e7e11d2af881b0e4392b8a0c79ab72d3
-      internalID: -377098855
+      spriteID: c2e8564ea96935b40819ffe11feb31fc
+      internalID: 1839488741
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_03
+      name: Vortex_03
       rect:
         serializedVersion: 2
-        x: 144
+        x: 816
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,20 +178,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 942810baf764c4a45a04ecab6cb52aa8
-      internalID: 688563581
+      spriteID: 585e341e79053004ba6f47ed0da5c04d
+      internalID: 1968027904
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_04
+      name: Vortex_04
       rect:
         serializedVersion: 2
-        x: 192
+        x: 1088
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,20 +200,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb6316c284e636540bf2b612973dd280
-      internalID: 159641869
+      spriteID: 3fb0b7ed16a6e364c99246994c9f5523
+      internalID: -1859468115
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_05
+      name: Vortex_05
       rect:
         serializedVersion: 2
-        x: 240
+        x: 1360
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,20 +222,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3440c06a3970c4d4cb0c4b0873307533
-      internalID: -263661489
+      spriteID: 2fc594168dee0194ebb501317411345d
+      internalID: -393200757
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_06
+      name: Vortex_06
       rect:
         serializedVersion: 2
-        x: 288
+        x: 1632
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,20 +244,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5311706ae3886f447b820e1e731e2561
-      internalID: -728101549
+      spriteID: 16679c7aa7fd44045bcbc515fe3bfcd3
+      internalID: -586247149
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hollow_07
+      name: Vortex_07
       rect:
         serializedVersion: 2
-        x: 336
+        x: 1904
         y: 0
-        width: 48
-        height: 48
+        width: 272
+        height: 272
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,8 +266,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d1ac8c910d9d2d439f0a2274d377008
-      internalID: 639922351
+      spriteID: 79a845f759601914991498231741f5d5
+      internalID: -781572245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vortex_08
+      rect:
+        serializedVersion: 2
+        x: 2176
+        y: 0
+        width: 272
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee70e32933a0ba643b18266cffb5c255
+      internalID: 307691996
       vertices: []
       indices: 
       edges: []
@@ -289,8 +298,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d83142ca765d5504e8d72b6470c1801e
-    internalID: 0
+    spriteID: ae82489f67f150f47b1848e24e516a11
+    internalID: 1859479539
     vertices: []
     indices: 
     edges: []
@@ -299,14 +308,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Hollow_00: 1486259599
-      Hollow_01: -1368355537
-      Hollow_02: -377098855
-      Hollow_03: 688563581
-      Hollow_04: 159641869
-      Hollow_05: -263661489
-      Hollow_06: -728101549
-      Hollow_07: 639922351
+      Vortex_00: -1120785700
+      Vortex_01: 316370552
+      Vortex_02: 1839488741
+      Vortex_03: 1968027904
+      Vortex_04: -1859468115
+      Vortex_05: -393200757
+      Vortex_06: -586247149
+      Vortex_07: -781572245
+      Vortex_08: 307691996
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
