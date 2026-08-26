@@ -5030,7 +5030,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Turret
   m_towerStats: {fileID: 11400000, guid: d027bf8270280b249a70be52327f2480, type: 2}
-  m_rotationSpeed: 300
+  m_rotationSpeed: 200
+  m_idleRotationSpeed: 50
+  m_idleChangeInterval: 2
+  m_maxIdleAngle: 45
   m_projectilePrefab: {fileID: 2854654284556782528, guid: b30bda8c56e880143b0c0a1d08cb2f38, type: 3}
   m_projectileSpawnPoint: {fileID: 6656959339085216756}
 --- !u!82 &2675517412769926848

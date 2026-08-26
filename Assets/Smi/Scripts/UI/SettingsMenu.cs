@@ -7,7 +7,6 @@ using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static System.Net.WebRequestMethods;
 
 public class SettingsMenu : MonoBehaviour
 {
