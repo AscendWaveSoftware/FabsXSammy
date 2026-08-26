@@ -24529,7 +24529,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.33333334
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 8fbd36e156ac8aa499c6b2206318432b, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: e51d25bf4d1281c4ba3c5d8801642869, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &557474563
 PrefabInstance:
