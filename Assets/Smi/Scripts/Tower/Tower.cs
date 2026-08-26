@@ -48,26 +48,23 @@ public class Tower : MonoBehaviour
     {
         m_currentHealth -= _damage;
 
-        if (m_currentHealth <= 0)
-            TowerDestroyed();
+        if (MOBA_Manager.Instance != null)
+            MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
 
-        else
+        if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
         {
-            if (MOBA_Manager.Instance != null)
-                MOBA_Manager.Instance.OnDamage(_damage, m_towerStats.m_isEnemyBuilding);
+            if (mainModule)
+                main.startLifetimeMultiplier = 10f * (1f - (m_currentHealth / m_towerStats.m_targetHealth));
 
-            if (m_currentHealth <= m_towerStats.m_targetHealth / 2)
+            if (!m_bIsDamaged)
             {
-                if (mainModule)
-                    main.startLifetimeMultiplier = 10f * (1f - (m_currentHealth / m_towerStats.m_targetHealth));
-
-                if (!m_bIsDamaged)
-                {
-                    OnDamagedEvent?.Invoke();
-                    m_bIsDamaged = true;
-                }
+                OnDamagedEvent?.Invoke();
+                m_bIsDamaged = true;
             }
         }
+
+        if (m_currentHealth <= 0)
+            TowerDestroyed();
     }
 
     private void RegisterTower()

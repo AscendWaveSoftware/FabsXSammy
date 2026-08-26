@@ -1,7 +1,7 @@
 //Code by Fabian Schmiedel
 
+using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,8 +39,6 @@ public class MOBA_Manager : MonoBehaviour
         }
 
         Instance = this;
-
-        DontDestroyOnLoad(gameObject);
     }
 
     public void SetSlider(float _value, bool _isEnemy)
@@ -86,6 +84,7 @@ public class MOBA_Manager : MonoBehaviour
                 m_text.text = "Enemy + 1000 Scraps";
                 break;
         }
+
 
         m_destroyedAnimation.Play();
     }

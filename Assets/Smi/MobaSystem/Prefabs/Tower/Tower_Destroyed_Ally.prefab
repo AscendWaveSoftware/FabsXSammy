@@ -9803,6 +9803,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e62a5dd8e84e306418681794b751a97d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1600870174741756080}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e62a5dd8e84e306418681794b751a97d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4555749626183292275}
   m_SourcePrefab: {fileID: 100100000, guid: e62a5dd8e84e306418681794b751a97d, type: 3}
 --- !u!4 &1634124891513627751 stripped
 Transform:
@@ -9911,3 +9914,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-4555749626183292275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154483426113847005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb7b6abeeba333d499292950cc031fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyedTower

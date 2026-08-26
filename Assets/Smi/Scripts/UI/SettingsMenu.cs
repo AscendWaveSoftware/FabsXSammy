@@ -7,6 +7,7 @@ using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static System.Net.WebRequestMethods;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class SettingsMenu : MonoBehaviour
 
     public Toggle m_fullscreenToggle;
     public Toggle m_vsyncToggle;
+
+    public string m_feedbackURL = "https://nx103418.your-storageshare.de/apps/forms/s/Joq26GtS73fo3E2p8wGw3GMR";
 
     private Canvas m_canvas;
     private bool bIsOpen = false;
@@ -430,7 +433,8 @@ public class SettingsMenu : MonoBehaviour
     public void RestartGame()
     {
         CloseMenu();
-
+        Time.timeScale = 1f;
+        
         var currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.buildIndex);
     }
@@ -439,12 +443,11 @@ public class SettingsMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
-        Destroy(MOBA_Manager.Instance.gameObject);
     }
 
     public void FeedbackButton()
     {
-        Application.OpenURL("https://nx103418.your-storageshare.de/apps/forms/s/w4YXm3XjBDeKKWx7JyAtJoBf");
+        Application.OpenURL(m_feedbackURL);
     }
 
     public void Mute(bool _status)
