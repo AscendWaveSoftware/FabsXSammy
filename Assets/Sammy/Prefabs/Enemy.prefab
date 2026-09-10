@@ -126,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   moveSpeed: 15
   stoppingDistance: 1.2
-  acceleration: 15
+  acceleration: 9
   orbitActivationDistance: 3.5
   orbitSpeedRange: {x: 12, y: 24}
   maximumApproachSpread: 2.5

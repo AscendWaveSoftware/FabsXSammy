@@ -5,13 +5,16 @@ using UnityEngine.UI;
 
 public class PlayerUIHandler : MonoBehaviour
 {
-    private static readonly Color PanelColor = new Color(0.025f, 0.04f, 0.075f, 0.94f);
-    private static readonly Color PanelBorderColor = new Color(0.19f, 0.32f, 0.48f, 0.75f);
-    private static readonly Color TrackColor = new Color(0.008f, 0.014f, 0.028f, 0.92f);
-    private static readonly Color MainTextColor = new Color(0.94f, 0.97f, 1f, 1f);
-    private static readonly Color SecondaryTextColor = new Color(0.58f, 0.67f, 0.78f, 1f);
-    private static readonly Color XpColor = new Color(0.18f, 0.72f, 1f, 1f);
-    private static readonly Color ScrapColor = new Color(1f, 0.72f, 0.2f, 1f);
+    private static readonly Color MainTextColor = SteampunkUI.Parchment;
+    private static readonly Color SecondaryTextColor = SteampunkUI.ParchmentMuted;
+    private static readonly Color XpColor = new Color(0.95f, 0.74f, 0.32f, 1f);
+    private static readonly Color ScrapColor = new Color(0.96f, 0.76f, 0.4f, 1f);
+
+    // Patina, amber and rust instead of pure traffic light colours, so the bar
+    // still reads at a glance but belongs to the brass palette.
+    private static readonly Color HealthHighColor = new Color(0.47f, 0.69f, 0.31f, 1f);
+    private static readonly Color HealthMediumColor = new Color(0.9f, 0.63f, 0.2f, 1f);
+    private static readonly Color HealthLowColor = new Color(0.86f, 0.23f, 0.14f, 1f);
 
     [Header("Resource UI")]
     [SerializeField] private TextMeshProUGUI m_scrapText;
@@ -201,7 +204,7 @@ public class PlayerUIHandler : MonoBehaviour
     private void HandleExperienceChanged(int _level, int _currentXP, int _xpToNextLevel)
     {
         if (m_levelText != null)
-            m_levelText.text = $"LEVEL {_level}";
+            m_levelText.text = $"<size=36%><cspace=2>LEVEL</cspace></size>\n{_level}";
 
         if (m_xpText != null)
             m_xpText.text = $"{_currentXP} / {_xpToNextLevel} XP";
@@ -306,25 +309,29 @@ public class PlayerUIHandler : MonoBehaviour
 
     private void BuildHudLayout(RectTransform _hudRoot)
     {
-        Sprite panelSprite = m_xpBarImage != null ? m_xpBarImage.sprite : null;
-
-        Image statusPanel = CreateImage("Status Panel", _hudRoot, panelSprite, PanelColor);
-        SetRect(statusPanel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(32f, 32f), new Vector2(430f, 160f), Vector2.zero);
+        // Riveted iron plate in the lower left, with a brass cog as the level gauge.
+        Image statusPanel = CreateImage("Status Panel", _hudRoot, SteampunkUI.Frame, Color.white);
+        SetRect(statusPanel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(28f, 28f), new Vector2(520f, 164f), Vector2.zero);
         AddPanelEffects(statusPanel);
 
-        Image statusAccent = CreateImage("Status Accent", statusPanel.rectTransform, null, XpColor);
-        SetRect(statusAccent.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(5f, 0f), new Vector2(0f, 0.5f));
+        Image levelGear = CreateImage("Level Gear", statusPanel.rectTransform, SteampunkUI.Gear, SteampunkUI.Brass);
+        SetRect(levelGear.rectTransform, Vector2.zero, Vector2.zero, new Vector2(18f, 16f), new Vector2(132f, 132f), Vector2.zero);
 
-        Image scrapPanel = CreateImage("Scrap Panel", _hudRoot, panelSprite, PanelColor);
-        SetRect(scrapPanel.rectTransform, Vector2.one, Vector2.one, new Vector2(-32f, -32f), new Vector2(220f, 58f), Vector2.one);
+        Image levelFace = CreateImage("Level Face", levelGear.rectTransform, SteampunkUI.Disc, new Color(0.16f, 0.13f, 0.1f, 1f));
+        SetStretch(levelFace.rectTransform, 31f);
+
+        // Scrap sits on a smaller plate in the upper right, marked with its own cog.
+        Image scrapPanel = CreateImage("Scrap Panel", _hudRoot, SteampunkUI.Frame, Color.white);
+        SetRect(scrapPanel.rectTransform, Vector2.one, Vector2.one, new Vector2(-28f, -28f), new Vector2(250f, 70f), Vector2.one);
+        scrapPanel.pixelsPerUnitMultiplier = 1.4f;
         AddPanelEffects(scrapPanel);
 
-        Image scrapAccent = CreateImage("Scrap Accent", scrapPanel.rectTransform, null, ScrapColor);
-        SetRect(scrapAccent.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(4f, 0f), new Vector2(0f, 0.5f));
+        Image scrapGear = CreateImage("Scrap Gear", scrapPanel.rectTransform, SteampunkUI.Gear, SteampunkUI.Copper);
+        SetRect(scrapGear.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(18f, 0f), new Vector2(40f, 40f), new Vector2(0f, 0.5f));
 
-        ConfigureLevelText(statusPanel.rectTransform);
-        ConfigureHealthSection(statusPanel.rectTransform, panelSprite);
-        ConfigureXpSection(statusPanel.rectTransform, panelSprite);
+        ConfigureLevelText(levelFace.rectTransform);
+        ConfigureHealthSection(statusPanel.rectTransform);
+        ConfigureXpSection(statusPanel.rectTransform);
         ConfigureScrapText(scrapPanel.rectTransform);
     }
 
@@ -334,12 +341,13 @@ public class PlayerUIHandler : MonoBehaviour
             return;
 
         m_levelText.transform.SetParent(_parent, false);
-        ConfigureText(m_levelText, 27f, MainTextColor, FontStyles.Bold, TextAlignmentOptions.Left);
-        m_levelText.characterSpacing = 2f;
-        SetRect(m_levelText.rectTransform, Vector2.zero, Vector2.zero, new Vector2(24f, 120f), new Vector2(260f, 32f), Vector2.zero);
+        ConfigureText(m_levelText, 34f, SteampunkUI.BrassLight, FontStyles.Bold, TextAlignmentOptions.Center);
+        m_levelText.lineSpacing = -28f;
+        m_levelText.textWrappingMode = TextWrappingModes.NoWrap;
+        SetStretch(m_levelText.rectTransform, 0f);
     }
 
-    private void ConfigureHealthSection(RectTransform _parent, Sprite _barSprite)
+    private void ConfigureHealthSection(RectTransform _parent)
     {
         if (m_playerHealthUI == null || m_playerHealthUI.HealthBarImage == null)
             return;
@@ -347,22 +355,23 @@ public class PlayerUIHandler : MonoBehaviour
         TextMeshProUGUI healthLabel = CreateText("Health Label", _parent, "HEALTH");
         ConfigureText(healthLabel, 13f, SecondaryTextColor, FontStyles.Bold, TextAlignmentOptions.Left);
         healthLabel.characterSpacing = 3f;
-        SetRect(healthLabel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(24f, 93f), new Vector2(130f, 20f), Vector2.zero);
+        SetRect(healthLabel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(166f, 104f), new Vector2(140f, 20f), Vector2.zero);
 
         if (m_playerHealthUI.HealthText != null)
         {
             TextMeshProUGUI healthText = m_playerHealthUI.HealthText;
             healthText.transform.SetParent(_parent, false);
-            ConfigureText(healthText, 14f, MainTextColor, FontStyles.Bold, TextAlignmentOptions.Right);
-            SetRect(healthText.rectTransform, Vector2.zero, Vector2.zero, new Vector2(226f, 93f), new Vector2(180f, 20f), Vector2.zero);
+            ConfigureText(healthText, 15f, MainTextColor, FontStyles.Bold, TextAlignmentOptions.Right);
+            SetRect(healthText.rectTransform, Vector2.zero, Vector2.zero, new Vector2(316f, 104f), new Vector2(176f, 20f), Vector2.zero);
         }
 
-        Image healthTrack = CreateImage("Health Track", _parent, _barSprite, TrackColor);
-        SetRect(healthTrack.rectTransform, Vector2.zero, Vector2.zero, new Vector2(24f, 65f), new Vector2(382f, 22f), Vector2.zero);
-        ConfigureFillImage(m_playerHealthUI.HealthBarImage, healthTrack.rectTransform, 2f);
+        Image healthTrack = CreateImage("Health Track", _parent, SteampunkUI.Track, Color.white);
+        SetRect(healthTrack.rectTransform, Vector2.zero, Vector2.zero, new Vector2(164f, 72f), new Vector2(330f, 28f), Vector2.zero);
+        ConfigureFillImage(m_playerHealthUI.HealthBarImage, healthTrack.rectTransform, 3f);
+        m_playerHealthUI.ApplyBarColors(HealthHighColor, HealthMediumColor, HealthLowColor);
     }
 
-    private void ConfigureXpSection(RectTransform _parent, Sprite _barSprite)
+    private void ConfigureXpSection(RectTransform _parent)
     {
         if (m_xpBarImage == null)
             return;
@@ -370,19 +379,20 @@ public class PlayerUIHandler : MonoBehaviour
         TextMeshProUGUI xpLabel = CreateText("XP Label", _parent, "EXPERIENCE");
         ConfigureText(xpLabel, 12f, SecondaryTextColor, FontStyles.Bold, TextAlignmentOptions.Left);
         xpLabel.characterSpacing = 3f;
-        SetRect(xpLabel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(24f, 38f), new Vector2(160f, 18f), Vector2.zero);
+        SetRect(xpLabel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(166f, 46f), new Vector2(160f, 18f), Vector2.zero);
 
         if (m_xpText != null)
         {
             m_xpText.transform.SetParent(_parent, false);
             ConfigureText(m_xpText, 13f, MainTextColor, FontStyles.Bold, TextAlignmentOptions.Right);
-            SetRect(m_xpText.rectTransform, Vector2.zero, Vector2.zero, new Vector2(226f, 38f), new Vector2(180f, 18f), Vector2.zero);
+            SetRect(m_xpText.rectTransform, Vector2.zero, Vector2.zero, new Vector2(316f, 46f), new Vector2(176f, 18f), Vector2.zero);
         }
 
-        Image xpTrack = CreateImage("XP Track", _parent, _barSprite, TrackColor);
-        SetRect(xpTrack.rectTransform, Vector2.zero, Vector2.zero, new Vector2(24f, 18f), new Vector2(382f, 12f), Vector2.zero);
+        Image xpTrack = CreateImage("XP Track", _parent, SteampunkUI.Track, Color.white);
+        SetRect(xpTrack.rectTransform, Vector2.zero, Vector2.zero, new Vector2(164f, 24f), new Vector2(330f, 18f), Vector2.zero);
+        xpTrack.pixelsPerUnitMultiplier = 1.6f;
         m_xpBarImage.color = XpColor;
-        ConfigureFillImage(m_xpBarImage, xpTrack.rectTransform, 1.5f);
+        ConfigureFillImage(m_xpBarImage, xpTrack.rectTransform, 3f);
     }
 
     private void ConfigureScrapText(RectTransform _parent)
@@ -391,9 +401,10 @@ public class PlayerUIHandler : MonoBehaviour
             return;
 
         m_scrapText.transform.SetParent(_parent, false);
-        ConfigureText(m_scrapText, 21f, ScrapColor, FontStyles.Bold, TextAlignmentOptions.Center);
+        ConfigureText(m_scrapText, 22f, ScrapColor, FontStyles.Bold, TextAlignmentOptions.Center);
         m_scrapText.characterSpacing = 2f;
-        SetStretch(m_scrapText.rectTransform, 10f);
+        SetStretch(m_scrapText.rectTransform, 12f);
+        m_scrapText.rectTransform.offsetMin = new Vector2(62f, 12f);
 
         PlayerResources resources = GetComponent<PlayerResources>();
         if (resources != null)
@@ -412,7 +423,7 @@ public class PlayerUIHandler : MonoBehaviour
 
         Image image = imageObject.GetComponent<Image>();
         image.sprite = _sprite;
-        image.type = _sprite != null ? Image.Type.Sliced : Image.Type.Simple;
+        image.type = _sprite != null && _sprite.border != Vector4.zero ? Image.Type.Sliced : Image.Type.Simple;
         image.color = _color;
         image.raycastTarget = false;
         return image;
@@ -448,6 +459,7 @@ public class PlayerUIHandler : MonoBehaviour
     private static void ConfigureFillImage(Image _fillImage, RectTransform _track, float _padding)
     {
         _fillImage.transform.SetParent(_track, false);
+        _fillImage.sprite = SteampunkUI.BarFill;
         _fillImage.type = Image.Type.Filled;
         _fillImage.fillMethod = Image.FillMethod.Horizontal;
         _fillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
@@ -461,16 +473,9 @@ public class PlayerUIHandler : MonoBehaviour
         Shadow shadow = _panel.GetComponent<Shadow>();
         if (shadow == null)
             shadow = _panel.gameObject.AddComponent<Shadow>();
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.52f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.6f);
         shadow.effectDistance = new Vector2(0f, -6f);
         shadow.useGraphicAlpha = true;
-
-        Outline outline = _panel.GetComponent<Outline>();
-        if (outline == null)
-            outline = _panel.gameObject.AddComponent<Outline>();
-        outline.effectColor = PanelBorderColor;
-        outline.effectDistance = new Vector2(1f, -1f);
-        outline.useGraphicAlpha = true;
     }
 
     private static void SetRect(RectTransform _rect, Vector2 _anchorMin, Vector2 _anchorMax, Vector2 _position, Vector2 _size, Vector2 _pivot)

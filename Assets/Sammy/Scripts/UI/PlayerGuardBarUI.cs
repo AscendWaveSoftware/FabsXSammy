@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class PlayerGuardBarUI : MonoBehaviour
 {
     private static readonly Color TrackColor = new(0.008f, 0.014f, 0.028f, 0.92f);
-    private static readonly Color ReadyColor = new(0.55f, 0.78f, 1f, 1f);
+    private static readonly Color ReadyColor = new(0.55f, 0.76f, 0.78f, 1f);
     private static readonly Color StrainedColor = new(1f, 0.74f, 0.28f, 1f);
     private static readonly Color BrokenColor = new(1f, 0.32f, 0.24f, 1f);
 
@@ -120,8 +120,12 @@ public class PlayerGuardBarUI : MonoBehaviour
         m_root.sizeDelta = new Vector2(m_width, m_height);
 
         Image track = trackObject.GetComponent<Image>();
-        track.color = TrackColor;
+        track.sprite = SteampunkUI.Track;
+        track.type = Image.Type.Sliced;
+        track.pixelsPerUnitMultiplier = 2f;
+        track.color = Color.white;
         track.raycastTarget = false;
+        m_root.sizeDelta = new Vector2(m_width, Mathf.Max(m_height, 12f));
 
         GameObject fillObject = new GameObject("Guard Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         fillObject.layer = hudRoot.gameObject.layer;
@@ -130,10 +134,11 @@ public class PlayerGuardBarUI : MonoBehaviour
         RectTransform fillRect = (RectTransform)fillObject.transform;
         fillRect.anchorMin = Vector2.zero;
         fillRect.anchorMax = Vector2.one;
-        fillRect.offsetMin = new Vector2(1f, 1f);
-        fillRect.offsetMax = new Vector2(-1f, -1f);
+        fillRect.offsetMin = new Vector2(2f, 2f);
+        fillRect.offsetMax = new Vector2(-2f, -2f);
 
         m_fill = fillObject.GetComponent<Image>();
+        m_fill.sprite = SteampunkUI.BarFill;
         m_fill.color = ReadyColor;
         m_fill.raycastTarget = false;
         m_fill.type = Image.Type.Filled;

@@ -23,6 +23,14 @@ public class PlayerHealthUI : MonoBehaviour
 
     private float m_targetFillAmount;
     private Color m_targetBarColor;
+
+    /// <summary>Lets the HUD hand in its palette; the thresholds stay as configured.</summary>
+    public void ApplyBarColors(Color _high, Color _medium, Color _low)
+    {
+        m_highHealthColor = _high;
+        m_mediumHealthColor = _medium;
+        m_lowHealthColor = _low;
+    }
     private bool m_hasInitialValue;
 
     public Image HealthBarImage => m_healthBarImage;

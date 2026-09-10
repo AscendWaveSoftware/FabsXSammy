@@ -12,13 +12,12 @@ public class PlayerSpellBarUI : MonoBehaviour
 {
     private static readonly Color PanelColor = new(0.025f, 0.04f, 0.075f, 0.94f);
     private static readonly Color TrackColor = new(0.008f, 0.014f, 0.028f, 0.92f);
-    private static readonly Color NameColor = new(0.94f, 0.97f, 1f, 1f);
+    private static readonly Color NameColor = SteampunkUI.Parchment;
 
     private sealed class SpellSlotUI
     {
         public RectTransform Root;
         public CanvasGroup Group;
-        public Image Accent;
         public Image KeyBadge;
         public Image CooldownFill;
         public TextMeshProUGUI KeyText;
@@ -148,28 +147,36 @@ public class PlayerSpellBarUI : MonoBehaviour
         };
 
         Image background = slotObject.GetComponent<Image>();
-        background.color = PanelColor;
+        background.sprite = SteampunkUI.Frame;
+        background.type = Image.Type.Sliced;
+        background.pixelsPerUnitMultiplier = 2f;
+        background.color = Color.white;
         background.raycastTarget = false;
         SetRect(slot.Root, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(m_slotWidth, m_slotHeight), new Vector2(0f, 0.5f));
         AddPanelEffects(background, accentColor);
 
-        slot.Accent = CreateImage("Accent", slot.Root, accentColor);
-        SetRect(slot.Accent.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), Vector2.zero, new Vector2(4f, 0f), new Vector2(0f, 0.5f));
-
-        slot.KeyBadge = CreateImage("Key Badge", slot.Root, accentColor);
+        // A brass key plate, warmed towards the spell's colour so each slot stays recognisable.
+        slot.KeyBadge = CreateImage("Key Badge", slot.Root, Color.Lerp(Color.white, accentColor, 0.35f));
+        slot.KeyBadge.sprite = SteampunkUI.Plate;
+        slot.KeyBadge.type = Image.Type.Sliced;
+        slot.KeyBadge.pixelsPerUnitMultiplier = 1.4f;
         SetRect(slot.KeyBadge.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(14f, 3f), new Vector2(26f, 26f), new Vector2(0f, 0.5f));
 
-        slot.KeyText = CreateText("Key Text", slot.Root, 17f, new Color(0.03f, 0.05f, 0.09f, 1f), TextAlignmentOptions.Center);
+        slot.KeyText = CreateText("Key Text", slot.Root, 17f, SteampunkUI.TextOnBrass, TextAlignmentOptions.Center);
         SetRect(slot.KeyText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(14f, 3f), new Vector2(26f, 26f), new Vector2(0f, 0.5f));
 
         slot.NameText = CreateText("Name Text", slot.Root, 15f, NameColor, TextAlignmentOptions.Left);
         slot.NameText.characterSpacing = 3f;
         SetRect(slot.NameText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(48f, 3f), new Vector2(78f, 22f), new Vector2(0f, 0.5f));
 
-        Image cooldownTrack = CreateImage("Cooldown Track", slot.Root, TrackColor);
-        SetRect(cooldownTrack.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 7f), new Vector2(-24f, 4f), new Vector2(0.5f, 0.5f));
+        Image cooldownTrack = CreateImage("Cooldown Track", slot.Root, Color.white);
+        cooldownTrack.sprite = SteampunkUI.Track;
+        cooldownTrack.type = Image.Type.Sliced;
+        cooldownTrack.pixelsPerUnitMultiplier = 3f;
+        SetRect(cooldownTrack.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 10f), new Vector2(-28f, 7f), new Vector2(0.5f, 0.5f));
 
         slot.CooldownFill = CreateImage("Cooldown Fill", cooldownTrack.rectTransform, accentColor);
+        slot.CooldownFill.sprite = SteampunkUI.BarFill;
         slot.CooldownFill.type = Image.Type.Filled;
         slot.CooldownFill.fillMethod = Image.FillMethod.Horizontal;
         slot.CooldownFill.fillOrigin = (int)Image.OriginHorizontal.Left;

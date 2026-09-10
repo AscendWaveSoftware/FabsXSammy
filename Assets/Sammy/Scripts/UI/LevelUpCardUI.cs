@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
-    private static readonly Color CardColor = new Color(0.055f, 0.071f, 0.11f, 0.98f);
-    private static readonly Color CardHoverColor = new Color(0.085f, 0.105f, 0.16f, 1f);
-    private static readonly Color MainTextColor = new Color(0.96f, 0.97f, 1f, 1f);
-    private static readonly Color SecondaryTextColor = new Color(0.72f, 0.76f, 0.84f, 1f);
+    // The frame sprite carries its own colours; the tint only brightens it on hover.
+    private static readonly Color CardTint = new Color(0.86f, 0.86f, 0.86f, 1f);
+    private static readonly Color CardHoverTint = Color.white;
+    private static readonly Color MainTextColor = SteampunkUI.Parchment;
+    private static readonly Color SecondaryTextColor = new Color(0.86f, 0.79f, 0.66f, 1f);
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI m_upgradeNameText;
@@ -20,14 +21,14 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private LevelUpSelectionUI m_selectionUI;
     private RectTransform m_rectTransform;
     private Image m_cardImage;
-    private Image m_accentBar;
-    private Image m_iconBackdrop;
+    private Image m_typePlate;
+    private Image m_emblem;
     private Image m_titleDivider;
     private Outline m_outline;
     private CanvasGroup m_canvasGroup;
     private TextMeshProUGUI m_typeText;
     private Button m_cardButton;
-    private Color m_accentColor = new Color(0.45f, 0.72f, 1f, 1f);
+    private Color m_accentColor = SteampunkUI.Brass;
     private float m_targetScale = 1f;
     private float m_entranceTime;
     private float m_entranceDelay;
@@ -88,9 +89,13 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (m_cardImage != null)
         {
-            Color targetColor = m_targetScale > 1f ? CardHoverColor : CardColor;
+            Color targetColor = m_targetScale > 1f ? CardHoverTint : CardTint;
             m_cardImage.color = Color.Lerp(m_cardImage.color, targetColor, 1f - Mathf.Exp(-12f * deltaTime));
         }
+
+        // The emblem turns slowly, like a cog in the machinery behind the card.
+        if (m_emblem != null)
+            m_emblem.rectTransform.Rotate(0f, 0f, -12f * deltaTime);
     }
 
     public void Setup(UpgradeDefinition _upgrade, LevelUpSelectionUI _selectionUI)
@@ -107,12 +112,6 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (m_descriptionText != null)
             m_descriptionText.text = _upgrade.Description;
-
-        if (m_iconImage != null)
-        {
-            m_iconImage.sprite = _upgrade.Icon;
-            m_iconImage.enabled = _upgrade.Icon != null;
-        }
 
         ApplyTheme(_upgrade.UpgradeType);
     }
@@ -139,25 +138,13 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             SetHighlighted(false);
     }
 
-    public void OnPointerEnter(PointerEventData _eventData)
-    {
-        SetHighlighted(true);
-    }
+    public void OnPointerEnter(PointerEventData _eventData) => SetHighlighted(true);
 
-    public void OnPointerExit(PointerEventData _eventData)
-    {
-        SetHighlighted(false);
-    }
+    public void OnPointerExit(PointerEventData _eventData) => SetHighlighted(false);
 
-    public void OnSelect(BaseEventData _eventData)
-    {
-        SetHighlighted(true);
-    }
+    public void OnSelect(BaseEventData _eventData) => SetHighlighted(true);
 
-    public void OnDeselect(BaseEventData _eventData)
-    {
-        SetHighlighted(false);
-    }
+    public void OnDeselect(BaseEventData _eventData) => SetHighlighted(false);
 
     private void SelectUpgrade()
     {
@@ -174,7 +161,7 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (m_outline != null)
         {
             Color outlineColor = m_accentColor;
-            outlineColor.a = _highlighted ? 0.95f : 0.55f;
+            outlineColor.a = _highlighted ? 0.9f : 0.3f;
             m_outline.effectColor = outlineColor;
             m_outline.effectDistance = _highlighted ? new Vector2(3f, -3f) : new Vector2(2f, -2f);
         }
@@ -183,12 +170,17 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void ConfigureVisuals()
     {
         if (m_cardImage != null)
-            m_cardImage.color = CardColor;
+        {
+            m_cardImage.sprite = SteampunkUI.Frame;
+            m_cardImage.type = Image.Type.Sliced;
+            m_cardImage.pixelsPerUnitMultiplier = 0.85f;
+            m_cardImage.color = CardTint;
+        }
 
         Shadow shadow = GetComponent<Shadow>();
         if (shadow == null)
             shadow = gameObject.AddComponent<Shadow>();
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.72f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.75f);
         shadow.effectDistance = new Vector2(0f, -12f);
         shadow.useGraphicAlpha = true;
 
@@ -198,31 +190,39 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         m_outline.effectDistance = new Vector2(2f, -2f);
         m_outline.useGraphicAlpha = true;
 
-        m_accentBar = CreateImage("Accent Bar", transform);
-        SetRect(m_accentBar.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), Vector2.zero, new Vector2(0f, 9f), new Vector2(0.5f, 1f));
-        m_accentBar.transform.SetAsFirstSibling();
+        // Upgrade icons are not part of the gold master; a slowly turning cog in
+        // the card's colour takes over the space they used to fill.
+        if (m_iconImage != null)
+            m_iconImage.gameObject.SetActive(false);
 
-        m_iconBackdrop = CreateImage("Icon Backdrop", transform);
-        SetRect(m_iconBackdrop.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 95f), new Vector2(184f, 184f), new Vector2(0.5f, 0.5f));
-        if (m_cardImage != null)
-        {
-            m_iconBackdrop.sprite = m_cardImage.sprite;
-            m_iconBackdrop.type = m_cardImage.type;
-        }
+        m_emblem = CreateImage("Emblem", transform, SteampunkUI.Gear);
+        SetRect(m_emblem.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(236f, 236f), new Vector2(0.5f, 0.5f));
+        m_emblem.transform.SetSiblingIndex(0);
 
-        m_titleDivider = CreateImage("Title Divider", transform);
-        SetRect(m_titleDivider.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -116f), new Vector2(94f, 3f), new Vector2(0.5f, 0.5f));
+        m_typePlate = CreateImage("Type Plate", transform, SteampunkUI.Plate);
+        SetRect(m_typePlate.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -48f), new Vector2(214f, 38f), new Vector2(0.5f, 0.5f));
 
         m_typeText = CreateText("Upgrade Type", transform);
-        SetRect(m_typeText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -101f), new Vector2(280f, 28f), new Vector2(0.5f, 0.5f));
+        SetRect(m_typeText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -48f), new Vector2(214f, 38f), new Vector2(0.5f, 0.5f));
         m_typeText.fontSize = 15f;
         m_typeText.fontStyle = FontStyles.Bold;
         m_typeText.characterSpacing = 4f;
         m_typeText.alignment = TextAlignmentOptions.Center;
+        m_typeText.color = SteampunkUI.TextOnBrass;
+
+        m_titleDivider = CreateImage("Title Divider", transform, null);
+        SetRect(m_titleDivider.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -156f), new Vector2(170f, 3f), new Vector2(0.5f, 0.5f));
+
+        foreach (float side in new[] { -1f, 1f })
+        {
+            Image gear = CreateImage(side < 0f ? "Divider Gear L" : "Divider Gear R", transform, SteampunkUI.Gear);
+            SetRect(gear.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(side * 97f, -156f), new Vector2(20f, 20f), new Vector2(0.5f, 0.5f));
+            gear.color = SteampunkUI.Brass;
+        }
 
         if (m_upgradeNameText != null)
         {
-            SetRect(m_upgradeNameText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -52f), new Vector2(300f, 62f), new Vector2(0.5f, 0.5f));
+            SetRect(m_upgradeNameText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -112f), new Vector2(290f, 66f), new Vector2(0.5f, 0.5f));
             m_upgradeNameText.fontSize = 32f;
             m_upgradeNameText.enableAutoSizing = true;
             m_upgradeNameText.fontSizeMin = 22f;
@@ -235,22 +235,14 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (m_descriptionText != null)
         {
-            SetRect(m_descriptionText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -74f), new Vector2(286f, 130f), new Vector2(0.5f, 0.5f));
-            m_descriptionText.fontSize = 22f;
+            SetRect(m_descriptionText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(276f, 160f), new Vector2(0.5f, 0.5f));
+            m_descriptionText.fontSize = 23f;
             m_descriptionText.enableAutoSizing = true;
             m_descriptionText.fontSizeMin = 17f;
-            m_descriptionText.fontSizeMax = 22f;
+            m_descriptionText.fontSizeMax = 23f;
             m_descriptionText.color = SecondaryTextColor;
             m_descriptionText.alignment = TextAlignmentOptions.Center;
             m_descriptionText.raycastTarget = false;
-        }
-
-        if (m_iconImage != null)
-        {
-            SetRect(m_iconImage.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 95f), new Vector2(140f, 140f), new Vector2(0.5f, 0.5f));
-            m_iconImage.preserveAspect = true;
-            m_iconImage.raycastTarget = false;
-            m_iconBackdrop.transform.SetSiblingIndex(m_iconImage.transform.GetSiblingIndex());
         }
 
         if (m_selectButton != null)
@@ -260,16 +252,34 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void ConfigureButton()
     {
         RectTransform buttonRect = m_selectButton.transform as RectTransform;
-        SetRect(buttonRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 46f), new Vector2(245f, 54f), new Vector2(0.5f, 0.5f));
+        SetRect(buttonRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 52f), new Vector2(236f, 56f), new Vector2(0.5f, 0.5f));
+
+        if (m_selectButton.targetGraphic is Image buttonImage)
+        {
+            buttonImage.sprite = SteampunkUI.Plate;
+            buttonImage.type = Image.Type.Sliced;
+            buttonImage.color = Color.white;
+        }
+
+        // The plate carries the brass; the colour block only brightens or dims it.
+        ColorBlock colors = m_selectButton.colors;
+        colors.normalColor = new Color(0.9f, 0.9f, 0.9f, 1f);
+        colors.highlightedColor = Color.white;
+        colors.selectedColor = Color.white;
+        colors.pressedColor = new Color(0.72f, 0.72f, 0.72f, 1f);
+        colors.disabledColor = new Color(0.55f, 0.55f, 0.55f, 0.6f);
+        colors.colorMultiplier = 1f;
+        colors.fadeDuration = 0.08f;
+        m_selectButton.colors = colors;
 
         TextMeshProUGUI buttonText = m_selectButton.GetComponentInChildren<TextMeshProUGUI>(true);
         if (buttonText != null)
         {
             buttonText.text = "SELECT";
-            buttonText.fontSize = 20f;
+            buttonText.fontSize = 21f;
             buttonText.fontStyle = FontStyles.Bold;
-            buttonText.characterSpacing = 3f;
-            buttonText.color = new Color(0.035f, 0.045f, 0.07f, 1f);
+            buttonText.characterSpacing = 4f;
+            buttonText.color = SteampunkUI.TextOnBrass;
             buttonText.alignment = TextAlignmentOptions.Center;
             buttonText.raycastTarget = false;
         }
@@ -277,77 +287,37 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void ApplyTheme(UpgradeType _upgradeType)
     {
-        switch (_upgradeType)
+        // Muted, metal and mineral tones, so every category stays distinct
+        // without breaking out of the brass and iron palette.
+        (Color color, string label) theme = _upgradeType switch
         {
-            case UpgradeType.MOVESPEED:
-                m_accentColor = new Color(0.2f, 0.86f, 0.9f, 1f);
-                m_typeText.text = "MOBILITY";
-                break;
-            case UpgradeType.MAXHEALTH:
-                m_accentColor = new Color(0.35f, 0.9f, 0.5f, 1f);
-                m_typeText.text = "SURVIVABILITY";
-                break;
-            case UpgradeType.DAMAGE:
-                m_accentColor = new Color(1f, 0.38f, 0.24f, 1f);
-                m_typeText.text = "OFFENSE";
-                break;
-            case UpgradeType.ATTACKRANGE:
-                m_accentColor = new Color(1f, 0.58f, 0.25f, 1f);
-                m_typeText.text = "REACH";
-                break;
-            case UpgradeType.CRITICALCHANCE:
-                m_accentColor = new Color(1f, 0.82f, 0.24f, 1f);
-                m_typeText.text = "CRITICAL";
-                break;
-            case UpgradeType.HEALTHONHIT:
-                m_accentColor = new Color(0.95f, 0.3f, 0.62f, 1f);
-                m_typeText.text = "SUSTAIN";
-                break;
-            case UpgradeType.DAMAGEREDUCTION:
-                m_accentColor = new Color(0.35f, 0.58f, 1f, 1f);
-                m_typeText.text = "DEFENSE";
-                break;
-            case UpgradeType.HEALTHREGEN:
-                m_accentColor = new Color(0.27f, 0.82f, 0.45f, 1f);
-                m_typeText.text = "RECOVERY";
-                break;
-            case UpgradeType.EXPERIENCEGAIN:
-                m_accentColor = new Color(0.68f, 0.45f, 1f, 1f);
-                m_typeText.text = "GROWTH";
-                break;
-            default:
-                m_accentColor = new Color(0.62f, 0.48f, 1f, 1f);
-                m_typeText.text = "UPGRADE";
-                break;
-        }
+            UpgradeType.MOVESPEED => (new Color(0.4f, 0.72f, 0.66f, 1f), "MOBILITY"),
+            UpgradeType.MAXHEALTH => (new Color(0.52f, 0.72f, 0.36f, 1f), "SURVIVABILITY"),
+            UpgradeType.DAMAGE => (new Color(0.86f, 0.36f, 0.22f, 1f), "OFFENSE"),
+            UpgradeType.ATTACKRANGE => (new Color(0.88f, 0.56f, 0.28f, 1f), "REACH"),
+            UpgradeType.CRITICALCHANCE => (new Color(0.95f, 0.76f, 0.3f, 1f), "CRITICAL"),
+            UpgradeType.HEALTHONHIT => (new Color(0.8f, 0.3f, 0.38f, 1f), "SUSTAIN"),
+            UpgradeType.DAMAGEREDUCTION => (new Color(0.5f, 0.64f, 0.8f, 1f), "DEFENSE"),
+            UpgradeType.HEALTHREGEN => (new Color(0.58f, 0.76f, 0.5f, 1f), "RECOVERY"),
+            UpgradeType.EXPERIENCEGAIN => (new Color(0.68f, 0.52f, 0.86f, 1f), "GROWTH"),
+            UpgradeType.UNLOCKSPELL => (new Color(0.72f, 0.5f, 1f, 1f), "NEW SPELL"),
+            UpgradeType.SPELLPOWER => (new Color(0.62f, 0.46f, 0.94f, 1f), "SPELL POWER"),
+            _ => (SteampunkUI.Brass, "UPGRADE")
+        };
 
-        m_accentBar.color = m_accentColor;
+        m_accentColor = theme.color;
+        m_typeText.text = theme.label;
+
+        m_typePlate.color = Color.Lerp(Color.white, m_accentColor, 0.3f);
         m_titleDivider.color = m_accentColor;
-        m_typeText.color = m_accentColor;
-        m_iconImage.color = m_accentColor;
 
-        Color backdropColor = m_accentColor;
-        backdropColor.a = 0.12f;
-        m_iconBackdrop.color = backdropColor;
+        Color emblemColor = m_accentColor;
+        emblemColor.a = 0.1f;
+        m_emblem.color = emblemColor;
 
         Color outlineColor = m_accentColor;
-        outlineColor.a = 0.55f;
+        outlineColor.a = 0.3f;
         m_outline.effectColor = outlineColor;
-
-        Image buttonImage = m_selectButton != null ? m_selectButton.targetGraphic as Image : null;
-        if (buttonImage != null)
-        {
-            buttonImage.color = m_accentColor;
-            ColorBlock colors = m_selectButton.colors;
-            colors.normalColor = m_accentColor;
-            colors.highlightedColor = Color.Lerp(m_accentColor, Color.white, 0.22f);
-            colors.selectedColor = colors.highlightedColor;
-            colors.pressedColor = Color.Lerp(m_accentColor, Color.black, 0.18f);
-            colors.disabledColor = new Color(m_accentColor.r, m_accentColor.g, m_accentColor.b, 0.35f);
-            colors.colorMultiplier = 1f;
-            colors.fadeDuration = 0.08f;
-            m_selectButton.colors = colors;
-        }
     }
 
     private TextMeshProUGUI CreateText(string _name, Transform _parent)
@@ -365,7 +335,7 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         return text;
     }
 
-    private Image CreateImage(string _name, Transform _parent)
+    private Image CreateImage(string _name, Transform _parent, Sprite _sprite)
     {
         Transform existing = _parent.Find(_name);
         if (existing != null)
@@ -375,6 +345,8 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         imageObject.layer = gameObject.layer;
         imageObject.transform.SetParent(_parent, false);
         Image image = imageObject.GetComponent<Image>();
+        image.sprite = _sprite;
+        image.type = _sprite != null && _sprite.border != Vector4.zero ? Image.Type.Sliced : Image.Type.Simple;
         image.raycastTarget = false;
         return image;
     }

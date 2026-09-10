@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class LevelUpSelectionUI : MonoBehaviour
 {
-    private static readonly Color OverlayColor = new Color(0.012f, 0.02f, 0.045f, 0.93f);
-    private static readonly Color AccentColor = new Color(0.48f, 0.72f, 1f, 1f);
+    private static readonly Color OverlayColor = new Color(0.035f, 0.028f, 0.02f, 0.9f);
+    private static readonly Color AccentColor = new Color(0.9f, 0.74f, 0.42f, 1f);
 
     [Header("References")]
     [SerializeField] private PlayerExperience m_playerExperience;
@@ -196,7 +196,7 @@ public class LevelUpSelectionUI : MonoBehaviour
         title.fontSize = 58f;
         title.fontStyle = FontStyles.Bold;
         title.characterSpacing = 8f;
-        title.color = Color.white;
+        title.color = SteampunkUI.Parchment;
         title.alignment = TextAlignmentOptions.Center;
         SetRect(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -74f), new Vector2(700f, 74f));
 
@@ -217,7 +217,7 @@ public class LevelUpSelectionUI : MonoBehaviour
         m_selectionHintText.fontSize = 16f;
         m_selectionHintText.fontStyle = FontStyles.Bold;
         m_selectionHintText.characterSpacing = 5f;
-        m_selectionHintText.color = new Color(0.62f, 0.68f, 0.78f, 1f);
+        m_selectionHintText.color = SteampunkUI.ParchmentMuted;
         m_selectionHintText.alignment = TextAlignmentOptions.Center;
         SetRect(m_selectionHintText.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 35f), new Vector2(500f, 30f));
 
