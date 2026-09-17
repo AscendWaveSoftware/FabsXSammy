@@ -2,11 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// One mote of the accretion disc. Spawned at the rim and wound inwards on a
-/// spiral that speeds up as it falls, which is what sells the hole as something
-/// that is actually eating the arena rather than a sprite sitting on top of it.
-/// </summary>
 public class VortexDebris : MonoBehaviour
 {
     private static readonly Queue<VortexDebris> Pool = new Queue<VortexDebris>();
@@ -91,7 +86,6 @@ public class VortexDebris : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -108,8 +102,6 @@ public class VortexDebris : MonoBehaviour
 
     private void ApplyState(float _progress)
     {
-        // Squared, so the mote loiters at the rim and then drops away sharply.
-        // A linear fall in looks like it is being reeled in on a string.
         float fall = _progress * _progress;
         float radius = Mathf.Lerp(m_startRadius, 0f, fall);
         float angle = m_startAngle + m_sweep * _progress;
@@ -120,8 +112,6 @@ public class VortexDebris : MonoBehaviour
             Mathf.Sin(angle) * radius
         );
 
-        // Shrinks towards the centre, which reads as being crushed rather than as
-        // simply fading out.
         float diameter = m_startDiameter * Mathf.Lerp(1f, 0.15f, fall);
         transform.localScale = Vector3.one * diameter;
 

@@ -2,11 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Small HUD strip that tells the player which key fires which spell. Slots only
-/// appear once the matching level up card has been taken, and dim while the
-/// spell is on cooldown.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerSpellBarUI : MonoBehaviour
 {
@@ -155,7 +150,6 @@ public class PlayerSpellBarUI : MonoBehaviour
         SetRect(slot.Root, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), Vector2.zero, new Vector2(m_slotWidth, m_slotHeight), new Vector2(0f, 0.5f));
         AddPanelEffects(background, accentColor);
 
-        // A brass key plate, warmed towards the spell's colour so each slot stays recognisable.
         slot.KeyBadge = CreateImage("Key Badge", slot.Root, Color.Lerp(Color.white, accentColor, 0.35f));
         slot.KeyBadge.sprite = SteampunkUI.Plate;
         slot.KeyBadge.type = Image.Type.Sliced;

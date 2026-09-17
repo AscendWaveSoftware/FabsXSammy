@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Light dust puffs kicked up at the player's feet while moving. Emission is
-/// driven by ground actually covered, so the dust spaces itself out like
-/// footsteps instead of pouring out at a fixed rate.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerFootstepDust : MonoBehaviour
 {
@@ -114,8 +109,6 @@ public class PlayerFootstepDust : MonoBehaviour
         if (m_cameraTransform == null)
             return;
 
-        // Sprite front faces back towards the camera, matching the other
-        // billboarded combat effects.
         Quaternion facing = Quaternion.LookRotation(
             m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up
@@ -137,8 +130,6 @@ public class PlayerFootstepDust : MonoBehaviour
 
         float frameDistance = frameMovement.magnitude;
 
-        // Death respawns teleport the player across the map. That is not ground
-        // covered on foot and must not erupt into a cloud of dust.
         if (frameDistance > m_teleportDistance)
         {
             m_travelledDistance = 0f;
@@ -189,7 +180,6 @@ public class PlayerFootstepDust : MonoBehaviour
         DustPuff puff = m_puffs[m_nextPuffIndex];
         m_nextPuffIndex = (m_nextPuffIndex + 1) % m_puffs.Length;
 
-        // Running kicks up noticeably more than a careful walk.
         float intensity = Mathf.InverseLerp(m_minimumNormalizedSpeed, 1f, _normalizedSpeed);
 
         Vector2 scatter = Random.insideUnitCircle * m_sidewaysScatter;
@@ -214,8 +204,6 @@ public class PlayerFootstepDust : MonoBehaviour
 
     private void UpdatePuffs()
     {
-        // Scaled time on purpose: the dust belongs to the world, so it slows down
-        // together with everything else during the combat hit slow motion.
         float deltaTime = Time.deltaTime;
 
         if (deltaTime <= 0f)
@@ -237,7 +225,6 @@ public class PlayerFootstepDust : MonoBehaviour
 
             puff.Transform.position += puff.Drift * deltaTime;
 
-            // Air resistance, so the puff settles instead of shooting away.
             puff.Drift = Vector3.Lerp(puff.Drift, Vector3.zero, Mathf.Clamp01(deltaTime * 2.6f));
 
             float expansion = 1f - Mathf.Pow(1f - normalizedTime, 2f);
@@ -269,8 +256,6 @@ public class PlayerFootstepDust : MonoBehaviour
     {
         CombatFeedbackSprites.Prewarm();
 
-        // Kept outside the player hierarchy: dust settles on the ground where it
-        // was raised, it must not be dragged along by the player transform.
         GameObject rootObject = new GameObject("Player Footstep Dust");
         m_puffRoot = rootObject.transform;
 
@@ -284,7 +269,6 @@ public class PlayerFootstepDust : MonoBehaviour
             SpriteRenderer puffRenderer = puffObject.AddComponent<SpriteRenderer>();
             puffRenderer.sprite = CombatFeedbackSprites.Glow;
 
-            // Behind the characters, so the dust never washes out the sprites.
             puffRenderer.sortingOrder = -30;
             puffRenderer.shadowCastingMode = ShadowCastingMode.Off;
             puffRenderer.receiveShadows = false;

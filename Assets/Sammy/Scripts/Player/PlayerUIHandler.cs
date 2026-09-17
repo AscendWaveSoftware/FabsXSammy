@@ -10,8 +10,6 @@ public class PlayerUIHandler : MonoBehaviour
     private static readonly Color XpColor = new Color(0.95f, 0.74f, 0.32f, 1f);
     private static readonly Color ScrapColor = new Color(0.96f, 0.76f, 0.4f, 1f);
 
-    // Patina, amber and rust instead of pure traffic light colours, so the bar
-    // still reads at a glance but belongs to the brass palette.
     private static readonly Color HealthHighColor = new Color(0.47f, 0.69f, 0.31f, 1f);
     private static readonly Color HealthMediumColor = new Color(0.9f, 0.63f, 0.2f, 1f);
     private static readonly Color HealthLowColor = new Color(0.86f, 0.23f, 0.14f, 1f);
@@ -44,13 +42,8 @@ public class PlayerUIHandler : MonoBehaviour
     private float m_targetXpFillAmount;
     private bool m_hasInitialXpValue;
 
-    /// <summary>
-    /// Screen space root the HUD is built into. Available from Start onwards,
-    /// because the reparenting happens in Awake.
-    /// </summary>
     public RectTransform HudRoot => m_playerHudCanvas != null ? m_playerHudCanvas.transform as RectTransform : null;
 
-    /// <summary>Font the rest of the HUD uses, so additions match it.</summary>
     public TMP_FontAsset HudFont => m_levelText != null && m_levelText.font != null
         ? m_levelText.font
         : TMP_Settings.defaultFontAsset;
@@ -80,7 +73,6 @@ public class PlayerUIHandler : MonoBehaviour
         FindShopCanvases();
         ApplyCursorState(!m_hideCursorDuringGameplay);
 
-        //TODO: hier muss noch initial Gold und Scrap Text gesetzt werden
     }
 
     private void Update()
@@ -309,7 +301,6 @@ public class PlayerUIHandler : MonoBehaviour
 
     private void BuildHudLayout(RectTransform _hudRoot)
     {
-        // Riveted iron plate in the lower left, with a brass cog as the level gauge.
         Image statusPanel = CreateImage("Status Panel", _hudRoot, SteampunkUI.Frame, Color.white);
         SetRect(statusPanel.rectTransform, Vector2.zero, Vector2.zero, new Vector2(28f, 28f), new Vector2(520f, 164f), Vector2.zero);
         AddPanelEffects(statusPanel);
@@ -320,7 +311,6 @@ public class PlayerUIHandler : MonoBehaviour
         Image levelFace = CreateImage("Level Face", levelGear.rectTransform, SteampunkUI.Disc, new Color(0.16f, 0.13f, 0.1f, 1f));
         SetStretch(levelFace.rectTransform, 31f);
 
-        // Scrap sits on a smaller plate in the upper right, marked with its own cog.
         Image scrapPanel = CreateImage("Scrap Panel", _hudRoot, SteampunkUI.Frame, Color.white);
         SetRect(scrapPanel.rectTransform, Vector2.one, Vector2.one, new Vector2(-28f, -28f), new Vector2(250f, 70f), Vector2.one);
         scrapPanel.pixelsPerUnitMultiplier = 1.4f;

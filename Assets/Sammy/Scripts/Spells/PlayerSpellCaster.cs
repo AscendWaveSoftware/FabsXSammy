@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Casts the player's spells on the number keys. Each slot seeks the nearest
-/// enemy and fires a homing projectile at it; without a target the spell is fired
-/// straight ahead so the key never feels dead.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerSpellCaster : MonoBehaviour
 {
@@ -30,35 +25,21 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private SpellDefinition[] m_runtimeSpells;
 
-    /// <summary>Raised when a slot becomes available, so the HUD can show it.</summary>
     public event System.Action<int> OnSpellUnlocked;
 
-    /// <summary>
-    /// Raised when a spell was actually cast, carrying the upgraded runtime copy.
-    /// Audio and other reactions hang off this rather than polling.
-    /// </summary>
     public event System.Action<SpellDefinition> OnSpellCast;
 
-    /// <summary>
-    /// Upgraded runtime copy of the spell in a slot, or null when the slot is
-    /// empty. Never the asset, so upgrades cannot leak into the project files.
-    /// </summary>
     public SpellDefinition GetSpell(int _slotIndex) =>
         m_runtimeSpells != null && _slotIndex >= 0 && _slotIndex < m_runtimeSpells.Length
             ? m_runtimeSpells[_slotIndex]
             : null;
 
-    /// <summary>True once the card for this spell asset has been taken.</summary>
     public bool IsSpellUnlocked(SpellDefinition _spellAsset)
     {
         int slotIndex = FindSlot(_spellAsset);
         return slotIndex >= 0 && m_unlockedSlots[slotIndex];
     }
 
-    /// <summary>
-    /// Improves a spell the player already owns. Applied to the runtime copy, so
-    /// the change lasts exactly as long as the run does.
-    /// </summary>
     public bool UpgradeSpell(SpellDefinition _spellAsset, SpellStat _stat, float _value)
     {
         int slotIndex = FindSlot(_spellAsset);
@@ -70,15 +51,6 @@ public class PlayerSpellCaster : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Passes a share of a melee damage upgrade on to the spells. Playtesting found
-    /// that a damage and crit build eventually left the spell slots behind for good,
-    /// so a spell was never worth casting; letting them ride along keeps the whole
-    /// kit growing together instead of one branch outrunning the other.
-    ///
-    /// Applied to every slot, locked ones included, so a spell unlocked late does
-    /// not arrive already behind the run it is joining.
-    /// </summary>
     public void AddDamageToSpells(float _amount)
     {
         if (_amount <= 0f || m_runtimeSpells == null)
@@ -91,10 +63,8 @@ public class PlayerSpellCaster : MonoBehaviour
     public bool IsSlotUnlocked(int _slotIndex) =>
         _slotIndex >= 0 && _slotIndex < m_unlockedSlots.Length && m_unlockedSlots[_slotIndex];
 
-    /// <summary>True while this spell sits in a slot that is still locked.</summary>
     public bool CanUnlock(SpellDefinition _spell) => FindLockedSlot(_spell) >= 0;
 
-    /// <summary>Hands a spell to the player. Returns false if there was nothing to unlock.</summary>
     public bool UnlockSpell(SpellDefinition _spell)
     {
         int slotIndex = FindLockedSlot(_spell);
@@ -104,8 +74,6 @@ public class PlayerSpellCaster : MonoBehaviour
 
         m_unlockedSlots[slotIndex] = true;
 
-        // Ready right away. Starting a freshly unlocked spell on cooldown would
-        // read as the upgrade not having worked.
         m_nextCastTime[slotIndex] = 0f;
         OnSpellUnlocked?.Invoke(slotIndex);
         return true;
@@ -117,10 +85,6 @@ public class PlayerSpellCaster : MonoBehaviour
         return slotIndex >= 0 && !m_unlockedSlots[slotIndex] ? slotIndex : -1;
     }
 
-    /// <summary>
-    /// Slot holding this asset. Matched against the assets rather than the
-    /// runtime copies, because upgrade cards reference the assets.
-    /// </summary>
     private int FindSlot(SpellDefinition _spellAsset)
     {
         if (_spellAsset == null || m_spells == null)
@@ -144,8 +108,6 @@ public class PlayerSpellCaster : MonoBehaviour
             if (m_spells[i] == null)
                 continue;
 
-            // Cloned once at startup. Upgrades write into this copy, and writing
-            // into the asset instead would persist the change in the project.
             m_runtimeSpells[i] = Instantiate(m_spells[i]);
             m_runtimeSpells[i].name = m_spells[i].name;
         }
@@ -182,14 +144,9 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private void Update()
     {
-        // A shop or level up pause owns timeScale, casting through it would let
-        // the player empty every cooldown while the game is frozen. The arena
-        // pause blocks casting for the same reason.
         if (Time.timeScale <= 0f || PveRuntime.IsPaused)
             return;
 
-        // Read directly rather than through an input action, matching how the
-        // block is polled. The shared input asset stays untouched.
         Keyboard keyboard = Keyboard.current;
 
         if (keyboard == null)
@@ -208,7 +165,6 @@ public class PlayerSpellCaster : MonoBehaviour
             TryCast(3);
     }
 
-    /// <summary>Seconds left on a slot's cooldown, 0 when it is ready.</summary>
     public float GetRemainingCooldown(int _slotIndex)
     {
         if (_slotIndex < 0 || _slotIndex >= m_nextCastTime.Length)
@@ -219,14 +175,11 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private void TryCast(int _slotIndex)
     {
-        // The runtime copy, not the asset. Everything the cast reads has to be
-        // the upgraded values.
         SpellDefinition spell = GetSpell(_slotIndex);
 
         if (spell == null)
             return;
 
-        // Spells are earned through a level up card, not owned from the start.
         if (!IsSlotUnlocked(_slotIndex))
             return;
 
@@ -268,8 +221,6 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private bool CastNova(SpellDefinition _spell)
     {
-        // Centred on the caster, which is the whole point of the spell: it is the
-        // answer to being surrounded, not a way to reach something far away.
         Vector3 center = transform.position + Vector3.up * _spell.SpawnHeight;
         SpellNova.Detonate(_spell, center, m_enemyLayer, m_playerResources);
         return true;
@@ -295,13 +246,8 @@ public class PlayerSpellCaster : MonoBehaviour
 
     private bool CastVortex(SpellDefinition _spell, EnemyStats _target)
     {
-        // Dropped on the ground the same way a cloud is, so the singularity opens
-        // in the middle of the pack rather than on top of a single enemy's chest.
         Vector3 groundPosition = GetCloudGroundPosition(_spell, _target);
 
-        // Never right on top of the caster. The pull does not touch the player, but
-        // a hole opening inside them reads as a bug, and it would swallow the pack
-        // the player is trying to escape from instead of the one ahead.
         Vector3 fromPlayer = groundPosition - transform.position;
         fromPlayer.y = 0f;
 
@@ -331,8 +277,6 @@ public class PlayerSpellCaster : MonoBehaviour
             Collider targetCollider = _target.GetComponent<Collider>();
             Vector3 targetPosition = _target.transform.position;
 
-            // The cloud grows out of the ground, so it is placed at the enemy's
-            // feet rather than at its centre.
             float groundHeight = targetCollider != null ? targetCollider.bounds.min.y : targetPosition.y;
             return new Vector3(targetPosition.x, groundHeight, targetPosition.z);
         }
@@ -388,11 +332,6 @@ public class PlayerSpellCaster : MonoBehaviour
         return GetFallbackDirection();
     }
 
-    /// <summary>
-    /// Aim used when no enemy is in range. The current movement gives full 360
-    /// degree aim while running; standing still falls back to the direction the
-    /// sprite is facing.
-    /// </summary>
     private Vector3 GetFallbackDirection()
     {
         if (m_rigidbody != null)

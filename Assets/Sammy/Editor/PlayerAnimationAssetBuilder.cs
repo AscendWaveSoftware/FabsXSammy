@@ -11,12 +11,6 @@ using UnityEngine.Audio;
 public static class PlayerAnimationAssetBuilder
 {
     private const string SessionKey = "Sammy.PlayerAnimationAssets.V13";
-
-    /// <summary>
-    /// Mixer group every sound from this half of the game is routed through. It
-    /// lives on the other branch, so it is looked up by name rather than held as
-    /// a reference and simply stays unassigned until the asset arrives.
-    /// </summary>
     private const string ArenaMixerGroupName = "Arena";
     private const string TextureRoot = "Assets/Sammy/Textures/Player";
     private const string AudioRoot = "Assets/Sammy/Audio";
@@ -484,7 +478,6 @@ public static class PlayerAnimationAssetBuilder
             prefabChanged |= ConfigureBlockFeedback(root, health, spriteRenderer);
             prefabChanged |= ConfigureFootstepDust(root, rigidbody, movement, health);
 
-            // Purely visual and fully self-configuring, so it only has to exist.
             if (root.GetComponent<CharacterDropShadow>() == null)
             {
                 root.AddComponent<CharacterDropShadow>();
@@ -531,9 +524,6 @@ public static class PlayerAnimationAssetBuilder
         for (int i = 0; i < SwingClipPaths.Length; i++)
             prefabChanged |= SetObjectReference(swingClips.GetArrayElementAtIndex(i), LoadCombatClip(SwingClipPaths[i]));
 
-        // Only written when the group is actually there. Assigning null instead
-        // would clear a reference that someone wired by hand, and the sources
-        // already fall back to the default output on their own.
         AudioMixerGroup arenaGroup = FindArenaMixerGroup();
 
         if (arenaGroup != null)
@@ -545,14 +535,6 @@ public static class PlayerAnimationAssetBuilder
         return prefabChanged;
     }
 
-    /// <summary>
-    /// Finds the arena mixer group anywhere in the project. Both readings of
-    /// "the Arena mixer" are covered: a group called Arena inside some mixer, and
-    /// a whole mixer asset named Arena, whose first group is then the target.
-    ///
-    /// Returns null while the mixer is still missing from this branch, which is a
-    /// normal state and not an error.
-    /// </summary>
     private static AudioMixerGroup FindArenaMixerGroup()
     {
         List<AudioMixerGroup> groupsOfArenaMixer = null;
@@ -570,8 +552,6 @@ public static class PlayerAnimationAssetBuilder
                     return group;
             }
 
-            // Remembered as the fallback, but only used once no group by that name
-            // turned up anywhere, because a named group is the more precise match.
             if (groupsOfArenaMixer == null && groups.Length > 0 &&
                 string.Equals(
                     System.IO.Path.GetFileNameWithoutExtension(mixerPath),

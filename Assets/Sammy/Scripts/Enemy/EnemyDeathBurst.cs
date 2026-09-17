@@ -1,13 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Short burst of sparks where an enemy died.
-///
-/// Built from the pooled combat effects rather than a ParticleSystem on purpose:
-/// the enemy GameObject is destroyed in the same frame, so anything parented to
-/// it would vanish before it could play. These live on their own and clean
-/// themselves up.
-/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(EnemyStats))]
 public class EnemyDeathBurst : MonoBehaviour
@@ -61,8 +53,6 @@ public class EnemyDeathBurst : MonoBehaviour
 
     private void SpawnSpark(Vector3 _center)
     {
-        // Spread over a sphere and then pushed upwards, so the burst blooms out
-        // and away rather than sinking into the ground.
         Vector3 direction = Random.onUnitSphere;
         direction.y = Mathf.Abs(direction.y) * m_upwardBias;
         direction.Normalize();

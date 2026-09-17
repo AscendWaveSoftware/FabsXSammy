@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
-    // The frame sprite carries its own colours; the tint only brightens it on hover.
     private static readonly Color CardTint = new Color(0.86f, 0.86f, 0.86f, 1f);
     private static readonly Color CardHoverTint = Color.white;
     private static readonly Color MainTextColor = SteampunkUI.Parchment;
@@ -93,7 +92,6 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             m_cardImage.color = Color.Lerp(m_cardImage.color, targetColor, 1f - Mathf.Exp(-12f * deltaTime));
         }
 
-        // The emblem turns slowly, like a cog in the machinery behind the card.
         if (m_emblem != null)
             m_emblem.rectTransform.Rotate(0f, 0f, -12f * deltaTime);
     }
@@ -190,8 +188,6 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         m_outline.effectDistance = new Vector2(2f, -2f);
         m_outline.useGraphicAlpha = true;
 
-        // Upgrade icons are not part of the gold master; a slowly turning cog in
-        // the card's colour takes over the space they used to fill.
         if (m_iconImage != null)
             m_iconImage.gameObject.SetActive(false);
 
@@ -261,7 +257,6 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             buttonImage.color = Color.white;
         }
 
-        // The plate carries the brass; the colour block only brightens or dims it.
         ColorBlock colors = m_selectButton.colors;
         colors.normalColor = new Color(0.9f, 0.9f, 0.9f, 1f);
         colors.highlightedColor = Color.white;
@@ -287,8 +282,6 @@ public class LevelUpCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void ApplyTheme(UpgradeType _upgradeType)
     {
-        // Muted, metal and mineral tones, so every category stays distinct
-        // without breaking out of the brass and iron palette.
         (Color color, string label) theme = _upgradeType switch
         {
             UpgradeType.MOVESPEED => (new Color(0.4f, 0.72f, 0.66f, 1f), "MOBILITY"),

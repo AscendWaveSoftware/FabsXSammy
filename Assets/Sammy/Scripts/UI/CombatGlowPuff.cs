@@ -2,10 +2,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled soft glow that fades away where it was spawned. Used for spell trails
-/// and any other short lived spark that should not be tied to a moving object.
-/// </summary>
 public class CombatGlowPuff : MonoBehaviour
 {
     private static readonly Queue<CombatGlowPuff> Pool = new Queue<CombatGlowPuff>();
@@ -42,11 +38,6 @@ public class CombatGlowPuff : MonoBehaviour
         puff.m_drift = _drift;
     }
 
-    /// <summary>
-    /// Pooled objects outlive the effect that spawned them, so a puff that once
-    /// carried a spell has to be put back on its plain material before something
-    /// else, like a poison tick, reuses it.
-    /// </summary>
     private void ApplyEmission(Material _emissiveMaterial, float _emissionIntensity)
     {
         if (_emissiveMaterial != null)
@@ -82,15 +73,12 @@ public class CombatGlowPuff : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
         if (!m_isRunning)
             return;
 
-        // Scaled time: a spell trail belongs to the world and should slow down
-        // together with it during the combat hit slow motion.
         m_elapsedTime += Time.deltaTime;
         float normalizedTime = Mathf.Clamp01(m_elapsedTime / m_duration);
 
@@ -98,8 +86,6 @@ public class CombatGlowPuff : MonoBehaviour
         {
             transform.position += m_drift * Time.deltaTime;
 
-            // Air resistance, so a burst spreads out and settles instead of
-            // shooting away in a straight line.
             m_drift = Vector3.Lerp(m_drift, Vector3.zero, Mathf.Clamp01(Time.deltaTime * 3.2f));
         }
 

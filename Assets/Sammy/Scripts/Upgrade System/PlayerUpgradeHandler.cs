@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class PlayerUpgradeHandler : MonoBehaviour
 {
-    /// <summary>
-    /// How much of a melee damage card the spells receive as well. Above one on
-    /// purpose: spell damage sits on a far larger base than a sword swing, so an
-    /// equal share would barely register on it.
-    /// </summary>
     private const float SpellDamageShare = 1.5f;
 
 
@@ -15,7 +10,6 @@ public class PlayerUpgradeHandler : MonoBehaviour
     [SerializeField, Tooltip("Cards that unlock and strengthen the player's own spells. Kept here rather than in the scene pool so they stay in sync with the spell slots.")]
     private UpgradeDefinition[] m_spellUpgrades;
 
-    /// <summary>Upgrades the player brings along on top of the scene's pool.</summary>
     public IReadOnlyList<UpgradeDefinition> SpellUpgrades =>
         m_spellUpgrades ?? System.Array.Empty<UpgradeDefinition>();
 
@@ -26,10 +20,6 @@ public class PlayerUpgradeHandler : MonoBehaviour
     [SerializeField] private PlayerExperience m_playerExperience;
     [SerializeField] private PlayerSpellCaster m_playerSpellCaster;
 
-    /// <summary>
-    /// False for cards that would do nothing, so the level up screen never
-    /// offers a spell the player already owns.
-    /// </summary>
     public bool IsUpgradeAvailable(UpgradeDefinition _upgrade)
     {
         if (_upgrade == null)
@@ -40,8 +30,6 @@ public class PlayerUpgradeHandler : MonoBehaviour
             case UpgradeType.UNLOCKSPELL:
                 return m_playerSpellCaster != null && m_playerSpellCaster.CanUnlock(_upgrade.Spell);
 
-            // A card that strengthens a spell the player cannot even cast yet
-            // would be a wasted pick, so it stays out until the spell is owned.
             case UpgradeType.SPELLPOWER:
                 return m_playerSpellCaster != null && m_playerSpellCaster.IsSpellUnlocked(_upgrade.Spell);
 
@@ -83,8 +71,6 @@ public class PlayerUpgradeHandler : MonoBehaviour
             case UpgradeType.DAMAGE:
                 m_playerCombat?.AddDamage(Mathf.RoundToInt(_upgrade.Value));
 
-                // The spells ride along, so a damage build strengthens the whole
-                // kit rather than turning the spell slots into dead weight.
                 m_playerSpellCaster?.AddDamageToSpells(_upgrade.Value * SpellDamageShare);
                 break;
             case UpgradeType.ATTACKRANGE:

@@ -1,10 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Shared look for the code built interface: dark iron plates framed in riveted
-/// brass, matching the game's logo. Every sprite is generated once in code, so
-/// the HUD keeps working without any texture having to be wired into a prefab.
-/// </summary>
 public static class SteampunkUI
 {
     public static readonly Color IronDeep = new(0.07f, 0.06f, 0.05f, 1f);
@@ -22,22 +17,16 @@ public static class SteampunkUI
     private static Sprite s_gear;
     private static Sprite s_disc;
 
-    /// <summary>Iron plate with a bevelled brass rim and corner rivets. Nine sliced.</summary>
     public static Sprite Frame => s_frame != null ? s_frame : s_frame = Build("Steampunk Frame", 96, 96, 22, FramePixel);
 
-    /// <summary>Polished brass plate for buttons and badges. Nine sliced.</summary>
     public static Sprite Plate => s_plate != null ? s_plate : s_plate = Build("Steampunk Plate", 64, 28, 11, PlatePixel);
 
-    /// <summary>Recessed slot a bar runs in. Nine sliced.</summary>
     public static Sprite Track => s_track != null ? s_track : s_track = Build("Steampunk Track", 32, 20, 8, TrackPixel);
 
-    /// <summary>Glossy bar body. Greyscale, so the image colour decides the hue.</summary>
     public static Sprite BarFill => s_barFill != null ? s_barFill : s_barFill = Build("Steampunk Bar", 4, 32, 0, BarPixel);
 
-    /// <summary>Twelve toothed cog. Greyscale, tinted by the image colour.</summary>
     public static Sprite Gear => s_gear != null ? s_gear : s_gear = Build("Steampunk Gear", 128, 128, 0, GearPixel);
 
-    /// <summary>Soft edged disc, darker towards the rim, for gauge faces.</summary>
     public static Sprite Disc => s_disc != null ? s_disc : s_disc = Build("Steampunk Disc", 64, 64, 0, DiscPixel);
 
     private delegate Color PixelShader(float _x, float _y, int _width, int _height);
@@ -68,7 +57,6 @@ public static class SteampunkUI
         return sprite;
     }
 
-    /// <summary>Signed distance to a rounded rectangle filling the texture; negative inside.</summary>
     private static float RoundedRect(float _x, float _y, int _w, int _h, float _radius)
     {
         float qx = Mathf.Abs(_x - _w * 0.5f) - (_w * 0.5f - _radius);
@@ -102,7 +90,6 @@ public static class SteampunkUI
             if (depth < 11f) color = Shade(color, 0.7f + (depth - 8f) * 0.1f);
         }
 
-        // Rivets sit inside the corner slices, so they stay put however far the frame stretches.
         foreach (Vector2 corner in new[] { new Vector2(14.5f, 14.5f), new Vector2(_w - 14.5f, 14.5f), new Vector2(14.5f, _h - 14.5f), new Vector2(_w - 14.5f, _h - 14.5f) })
         {
             float distance = Vector2.Distance(new Vector2(_x, _y), corner);

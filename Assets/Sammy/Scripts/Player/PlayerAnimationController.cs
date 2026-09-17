@@ -56,10 +56,6 @@ public class PlayerAnimationController : MonoBehaviour
     [Header("Attack Timing")]
     [SerializeField] private float[] m_attackImpactTimes = { 0.50f, 0.34f, 0.43f };
 
-    /// <summary>
-    /// Raised when a combo swing actually starts playing. The argument is the
-    /// 1-based combo step, so step 1 belongs to the Attack1 state.
-    /// </summary>
     public event Action<int> OnAttackSwingStarted;
 
     private AnimationMode m_mode;
@@ -134,8 +130,6 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Update()
     {
-        // Held mid-swing rather than reset, so the combo resumes exactly where
-        // the player left it.
         if (PveRuntime.IsPaused)
             return;
 
@@ -158,11 +152,6 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// The Animator plays its clips on its own, entirely outside this script's
-    /// Update. Without stopping it the sprite would keep swinging while the
-    /// combat logic stands still, and the two would come back out of sync.
-    /// </summary>
     private void HandlePauseChanged(bool _paused)
     {
         if (m_animator == null)
@@ -238,8 +227,6 @@ public class PlayerAnimationController : MonoBehaviour
             return false;
         }
 
-        // Blocking is an intentional attack cancel. A swing that has not reached
-        // its impact frame loses its damage instead of firing invisibly later.
         m_bufferedAttackCount = 0;
         m_attackImpactTriggered = true;
         m_mode = AnimationMode.Block;

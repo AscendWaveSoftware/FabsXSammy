@@ -147,10 +147,6 @@ public class EnemyAnimationController : MonoBehaviour
         ReturnToLocomotion();
     }
 
-    /// <summary>
-    /// The sprite is billboarded, so which way the enemy should face is decided
-    /// in screen terms rather than in world space.
-    /// </summary>
     private void UpdateFacing()
     {
         if (m_bodyRenderer == null || m_movement == null)
@@ -158,16 +154,10 @@ public class EnemyAnimationController : MonoBehaviour
 
         Vector3 toTarget = m_movement.FacingTarget - transform.position;
 
-        // Camera relative while a camera is known, world space otherwise. Facing
-        // must never depend on an optional reference: BetaScene has neither a
-        // CameraReferences object nor a camera tagged MainCamera, and the sprite
-        // silently stopped flipping there. World X is also what the player sprite
-        // has always used, so both stay consistent.
         float sideways = m_cameraTransform != null
             ? Vector3.Dot(toTarget, m_cameraTransform.right)
             : toTarget.x;
 
-        // A target almost dead ahead would flip back and forth on tiny wobbles.
         if (Mathf.Abs(sideways) < 0.05f)
             return;
 
@@ -175,10 +165,6 @@ public class EnemyAnimationController : MonoBehaviour
         m_bodyRenderer.flipX = m_artworkFacesRight ? !targetIsOnTheRight : targetIsOnTheRight;
     }
 
-    /// <summary>
-    /// Resolved once. Staying null is a valid outcome and only means facing falls
-    /// back to world space, which is correct as long as the camera has no yaw.
-    /// </summary>
     private void ResolveCamera()
     {
         if (CameraReferences.Instance != null)

@@ -2,10 +2,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled one-shot impact flash: an expanding ring with a short glow core,
-/// billboarded towards the player camera.
-/// </summary>
 public class CombatRingFlash : MonoBehaviour
 {
     private static readonly Queue<CombatRingFlash> Pool = new Queue<CombatRingFlash>();
@@ -57,15 +53,12 @@ public class CombatRingFlash : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
         if (!m_isRunning)
             return;
 
-        // Combat hits briefly slow the game down. The flash reads as an instant
-        // reaction, so it runs on unscaled time just like the damage numbers.
         m_elapsedTime += Time.unscaledDeltaTime;
         float normalizedTime = Mathf.Clamp01(m_elapsedTime / m_duration);
 

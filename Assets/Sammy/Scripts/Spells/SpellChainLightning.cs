@@ -2,12 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled chain lightning bolt. Draws a jagged line through the points it was
-/// given, revealing one jump at a time so the arc reads as travelling, then
-/// fades away. Purely visual: the damage is resolved by <see cref="SpellNova"/>
-/// before this ever runs.
-/// </summary>
 public class SpellChainLightning : MonoBehaviour
 {
     private const int PointsPerJump = 6;
@@ -35,17 +29,11 @@ public class SpellChainLightning : MonoBehaviour
     private int m_revealedJumps;
     private bool m_isRunning;
 
-    /// <summary>
-    /// Draws a bolt through the given world positions. The first entry is where
-    /// the bolt starts, every following one is an enemy it arcs to.
-    /// </summary>
     public static void Show(IReadOnlyList<Vector3> _anchors, Color _color, SpellDefinition _definition = null)
     {
         if (_anchors == null || _anchors.Count < 2)
             return;
 
-        // The emissive material is preferred, because a LineRenderer's gradient is
-        // a vertex colour just like a sprite's and is clamped the same way.
         Material lineMaterial = _definition != null && _definition.EmissiveMaterial != null
             ? _definition.EmissiveMaterial
             : GetLineMaterial();
@@ -77,11 +65,6 @@ public class SpellChainLightning : MonoBehaviour
         return boltObject.GetComponent<SpellChainLightning>();
     }
 
-    /// <summary>
-    /// A LineRenderer created at runtime has no material and would render
-    /// magenta. Borrowing the default sprite material keeps this working in a
-    /// build, where a shader looked up by name can be stripped away.
-    /// </summary>
     private static Material GetLineMaterial()
     {
         if (s_lineMaterial != null)
@@ -132,7 +115,6 @@ public class SpellChainLightning : MonoBehaviour
             Vector3 direction = segment / length;
             Vector3 side = Vector3.Cross(direction, Vector3.up);
 
-            // A perfectly vertical arc has no horizontal side vector to work with.
             if (side.sqrMagnitude < 0.001f)
                 side = Vector3.Cross(direction, Vector3.forward);
 
@@ -144,8 +126,6 @@ public class SpellChainLightning : MonoBehaviour
             {
                 float travel = step / (float)PointsPerJump;
 
-                // Pinched towards both ends so the bolt actually meets the
-                // enemies instead of wobbling past them.
                 float taper = Mathf.Sin(travel * Mathf.PI);
                 Vector3 offset = (side * Random.Range(-1f, 1f) + up * Random.Range(-1f, 1f)) * (jitter * taper);
                 PointBuffer.Add(from + direction * (length * travel) + offset);
@@ -169,13 +149,11 @@ public class SpellChainLightning : MonoBehaviour
         m_lineRenderer.lightProbeUsage = LightProbeUsage.Off;
         m_lineRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
 
-        // Above the impact frames, a bolt hidden behind the blast would be lost.
         m_lineRenderer.sortingOrder = 212;
     }
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -260,7 +238,6 @@ public class SpellChainLightning : MonoBehaviour
         Color color = m_color;
         color.a = m_color.a * Mathf.Clamp01(_alpha);
 
-        // The tail end is dimmer, which sells the direction the bolt travelled.
         Color tailColor = color;
         tailColor.a *= 0.55f;
 

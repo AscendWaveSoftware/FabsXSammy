@@ -2,16 +2,10 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled spell projectile. Steers towards the enemy it was fired at, detonates
-/// on contact or when its lifetime runs out, and owns the area damage it deals.
-/// </summary>
 public class SpellProjectile : MonoBehaviour
 {
     private static readonly Queue<SpellProjectile> Pool = new Queue<SpellProjectile>();
 
-    // Shared scratch buffers for the per frame contact checks, which would
-    // otherwise allocate for every projectile in every single frame.
     private static readonly Collider[] ContactBuffer = new Collider[8];
     private static readonly RaycastHit[] SweepBuffer = new RaycastHit[8];
 
@@ -72,7 +66,6 @@ public class SpellProjectile : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -152,12 +145,8 @@ public class SpellProjectile : MonoBehaviour
         SpellEmission.Apply(m_coreRenderer, _definition);
         SpellEmission.Apply(m_glowRenderer, _definition);
 
-        // Sized before the first frame renders, otherwise the projectile would
-        // flash at full size for one frame before the pop even starts.
         UpdateVisuals();
 
-        // The launch needs its own event. Without it the orb simply appears out
-        // of nothing, which is what made the cast feel weightless.
         SpellImpact.ShowCastFlash(_definition, _origin);
     }
 
@@ -199,8 +188,6 @@ public class SpellProjectile : MonoBehaviour
 
     private Vector3 GetTargetPoint()
     {
-        // Aim at the body centre rather than the pivot at the feet, otherwise the
-        // projectile dives into the ground on its way in.
         if (m_targetCollider != null)
             return m_targetCollider.bounds.center;
 
@@ -220,8 +207,6 @@ public class SpellProjectile : MonoBehaviour
 
         m_lastTrailPosition = currentPosition;
 
-        // Clearly smaller than the orb itself, so the trail tapers away behind it
-        // instead of reading as one thick tube.
         CombatGlowPuff.Show(
             currentPosition,
             m_definition.TrailColor,
@@ -245,8 +230,6 @@ public class SpellProjectile : MonoBehaviour
         {
             Vector3 movementDirection = movement / distance;
 
-            // Swept instead of a simple check at the new position, so a fast
-            // projectile cannot tunnel straight through an enemy between frames.
             int hitCount = Physics.SphereCastNonAlloc(
                 _fromPosition,
                 m_definition.HitRadius,
@@ -273,8 +256,6 @@ public class SpellProjectile : MonoBehaviour
             }
         }
 
-        // A sweep never reports colliders it already starts inside, so the end
-        // position still needs its own overlap test.
         return HasEnemyOverlap(_toPosition);
     }
 
@@ -317,8 +298,6 @@ public class SpellProjectile : MonoBehaviour
 
     private void ApplyAreaDamage(SpellDefinition _definition, Vector3 _center)
     {
-        // Allocating on purpose: a detonation is a rare event and must never
-        // silently drop enemies because a fixed buffer ran out.
         Collider[] hitColliders = Physics.OverlapSphere(_center, _definition.ImpactRadius, m_enemyLayer);
 
         m_damagedEnemies.Clear();
@@ -329,8 +308,6 @@ public class SpellProjectile : MonoBehaviour
                 ? hitCollider.GetComponentInParent<EnemyStats>()
                 : null;
 
-            // One enemy can own several colliders, and taking damage may destroy
-            // it, so every enemy is only ever resolved once.
             if (enemyStats == null || enemyStats.IsDead || !m_damagedEnemies.Add(enemyStats))
                 continue;
 

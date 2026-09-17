@@ -2,12 +2,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Readable warning for an incoming enemy attack. A ring on the ground marks the
-/// reach, a second ring closes in to show how long is left, and a warning sign
-/// above the enemy makes the threat obvious even when the ring is off-screen.
-/// Driven entirely by <see cref="EnemyAttack"/>, which owns the actual timing.
-/// </summary>
 [DisallowMultipleComponent]
 public class EnemyAttackTelegraph : MonoBehaviour
 {
@@ -78,11 +72,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
         HideStagger();
     }
 
-    /// <summary>
-    /// Shows the dazed sign above this enemy for as long as the stagger lasts.
-    /// Held in place on purpose: a sign that floats away reads as "something
-    /// happened", while the player needs to see "this one is out right now".
-    /// </summary>
     public void ShowStagger(float _duration)
     {
         if (_duration <= 0f || m_staggerText == null)
@@ -112,8 +101,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
         if (!m_isVisible)
             return;
 
-        // Held in world space so a rotated spawn point can never tip the rings
-        // out of the ground plane.
         m_groundRoot.rotation = Quaternion.Euler(-90f, 0f, 0f);
 
         if (m_cameraTransform == null)
@@ -129,13 +116,8 @@ public class EnemyAttackTelegraph : MonoBehaviour
         );
     }
 
-    /// <summary>Height of this enemy's head above its pivot, measured once at startup.</summary>
     public float HeadOffset => m_headOffset;
 
-    /// <summary>
-    /// True when the renderer belongs to this telegraph instead of the enemy
-    /// body, so the windup tint can leave it alone.
-    /// </summary>
     public bool OwnsRenderer(Renderer _renderer) =>
         _renderer != null && m_groundRoot != null && _renderer.transform.IsChildOf(m_groundRoot);
 
@@ -160,8 +142,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
         rangeColor.a = m_rangeRingColor.a * Mathf.Lerp(0.55f, 1f, m_windupProgress);
         m_rangeRing.color = rangeColor;
 
-        // The closing ring is the actual clock: when it reaches the centre, the
-        // hit lands. That is far easier to read than a colour ramp alone.
         float closingDiameter = Mathf.Lerp(m_ringDiameter, m_minimumClosingDiameter, m_windupProgress);
         m_closingRing.transform.localScale = Vector3.one * closingDiameter;
         m_closingRing.color = Color.Lerp(m_closingRingStartColor, m_closingRingEndColor, m_windupProgress);
@@ -212,9 +192,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
 
         m_feetOffset = lowestPoint - transform.position.y;
 
-        // An animated sheet reports the whole frame as its bounds, transparent
-        // padding included, which would float the warning signs metres above the
-        // enemy. The override is the measured height of the artwork itself.
         m_headOffset = m_headOffsetOverride > 0f
             ? m_headOffsetOverride
             : highestPoint - transform.position.y;
@@ -227,8 +204,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
         groundObject.transform.localPosition = Vector3.up * (m_feetOffset + m_groundClearance);
         m_groundRoot = groundObject.transform;
 
-        // Negative order keeps the rings behind every character sprite, so the
-        // enemy visibly stands on the telegraph instead of being painted over.
         m_rangeRing = CreateRingRenderer("Range Ring", -20);
         m_closingRing = CreateRingRenderer("Closing Ring", -19);
     }
@@ -291,8 +266,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
         m_staggerText.color = m_staggerColor;
         m_staggerText.outlineColor = m_staggerOutlineColor;
 
-        // A single glyph has far less ink than a damage number, so it leans
-        // harder on the outline to stay readable against a bright arena.
         m_staggerText.outlineWidth = 0.36f;
         m_staggerText.rectTransform.sizeDelta = new Vector2(6f, 4f);
         m_staggerText.rectTransform.pivot = new Vector2(0.5f, 0.5f);
@@ -332,7 +305,6 @@ public class EnemyAttackTelegraph : MonoBehaviour
             m_cameraTransform.rotation * Vector3.up
         );
 
-        // A lazy tilt back and forth sells "dazed" better than a rigid symbol.
         float wobble = Mathf.Sin((PveRuntime.Time - m_staggerStartedAt) * 8f) * 11f;
         staggerTransform.rotation *= Quaternion.Euler(0f, 0f, wobble);
     }

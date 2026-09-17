@@ -3,9 +3,6 @@ using UnityEngine.Events;
 
 namespace DNE.Events
 {
-    /// <summary>
-    /// Context, den Runner an Conditions/Actions durchreicht
-    /// </summary>
     public struct DNContext
     {
         public int MinuteOfDay;
@@ -27,7 +24,6 @@ namespace DNE.Events
         public abstract void Execute(in DNContext _ctx);
     }
 
-    // Beispiel-Conditions
     [CreateAssetMenu(fileName = "Cond_Random", menuName = "Enviroment/DayNight/Conditions/Random Chance")]
     public class DNCond_RandomChance : DNCondition
     {
@@ -35,7 +31,6 @@ namespace DNE.Events
         public override bool Evaluate(in DNContext _ctx) => Random.value <= Chance;
     }
 
-    // Beispiel-Actions
     [CreateAssetMenu(fileName = "Act_UnityEvent", menuName = "Enviroment/DayNight/Actions/UnityEvent")]
     public class DNAct_UnityEvent : DNAction
     {

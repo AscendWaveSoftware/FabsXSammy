@@ -11,7 +11,6 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int m_attackDamage = 25;
     [SerializeField] private float m_attackRange = 1.5f;
     [SerializeField, Range(1f, 4f)] private float m_criticalDamageMultiplier = 2f;
-    //[SerializeField] private float attackCooldown = 0.4f;
 
     [Header("Hit Detection")]
     [SerializeField] private LayerMask m_enemyLayer;
@@ -63,18 +62,8 @@ public class PlayerCombat : MonoBehaviour
     private float m_nextBlockAllowedAt;
     private PlayerGuard m_playerGuard;
 
-    /// <summary>
-    /// Crits used to be able to reach certainty, and a crit already doubles the
-    /// hit. Guaranteed doubled damage is what let a pure offence build delete a
-    /// normal enemy in one swing for the whole run.
-    /// </summary>
     private const float MaximumCriticalChance = 0.6f;
 
-    /// <summary>
-    /// Enemies a single swing may drain life from. The heal used to be paid out
-    /// once per enemy hit, so swinging into a pack healed more than the pack could
-    /// ever deal back and made every defensive upgrade pointless.
-    /// </summary>
     private const int MaximumLifestealTargets = 2;
 
     private void Awake()
@@ -82,9 +71,6 @@ public class PlayerCombat : MonoBehaviour
         if (m_playerHealth == null)
             m_playerHealth = GetComponent<PlayerHealth>();
 
-        // Added here rather than wired into the prefab, matching how the enemy
-        // attack brings its own telegraph along. Dropping the component onto the
-        // player by hand still works and takes precedence for tuning.
         m_playerGuard = GetComponent<PlayerGuard>();
 
         if (m_playerGuard == null)
@@ -113,9 +99,6 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
-        // Deliberately outside the pause guard: this owns Time.timeScale, and a
-        // hit slow motion left half applied would drag the tower defence side
-        // down to 72% speed for as long as the player stays on the other camera.
         UpdateHitSlowMotion();
 
         if (PveRuntime.IsPaused)
@@ -141,8 +124,6 @@ public class PlayerCombat : MonoBehaviour
 
     public void OnAttack(InputValue _value)
     {
-        // The input system keeps delivering while the arena is paused, so the
-        // attack has to be turned away here rather than in Update.
         if (!_value.isPressed || Time.timeScale <= 0f || PveRuntime.IsPaused)
             return;
 
@@ -204,8 +185,6 @@ public class PlayerCombat : MonoBehaviour
             return false;
         }
 
-        // Consume the impact before hit detection. A missed swing must not become
-        // eligible to deal damage later if another callback is raised.
         m_lastProcessedAnimationSwing = _swingSequence;
         ApplyAttackHit(_comboStep);
         return true;
@@ -256,8 +235,6 @@ public class PlayerCombat : MonoBehaviour
         {
             if (m_healthOnHit > 0 && m_playerHealth != null)
             {
-                // Capped instead of paid per enemy. A wide swing into a pack used
-                // to out heal everything the pack could deal back.
                 int drainedTargets = Mathf.Min(confirmedHitCount, MaximumLifestealTargets);
                 m_playerHealth.Heal(m_healthOnHit * drainedTargets);
             }
@@ -282,9 +259,6 @@ public class PlayerCombat : MonoBehaviour
             StopBlocking(true);
         }
 
-        // A release that happened while the arena was paused, or while the window
-        // was out of focus, never arrives as an event. Without this the guard
-        // would stay up on its own until the block timer ran out.
         else if (m_isBlocking && !mouse.rightButton.isPressed)
         {
             m_blockRequiresRelease = false;
@@ -306,9 +280,6 @@ public class PlayerCombat : MonoBehaviour
             return;
         }
 
-        // Charged before the timer is checked. A guard that empties this frame has
-        // to break rather than merely run out of block duration, because the two
-        // carry very different recovery times.
         if (m_playerGuard != null && !m_playerGuard.SpendOnHold(Time.deltaTime))
             return;
 
@@ -319,11 +290,6 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// The guard gave out. The block is forced open and stays unavailable for the
-    /// recovery window, which is the opening the enemies were never given while
-    /// blocking was free.
-    /// </summary>
     private void HandleGuardBroken()
     {
         m_blockRequiresRelease = true;
@@ -357,8 +323,6 @@ public class PlayerCombat : MonoBehaviour
             return false;
         }
 
-        // An empty or broken guard cannot be raised at all. This is what stops the
-        // player from simply tapping the button again to reset the block timer.
         if (m_playerGuard != null && !m_playerGuard.CanBlock)
             return false;
 
@@ -391,12 +355,8 @@ public class PlayerCombat : MonoBehaviour
 
         m_playerAnimation?.ReplayBlockImpact();
 
-        // Shaking from the attacker's side makes the block read directionally
-        // instead of as a generic screen wobble.
         PlayHitShake(_attackerPosition, m_blockImpactShakeMultiplier);
 
-        // Charged last. Breaking here raises the event that forces the block open,
-        // so the feedback for the hit itself has already played.
         m_playerGuard?.SpendOnBlockedHit(_incomingDamage);
     }
 
@@ -438,8 +398,6 @@ public class PlayerCombat : MonoBehaviour
         if (!m_hitSlowMotionActive)
             return;
 
-        // A shop or level-up pause owns timeScale=0. Wait until it resumes so
-        // restoring this short effect can never accidentally close the pause.
         if (Time.timeScale <= 0f)
             return;
 
@@ -465,8 +423,7 @@ public class PlayerCombat : MonoBehaviour
         }
         else if (Time.timeScale > 0f)
         {
-            // Another system intentionally changed the time scale. Preserve it,
-            // but keep the physics step proportional instead of leaving our value.
+
             Time.fixedDeltaTime = m_fixedDeltaTimeBeforeHitSlowMotion *
                                   (Time.timeScale / Mathf.Max(0.01f, m_timeScaleBeforeHitSlowMotion));
         }

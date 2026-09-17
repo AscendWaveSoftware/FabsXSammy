@@ -1,10 +1,5 @@
 Shader "Sammy/SpellEmissive"
 {
-    // Sprite shader whose tint may exceed 1. That is the whole point: a plain
-    // SpriteRenderer stores its colour as a Color32 vertex attribute, so it can
-    // never leave the 0..1 range and can never cross the bloom threshold. The
-    // tint lives in a shader property instead, where full float precision
-    // survives and a MaterialPropertyBlock can push it well above white.
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
@@ -70,8 +65,6 @@ Shader "Sammy/SpellEmissive"
                 half4 texel = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
                 half4 tinted = texel * input.color * _EmissionColor;
 
-                // Only the colour is allowed past 1. Alpha stays in range, so the
-                // blend keeps behaving and the pixel art keeps its hard edges.
                 return half4(tinted.rgb, saturate(tinted.a));
             }
             ENDHLSL

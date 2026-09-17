@@ -1,11 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Instant shockwave around the caster. Unlike the other deliveries it owns no
-/// object of its own: it resolves in the frame it is cast and hands the visual
-/// over to <see cref="SpellImpact"/>.
-/// </summary>
 public static class SpellNova
 {
     private static readonly HashSet<EnemyStats> DetonatedEnemies = new();
@@ -24,8 +19,6 @@ public static class SpellNova
 
         SpellImpact.Show(_definition, _center);
 
-        // Allocating on purpose: a nova is a rare event and must never silently
-        // drop enemies because a fixed buffer ran out.
         Collider[] caughtColliders = Physics.OverlapSphere(_center, _definition.ImpactRadius, _enemyLayer);
 
         DetonatedEnemies.Clear();
@@ -36,13 +29,9 @@ public static class SpellNova
                 ? caughtCollider.GetComponentInParent<EnemyStats>()
                 : null;
 
-            // One enemy can own several colliders, and taking damage may destroy
-            // it, so every enemy is only ever resolved once.
             if (enemyStats == null || enemyStats.IsDead || !DetonatedEnemies.Add(enemyStats))
                 continue;
 
-            // Stunned before the damage lands. Damage can destroy the enemy, and
-            // a survivor should lose its windup even if the hit does not kill it.
             StunEnemy(enemyStats, _definition);
             enemyStats.TakeDamage(_definition.Damage, _playerResources);
         }
@@ -52,11 +41,6 @@ public static class SpellNova
         ResolveChain(_definition, _center, _enemyLayer, _playerResources);
     }
 
-    /// <summary>
-    /// Arcs on from the blast, hopping to the nearest enemy it has not touched
-    /// yet and losing power with every jump. Damage is resolved here in one go;
-    /// the bolt that draws it afterwards is purely visual.
-    /// </summary>
     private static void ResolveChain(
         SpellDefinition _definition,
         Vector3 _center,
@@ -82,8 +66,6 @@ public static class SpellNova
 
             ChainedEnemies.Add(nextTarget);
 
-            // Captured before the hit lands, because the damage can destroy the
-            // enemy and the bolt still has to be drawn to where it stood.
             Vector3 targetPosition = GetBodyCenter(nextTarget);
             ChainAnchors.Add(targetPosition);
             currentPosition = targetPosition;
@@ -124,8 +106,6 @@ public static class SpellNova
                 ? ChainBuffer[i].GetComponentInParent<EnemyStats>()
                 : null;
 
-            // Already struck enemies stay in the set even once destroyed, so the
-            // bolt can never double back onto the same target.
             if (enemyStats == null || enemyStats.IsDead || ChainedEnemies.Contains(enemyStats))
                 continue;
 
@@ -157,8 +137,6 @@ public static class SpellNova
         if (_definition.NovaStunDuration <= 0f)
             return;
 
-        // A short spark on every caught enemy, so a wave that lands off screen
-        // still reads as having hit something.
         Collider enemyCollider = _enemyStats.GetComponent<Collider>();
         Vector3 sparkPosition = enemyCollider != null
             ? enemyCollider.bounds.center

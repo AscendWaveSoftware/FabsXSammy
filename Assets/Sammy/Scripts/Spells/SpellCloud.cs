@@ -2,10 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled ground cloud. Plays the spell's sheet standing on the ground and
-/// poisons everything inside its radius for as long as it is visible.
-/// </summary>
 public class SpellCloud : MonoBehaviour
 {
     private static readonly Queue<SpellCloud> Pool = new Queue<SpellCloud>();
@@ -75,7 +71,6 @@ public class SpellCloud : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -116,10 +111,6 @@ public class SpellCloud : MonoBehaviour
         if (m_cameraTransform == null)
             return;
 
-        // Turns around the vertical axis only. A full billboard would tip the
-        // rising skull over as soon as the camera looks down at the arena. Along
-        // the camera forward rather than against it: facing the sprite's back at
-        // the camera draws the artwork mirrored.
         Vector3 cameraForward = m_cameraTransform.rotation * Vector3.forward;
         cameraForward.y = 0f;
 
@@ -147,8 +138,6 @@ public class SpellCloud : MonoBehaviour
         m_currentFrame = 0;
         m_isRunning = true;
 
-        // The object itself sits on the ground and is the centre of the damage
-        // query. Only the sprite is lifted, so a Y rotation leaves it in place.
         transform.position = _groundPosition;
         transform.rotation = Quaternion.identity;
 
@@ -191,8 +180,6 @@ public class SpellCloud : MonoBehaviour
                 ? SoakBuffer[i].GetComponentInParent<EnemyStats>()
                 : null;
 
-            // One enemy can own several colliders, and a double application would
-            // stack the poison on itself.
             if (enemyStats == null || enemyStats.IsDead || !m_poisonedEnemies.Add(enemyStats))
                 continue;
 

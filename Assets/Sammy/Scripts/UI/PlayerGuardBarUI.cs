@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Thin readout for <see cref="PlayerGuard"/>, sitting just above the spell bar.
-/// Without it a guard break would arrive out of nowhere; with it the player can
-/// see the wall running down and choose to disengage in time.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerGuardBarUI : MonoBehaviour
 {
@@ -68,8 +63,6 @@ public class PlayerGuardBarUI : MonoBehaviour
         if (m_fill == null || m_guard == null)
             return;
 
-        // Eased rather than snapped, so a single blocked hit reads as the wall
-        // giving way instead of as the bar teleporting.
         m_fill.fillAmount = Mathf.MoveTowards(m_fill.fillAmount, m_displayedFill, Time.unscaledDeltaTime * 2.6f);
         m_fill.color = GetFillColor();
     }

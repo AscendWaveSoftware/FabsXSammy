@@ -1,13 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Soft blob shadow on the ground beneath a character.
-///
-/// Billboarded sprites give the eye nothing to judge depth by, because they look
-/// the same wherever they stand. The shadow puts a mark on the ground plane and
-/// gives the sprite a place to belong to.
-/// </summary>
 [DisallowMultipleComponent]
 public class CharacterDropShadow : MonoBehaviour
 {
@@ -56,8 +49,6 @@ public class CharacterDropShadow : MonoBehaviour
         if (m_shadowTransform == null)
             return;
 
-        // Taken from the collider rather than a fixed height, so the shadow keeps
-        // sitting at the feet when a character stands on higher ground.
         float groundHeight = m_ownerCollider != null
             ? m_ownerCollider.bounds.min.y
             : transform.position.y + m_feetOffset;
@@ -68,8 +59,6 @@ public class CharacterDropShadow : MonoBehaviour
 
         m_shadowTransform.position = position;
 
-        // World rotation, so neither the character's own rotation nor a rotated
-        // spawn point can tip the shadow up off the ground plane.
         m_shadowTransform.rotation = Quaternion.Euler(-90f, 0f, 0f);
         m_shadowTransform.localScale = Vector3.one * m_diameter;
     }
@@ -84,8 +73,6 @@ public class CharacterDropShadow : MonoBehaviour
         m_shadowRenderer.sprite = CombatFeedbackSprites.SoftShadow;
         m_shadowRenderer.color = GetShadowColor();
 
-        // Behind everything else in the arena. The attack telegraph rings sit at
-        // -20 and have to stay readable on top of a shadow.
         m_shadowRenderer.sortingOrder = -50;
         m_shadowRenderer.shadowCastingMode = ShadowCastingMode.Off;
         m_shadowRenderer.receiveShadows = false;
@@ -93,15 +80,6 @@ public class CharacterDropShadow : MonoBehaviour
         m_shadowRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
     }
 
-    /// <summary>
-    /// Ground direction pointing away from the viewer.
-    ///
-    /// Taken from the camera rather than from a fixed world axis or from the sun:
-    /// "behind the character" is something the player perceives on screen, so the
-    /// offset has to stay put in screen terms even if the camera angle changes.
-    /// A sun driven shadow would swing right around over the day and lose exactly
-    /// the depth cue this is here to provide.
-    /// </summary>
     private Vector3 GetBackwardDirection()
     {
         if (m_backwardOffset <= 0f)

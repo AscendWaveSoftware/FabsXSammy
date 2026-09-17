@@ -2,11 +2,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled, purely visual detonation. Plays the impact frames of a spell sheet at
-/// the size the spell actually damages, so what the player sees is what hurts.
-/// Damage itself is applied by <see cref="SpellProjectile"/>.
-/// </summary>
 public class SpellImpact : MonoBehaviour
 {
     private static readonly Queue<SpellImpact> Pool = new Queue<SpellImpact>();
@@ -20,7 +15,6 @@ public class SpellImpact : MonoBehaviour
     private int m_currentFrame;
     private bool m_isRunning;
 
-    /// <summary>Full detonation, sized to the radius the spell actually damages.</summary>
     public static void Show(SpellDefinition _definition, Vector3 _worldPosition)
     {
         if (_definition == null)
@@ -30,10 +24,6 @@ public class SpellImpact : MonoBehaviour
         Spawn(_definition, _worldPosition, _definition.ImpactFrameCount, targetWidth, _definition.ImpactFrameRate);
     }
 
-    /// <summary>
-    /// Short muzzle flash where the spell leaves the caster. Borrows the opening
-    /// frames of the impact so the launch speaks the same visual language.
-    /// </summary>
     public static void ShowCastFlash(SpellDefinition _definition, Vector3 _worldPosition)
     {
         if (_definition == null || _definition.CastFlashDiameter <= 0f || _definition.CastFlashFrames <= 0)
@@ -58,8 +48,6 @@ public class SpellImpact : MonoBehaviour
         if (firstFrame == null)
             return;
 
-        // Derived from the sprite's own world size, so a different sheet or a
-        // different pixels per unit setting cannot silently change the scale.
         float spriteWorldSize = Mathf.Max(0.01f, firstFrame.bounds.size.x);
 
         SpellImpact impact = GetOrCreate();
@@ -85,8 +73,6 @@ public class SpellImpact : MonoBehaviour
     {
         m_renderer = gameObject.AddComponent<SpriteRenderer>();
 
-        // In front of the characters, an explosion that hides behind an enemy
-        // would defeat the point of showing it.
         m_renderer.sortingOrder = 210;
         m_renderer.shadowCastingMode = ShadowCastingMode.Off;
         m_renderer.receiveShadows = false;
@@ -96,7 +82,6 @@ public class SpellImpact : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -165,8 +150,6 @@ public class SpellImpact : MonoBehaviour
     {
         Sprite frame = m_definition.GetImpactFrame(_impactIndex);
 
-        // A partially filled sheet must not throw every frame. Hiding the
-        // renderer keeps the timeline intact until a valid frame comes back.
         m_renderer.sprite = frame;
         m_renderer.enabled = frame != null;
     }

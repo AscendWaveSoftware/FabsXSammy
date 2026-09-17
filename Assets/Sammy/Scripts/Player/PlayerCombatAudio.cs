@@ -1,20 +1,9 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-/// <summary>
-/// All combat sounds the player makes, split across two independent voices.
-/// Melee holds the short, constant sounds; spells hold the long, rare ones. Each
-/// voice only ever plays one clip, but they never cut each other, so a sword
-/// swing cannot silence a spell that is still ringing out.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerCombatAudio : MonoBehaviour
 {
-    /// <summary>
-    /// One audible slot. A second source takes over whatever was still running
-    /// and fades it, which keeps a cut free of clicks without ever letting two
-    /// clips play at full volume.
-    /// </summary>
     private sealed class AudioVoice
     {
         private readonly AudioSource m_source;
@@ -203,8 +192,6 @@ public class PlayerCombatAudio : MonoBehaviour
         if (PveRuntime.IsPaused)
             return;
 
-        // Audio ignores Time.timeScale, so the combat hit slow motion must not
-        // stretch these fades out of sync with what the player hears.
         float unscaledDeltaTime = Time.unscaledDeltaTime;
 
         m_meleeVoice?.Update(unscaledDeltaTime);
@@ -213,9 +200,6 @@ public class PlayerCombatAudio : MonoBehaviour
 
     private void HandlePauseChanged(bool _paused)
     {
-        // Cut rather than left hanging: a swing or spell ringing on while the
-        // player is looking at the towers would be the one thing they still hear
-        // from a frozen arena.
         if (!_paused)
             return;
 
@@ -233,9 +217,6 @@ public class PlayerCombatAudio : MonoBehaviour
         if (_blockedDamage <= 0 || m_blockClip == null)
             return;
 
-        // Every enemy landing on the guard raises its own event, and several can
-        // land in the same frame. Without this gate that would stack the same
-        // clip on itself and turn a block into a rattle.
         if (Time.unscaledTime < m_nextBlockSoundTime)
             return;
 
@@ -248,8 +229,6 @@ public class PlayerCombatAudio : MonoBehaviour
         if (_spell == null || _spell.CastClip == null)
             return;
 
-        // Played at a fixed pitch. A wavering pitch on a long magical sound reads
-        // as a broken tape, not as variation.
         m_spellVoice.Play(_spell.CastClip, m_spellVolume, 1f, m_cutOffFade);
     }
 

@@ -3,11 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled world-space callout for short combat messages such as a successful
-/// block. Damage numbers stay with <see cref="EnemyDamageText"/>; this one exists
-/// for readable words that need a punchier pop and a longer hold.
-/// </summary>
 [RequireComponent(typeof(TextMeshPro))]
 public class CombatCalloutText : MonoBehaviour
 {
@@ -83,7 +78,6 @@ public class CombatCalloutText : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -96,8 +90,6 @@ public class CombatCalloutText : MonoBehaviour
         float riseProgress = 1f - Mathf.Pow(1f - normalizedTime, 2.5f);
         transform.position = m_startPosition + Vector3.up * m_riseHeight * riseProgress;
 
-        // A hard overshoot on the way in sells the impact, then the callout
-        // settles and only starts fading once it has been readable for a moment.
         float popProgress = Mathf.Clamp01(normalizedTime / 0.22f);
         float pop = EaseOutBack(popProgress);
 

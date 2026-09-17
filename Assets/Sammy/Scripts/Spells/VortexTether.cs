@@ -2,17 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled stream of matter drawn from a caught enemy into the singularity. The
-/// line curves rather than running straight, which is what makes the pull read as
-/// orbital instead of as a rope, and it tells the player at a glance exactly who
-/// the hole has hold of.
-/// </summary>
 public class VortexTether : MonoBehaviour
 {
     private const int PointCount = 16;
 
-    /// <summary>How far the stream winds around the hole on its way in, in radians.</summary>
     private const float SpiralTwist = 1.35f;
 
     private static readonly Queue<VortexTether> Pool = new Queue<VortexTether>();
@@ -20,7 +13,6 @@ public class VortexTether : MonoBehaviour
     private LineRenderer m_line;
     private Vector3[] m_points;
 
-    /// <summary>Takes a tether out of the pool and puts it on the spell's material.</summary>
     public static VortexTether Acquire(SpellDefinition _definition)
     {
         VortexTether tether = GetOrCreate();
@@ -59,8 +51,6 @@ public class VortexTether : MonoBehaviour
         m_line.lightProbeUsage = LightProbeUsage.Off;
         m_line.reflectionProbeUsage = ReflectionProbeUsage.Off;
 
-        // Fat where the matter disappears into the hole, drawn out to a thread at
-        // the enemy end, so the stream looks stretched by the gravity.
         m_line.widthCurve = new AnimationCurve(
             new Keyframe(0f, 1f),
             new Keyframe(0.45f, 0.66f),
@@ -92,10 +82,6 @@ public class VortexTether : MonoBehaviour
         SpellEmission.Apply(m_line, _definition);
     }
 
-    /// <summary>
-    /// Redraws the stream. Called every frame by the vortex, because both ends
-    /// keep moving while the enemy is dragged in.
-    /// </summary>
     public void UpdateShape(Vector3 _holeCenter, Vector3 _enemyPoint, float _strength)
     {
         Vector3 offset = _enemyPoint - _holeCenter;
@@ -115,10 +101,8 @@ public class VortexTether : MonoBehaviour
 
         for (int i = 0; i < PointCount; i++)
         {
-            // 0 sits in the hole, 1 sits on the enemy.
             float along = i / (float)(PointCount - 1);
 
-            // The twist is spent near the centre, where an orbit would be fastest.
             float angle = baseAngle + SpiralTwist * (1f - along) * (1f - along);
             float pointRadius = radius * along;
 
@@ -128,8 +112,6 @@ public class VortexTether : MonoBehaviour
                 Mathf.Sin(angle) * pointRadius
             );
 
-            // Lifted onto an arc between the hovering hole and the enemy's feet,
-            // so the stream does not cut through the ground on the way.
             point.y = Mathf.Lerp(_holeCenter.y, _enemyPoint.y, along) +
                       Mathf.Sin(along * Mathf.PI) * 0.28f;
 

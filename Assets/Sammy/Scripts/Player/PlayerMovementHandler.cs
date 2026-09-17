@@ -20,10 +20,6 @@ public class PlayerMovementHandler : MonoBehaviour
 
     public float CurrentMaxPlanarSpeed => Mathf.Max(0f, m_moveSpeed / 4f);
 
-    /// <summary>
-    /// World direction the sprite is currently facing. The body never rotates,
-    /// so the facing lives entirely in the sprite flip.
-    /// </summary>
     public Vector3 FacingDirection => m_characterSpriteFlip ? -transform.right : transform.right;
 
     private void Awake()
@@ -54,11 +50,6 @@ public class PlayerMovementHandler : MonoBehaviour
 
     private void HandlePauseChanged(bool _paused) => ApplyPauseState(_paused);
 
-    /// <summary>
-    /// Skipping FixedUpdate is not enough on its own: the rigidbody would coast
-    /// on the velocity it already had. It is parked and handed back, so the
-    /// player keeps the momentum they had when they looked away.
-    /// </summary>
     private void ApplyPauseState(bool _paused)
     {
         if (m_rb == null)
@@ -154,8 +145,6 @@ public class PlayerMovementHandler : MonoBehaviour
             return;
         }
 
-        // Preserve analogue input magnitude so slow movement genuinely maps to Walk.
-        // Normalizing here made every non-zero stick input reach full running speed.
         Vector3 localInput = Vector3.ClampMagnitude(new Vector3(m_Velocity.x, 0f, m_Velocity.y), 1f);
         Vector3 targetSpeed = transform.TransformDirection(localInput) * CurrentMaxPlanarSpeed;
         Vector3 velocityXZ = new Vector3(m_rb.linearVelocity.x, 0f, m_rb.linearVelocity.z);

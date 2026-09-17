@@ -2,12 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-/// <summary>
-/// Pooled singularity. Runs in three beats: it tears open while the pull ramps
-/// up, holds at full size dragging everything nearby into its centre, then
-/// implodes and dissipates. The artwork already grows and shrinks across its own
-/// frames, so the transform keeps a constant scale and the sheet does the work.
-/// </summary>
 public class SpellVortex : MonoBehaviour
 {
     private enum Phase
@@ -17,11 +11,6 @@ public class SpellVortex : MonoBehaviour
         Collapsing
     }
 
-    /// <summary>
-    /// Slightly longer than a frame. The pull is refreshed every frame, so this
-    /// only has to outlive one; the moment the hole stops renewing it the enemy
-    /// steers for itself again.
-    /// </summary>
     private const float PullHoldDuration = 0.12f;
 
     private static readonly Queue<SpellVortex> Pool = new Queue<SpellVortex>();
@@ -96,8 +85,6 @@ public class SpellVortex : MonoBehaviour
         m_visual = visualObject.transform;
 
         m_renderer = visualObject.AddComponent<SpriteRenderer>();
-        // Above the streams and the debris: the event horizon has to swallow them
-        // rather than let them draw over the black.
         m_renderer.sortingOrder = 210;
         m_renderer.shadowCastingMode = ShadowCastingMode.Off;
         m_renderer.receiveShadows = false;
@@ -125,8 +112,6 @@ public class SpellVortex : MonoBehaviour
         m_currentFrame = -1;
         m_isRunning = true;
 
-        // The object itself stays on the ground: that is where the enemies are and
-        // where every query has to be centred. Only the sprite hovers.
         transform.position = _groundPosition;
         transform.rotation = Quaternion.identity;
         m_visual.localPosition = Vector3.up * _definition.VortexGroundOffset;
@@ -139,8 +124,6 @@ public class SpellVortex : MonoBehaviour
 
         m_nextTickTime = PveRuntime.Time + _definition.VortexTickInterval;
 
-        // A ring rushing inwards rather than outwards. It reads as the space around
-        // the cast point being pulled in before anything is even visible there.
         CombatRingFlash.Show(
             m_visual.position,
             _definition.GlowColor,
@@ -150,11 +133,6 @@ public class SpellVortex : MonoBehaviour
         );
     }
 
-    /// <summary>
-    /// Scale that makes the widest frame cover the damage radius. The artwork sits
-    /// in a square canvas with padding around it, so the sprite is measured rather
-    /// than assumed.
-    /// </summary>
     private float GetBaseScale(SpellDefinition _definition)
     {
         Sprite peakFrame = GetFrame(_definition.VortexPeakFrame) ?? GetFrame(0);
@@ -165,7 +143,6 @@ public class SpellVortex : MonoBehaviour
 
     private void Update()
     {
-        // Frozen with the arena while the player is on the tower camera.
         if (PveRuntime.IsPaused)
             return;
 
@@ -177,9 +154,6 @@ public class SpellVortex : MonoBehaviour
         m_totalElapsed += deltaTime;
         m_spinAngle += m_definition.VortexSpinSpeed * deltaTime;
 
-        // A loop rather than a single check, so a long frame cannot skip a phase
-        // and leave the implosion unfired. The durations are clamped above zero by
-        // the definition, so this always terminates.
         while (m_isRunning && m_phaseElapsed >= GetPhaseDuration())
         {
             m_phaseElapsed -= GetPhaseDuration();
@@ -211,8 +185,6 @@ public class SpellVortex : MonoBehaviour
             {
                 m_nextTickTime = PveRuntime.Time + Mathf.Max(0.05f, m_definition.VortexTickInterval);
 
-                // Never interrupting: a tick every third of a second would otherwise
-                // reset the hit stun forever and lock the enemy out of everything.
                 DamageInside(m_definition.VortexDamagePerTick, false);
             }
         }
@@ -229,10 +201,6 @@ public class SpellVortex : MonoBehaviour
         if (m_cameraTransform == null)
             return;
 
-        // Turned around the vertical axis only. A full billboard would tip the disc
-        // away as soon as the camera looks down at the arena. Along the camera
-        // forward, not against it, or the spiral would be drawn mirrored and appear
-        // to turn the wrong way.
         Vector3 cameraForward = m_cameraTransform.rotation * Vector3.forward;
         cameraForward.y = 0f;
 
@@ -249,7 +217,6 @@ public class SpellVortex : MonoBehaviour
         _ => Mathf.Max(0.05f, m_definition.VortexCollapseDuration)
     };
 
-    /// <summary>Moves on to the next beat. False once the spell is finished.</summary>
     private bool AdvancePhase()
     {
         switch (m_phase)
@@ -259,8 +226,6 @@ public class SpellVortex : MonoBehaviour
                 return true;
 
             case Phase.Holding:
-                // The hole snapping shut is the payoff, so the big hit lands here
-                // and the remaining frames are the aftermath.
                 Implode();
                 m_phase = Phase.Collapsing;
                 return true;
@@ -270,13 +235,10 @@ public class SpellVortex : MonoBehaviour
         }
     }
 
-    /// <summary>0 to 1 share of the full pull for the current moment.</summary>
     private float GetPullStrength(float _progress) => m_phase switch
     {
-        // Eased in, so the hole takes hold instead of yanking everything at once.
         Phase.Forming => _progress * _progress,
         Phase.Holding => 1f,
-        // Fades out over the first part of the collapse and is gone after that.
         _ => Mathf.Clamp01(1f - _progress * 2f)
     };
 
@@ -322,9 +284,6 @@ public class SpellVortex : MonoBehaviour
     private void UpdateVisual(float _pull)
     {
         m_visual.localRotation = Quaternion.Euler(0f, 0f, m_spinAngle);
-
-        // Breathes a little while it is feeding. Held completely still the disc
-        // looks like a decal rather than something under strain.
         float breath = 1f + Mathf.Sin(m_totalElapsed * 9f) * 0.035f * _pull;
         m_visual.localScale = Vector3.one * (m_baseScale * breath);
     }
@@ -342,8 +301,6 @@ public class SpellVortex : MonoBehaviour
                 ? PullBuffer[i].GetComponentInParent<EnemyStats>()
                 : null;
 
-            // One enemy can own several colliders, and pulling it once per collider
-            // would multiply its speed by however many it happens to have.
             if (enemyStats == null || enemyStats.IsDead || !m_seenThisFrame.Add(enemyStats))
                 continue;
 
@@ -357,8 +314,6 @@ public class SpellVortex : MonoBehaviour
             {
                 Vector3 inward = toCenter / distance;
 
-                // Perpendicular to the pull, which is what turns a straight drag
-                // into an orbit that decays inwards.
                 Vector3 tangent = Vector3.Cross(Vector3.up, inward);
                 float proximity = 1f - Mathf.Clamp01(distance / pullRadius);
                 float speed = m_definition.VortexPullSpeed * Mathf.Lerp(0.55f, 1.5f, proximity) * _strength;
@@ -389,9 +344,6 @@ public class SpellVortex : MonoBehaviour
 
         m_caught[_enemyStats] = caught;
 
-        // Held for the rest of the hole's life in one call rather than refreshed
-        // every frame, because staggering also cancels the windup and doing that
-        // repeatedly would hammer the telegraph.
         float remaining = Mathf.Max(0.1f, m_definition.VortexLifetime - m_totalElapsed);
         caught.Attack?.Stagger(remaining);
 
@@ -412,7 +364,6 @@ public class SpellVortex : MonoBehaviour
         _caught.Tether.UpdateShape(m_visual.position, enemyPoint, _strength);
     }
 
-    /// <summary>Drops everything that left the pull or died while being dragged.</summary>
     private void ReleaseLostTethers()
     {
         m_lostThisFrame.Clear();
@@ -467,8 +418,6 @@ public class SpellVortex : MonoBehaviour
 
     private void Implode()
     {
-        // Damage first. Returning to the pool clears the resources reference, and
-        // an enemy killed after that would hand out no experience or scrap.
         DamageInside(m_definition.Damage, true);
 
         Vector3 core = m_visual.position;

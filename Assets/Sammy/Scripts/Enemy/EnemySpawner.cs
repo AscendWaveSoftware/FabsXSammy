@@ -53,13 +53,9 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
-        // No spawning and no difficulty ramp while the player is on the tower
-        // camera, so the arena is exactly as they left it.
         if (PveRuntime.IsPaused)
             return;
 
-        // Scaled time on purpose: a level up pause or the combat hit slow motion
-        // must not push the difficulty forward while the player cannot play.
         m_elapsedRunTime += Time.deltaTime;
         m_difficultyProgress = CalculateDifficultyProgress();
 
@@ -95,8 +91,6 @@ public class EnemySpawner : MonoBehaviour
 
         float rampProgress = Mathf.Clamp01(m_elapsedRunTime / difficultyRampDuration);
 
-        // A curve without keys evaluates to zero and would silently freeze the
-        // difficulty at its starting values, so fall back to a linear ramp.
         if (difficultyCurve == null || difficultyCurve.length < 2)
             return rampProgress;
 
@@ -140,8 +134,6 @@ public class EnemySpawner : MonoBehaviour
 
         m_currentEnemiesAlive++;
 
-        // Applied before anything else reads the stats, so the health bar and the
-        // first attack already use the scaled values.
         EnemyStats enemyStats = spawnedEnemy.GetComponent<EnemyStats>();
 
         if (enemyStats != null)
@@ -176,7 +168,6 @@ public class EnemySpawner : MonoBehaviour
         spawnInterval = Mathf.Max(0.05f, spawnInterval);
         difficultyRampDuration = Mathf.Max(0f, difficultyRampDuration);
 
-        // The ramp may only ever add pressure, never take it away again.
         lateGameMaxEnemiesAlive = Mathf.Max(maxEnemiesAlive, lateGameMaxEnemiesAlive);
         lateGameSpawnInterval = Mathf.Clamp(lateGameSpawnInterval, 0.05f, spawnInterval);
     }

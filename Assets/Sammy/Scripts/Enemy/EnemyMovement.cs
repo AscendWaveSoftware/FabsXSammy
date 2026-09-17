@@ -63,11 +63,6 @@ public class EnemyMovement : MonoBehaviour
     private float m_knockbackEndsAt;
 
     public bool IsKnockedBack => PveRuntime.Time < m_knockbackEndsAt;
-
-    /// <summary>
-    /// How fast this enemy is actually travelling on the ground plane. Read from
-    /// whichever system is driving it, so the animation matches what is seen.
-    /// </summary>
     public float CurrentPlanarSpeed
     {
         get
@@ -80,17 +75,10 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    /// <summary>Speed this enemy walks at when unobstructed, for normalising the animation.</summary>
     public float MaximumPlanarSpeed => Mathf.Max(0.01f, moveSpeed);
 
-    /// <summary>Point this enemy is oriented towards, used to decide which way the sprite faces.</summary>
     public Vector3 FacingTarget => playerTarget != null ? playerTarget.position : transform.position;
 
-    /// <summary>
-    /// Pushes this enemy away over a short moment. Goes through the NavMeshAgent
-    /// rather than the rigidbody, because the agent drives a kinematic body and
-    /// would ignore a physics force outright.
-    /// </summary>
     public void ApplyKnockback(Vector3 _direction, float _distance)
     {
         if (_distance <= 0f || knockbackDuration <= 0f)
@@ -105,26 +93,15 @@ public class EnemyMovement : MonoBehaviour
         m_knockbackVelocity = flatDirection.normalized * (_distance / knockbackDuration);
         m_knockbackEndsAt = PveRuntime.Time + knockbackDuration;
 
-        // The agent steers along its own path every frame. Without dropping that
-        // path first it would simply walk straight back through the push.
         if (m_usesNavMesh && m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
         {
             m_agent.ResetPath();
             m_agent.velocity = Vector3.zero;
         }
 
-        // Repath the moment the push is over instead of waiting out the interval.
         m_nextRepathTime = 0f;
     }
 
-    /// <summary>
-    /// Drags this enemy along a velocity it did not choose, for slightly longer
-    /// than the caller's own frame. Meant to be refreshed continuously by a vortex:
-    /// the moment the caller stops renewing it the enemy walks again on its own.
-    ///
-    /// Rides on the same transport as the knockback, which already moves through
-    /// the NavMeshAgent and therefore cannot shove anyone off the walkable area.
-    /// </summary>
     public void ApplyVortexPull(Vector3 _velocity, float _holdDuration)
     {
         if (_holdDuration <= 0f)
@@ -133,9 +110,6 @@ public class EnemyMovement : MonoBehaviour
         Vector3 flatVelocity = _velocity;
         flatVelocity.y = 0f;
 
-        // Dropping the agent's path is what stops it steering back out of the pull,
-        // but doing that on every refresh would throw away a fresh path each frame.
-        // Only the first application of an uninterrupted pull needs it.
         if (!IsKnockedBack && m_usesNavMesh && m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
         {
             m_agent.ResetPath();
@@ -154,8 +128,6 @@ public class EnemyMovement : MonoBehaviour
 
         if (m_usesNavMesh)
         {
-            // Move keeps the agent on the navmesh, so a push can never shove an
-            // enemy through a wall or off the walkable area.
             if (m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
                 m_agent.Move(m_knockbackVelocity * _deltaTime);
         }
@@ -191,8 +163,6 @@ public class EnemyMovement : MonoBehaviour
         FindPlayerTarget();
         m_usesNavMesh = TryInitializeNavMeshAgent();
 
-        // The agent only exists from here on, so an enemy that came into being
-        // during a pause still has to be told to hold still.
         ApplyPauseState(PveRuntime.IsPaused);
     }
 
@@ -209,11 +179,6 @@ public class EnemyMovement : MonoBehaviour
 
     private void HandlePauseChanged(bool _paused) => ApplyPauseState(_paused);
 
-    /// <summary>
-    /// An Update guard alone is not enough here: the NavMeshAgent walks its own
-    /// path and the rigidbody keeps its velocity, both without asking this
-    /// script. The path itself is kept, so the enemy simply carries on.
-    /// </summary>
     private void ApplyPauseState(bool _paused)
     {
         if (m_agent != null && m_agent.enabled && m_agent.isOnNavMesh)
@@ -239,8 +204,6 @@ public class EnemyMovement : MonoBehaviour
         if (PveRuntime.IsPaused || m_usesNavMesh)
             return;
 
-        // Checked before CanMove, because a knockback drives the movement itself
-        // and StopMoving would cancel it straight away.
         if (UpdateKnockback(Time.fixedDeltaTime))
             return;
 

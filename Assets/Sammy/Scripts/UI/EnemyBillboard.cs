@@ -45,9 +45,6 @@ public class EnemyBillboard : MonoBehaviour
         if (m_cameraTransform == null)
             return;
 
-        // Along the camera forward, not against it. Pointing the sprite's +Z back
-        // at the camera shows its reverse side, which mirrors the artwork - only
-        // invisible while the enemies were symmetrical placeholder circles.
         transform.LookAt(
             transform.position + m_cameraTransform.rotation * Vector3.forward,
             m_cameraTransform.rotation * Vector3.up

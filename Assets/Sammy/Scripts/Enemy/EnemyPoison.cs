@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Damage over time on a single enemy. Attaches itself when a poison cloud
-/// catches the enemy and goes dormant once the poison has run out.
-/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(EnemyStats))]
 public class EnemyPoison : MonoBehaviour
@@ -18,11 +14,6 @@ public class EnemyPoison : MonoBehaviour
     private float m_topOffset;
     private bool m_isPoisoned;
 
-    /// <summary>
-    /// Poisons an enemy, or refreshes an existing poison. Refreshing extends the
-    /// duration and keeps the stronger tick, so standing in a cloud never
-    /// weakens what is already running.
-    /// </summary>
     public static void Apply(
         EnemyStats _enemy,
         int _damagePerTick,
@@ -47,7 +38,6 @@ public class EnemyPoison : MonoBehaviour
         m_stats = GetComponent<EnemyStats>();
         m_topOffset = MeasureTopOffset();
 
-        // Dormant until something actually poisons this enemy.
         enabled = false;
     }
 
@@ -69,14 +59,10 @@ public class EnemyPoison : MonoBehaviour
             return;
         }
 
-        // A fresh poison starts over instead of inheriting the strength of one
-        // that already wore off.
         m_isPoisoned = true;
         m_damagePerTick = _damagePerTick;
         m_expiresAt = PveRuntime.Time + _duration;
 
-        // The first tick lands immediately, so the cloud reads as dealing damage
-        // the moment it engulfs an enemy rather than half a second later.
         m_nextTickTime = PveRuntime.Time;
         enabled = true;
     }
@@ -88,9 +74,6 @@ public class EnemyPoison : MonoBehaviour
 
         if (m_stats == null || m_stats.IsDead || PveRuntime.Time >= m_expiresAt)
         {
-            // Disabled rather than destroyed. Destroy is deferred to the end of
-            // the frame, so a cloud ticking in that same frame would still find
-            // this component and silently refresh a corpse of an effect.
             m_isPoisoned = false;
             enabled = false;
             return;
@@ -102,9 +85,6 @@ public class EnemyPoison : MonoBehaviour
         m_nextTickTime = PveRuntime.Time + m_tickInterval;
         SpawnPoisonPuff();
 
-        // Applied last. The enemy may be destroyed by this call, so nothing may
-        // touch it afterwards. Poison never interrupts, otherwise a tick every
-        // half second would permanently cancel the enemy's attack windup.
         m_stats.TakeDamage(m_damagePerTick, m_playerResources, false, false);
     }
 

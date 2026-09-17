@@ -3,25 +3,15 @@ using UnityEngine;
 /// <summary>How a spell reaches its target.</summary>
 public enum SpellDelivery
 {
-    /// <summary>Fires a homing projectile that detonates on contact.</summary>
     Projectile,
 
-    /// <summary>Places a lingering cloud on the ground at the target.</summary>
     Cloud,
 
-    /// <summary>Bursts instantly around the caster.</summary>
     Nova,
 
-    /// <summary>
-    /// Tears open a singularity that drags everything nearby into its centre and
-    /// then implodes. Appended last on purpose: the value is serialised as an
-    /// integer in the spell assets, so inserting it anywhere else would silently
-    /// turn every existing spell into a different delivery.
-    /// </summary>
     Vortex
 }
 
-/// <summary>A single value a spell upgrade card can improve.</summary>
 public enum SpellStat
 {
     Damage,
@@ -30,16 +20,10 @@ public enum SpellStat
     PoisonDamage,
     PoisonDuration,
     StunDuration,
-    // Appended for the same reason as SpellDelivery.Vortex above.
     VortexPull,
     VortexDuration
 }
 
-/// <summary>
-/// Data for a single castable spell. The sprite sheet is split into a travelling
-/// projectile frame and the impact frames that play where the spell detonates.
-/// A cloud spell has no projectile and uses the whole sheet as its animation.
-/// </summary>
 [CreateAssetMenu(fileName = "New Spell", menuName = "Spells/Spell Definition")]
 public class SpellDefinition : ScriptableObject
 {
@@ -166,15 +150,10 @@ public class SpellDefinition : ScriptableObject
     public Color GlowColor = new(0.85f, 0.52f, 1f, 0.85f);
     public Color TrailColor = new(0.74f, 0.44f, 1f, 0.7f);
 
-    /// <summary>Frame that travels as the projectile, or null when unsliced.</summary>
     public Sprite ProjectileSprite => GetFrame(ProjectileFrame);
 
     public int ImpactFrameCount => Frames == null ? 0 : Mathf.Max(0, Frames.Length - ImpactStartFrame);
 
-    /// <summary>
-    /// A spell without usable frames cannot be cast at all. Only a projectile
-    /// spell needs a travelling core; a cloud is animation only.
-    /// </summary>
     public bool IsUsable
     {
         get
@@ -188,11 +167,6 @@ public class SpellDefinition : ScriptableObject
 
     public Sprite GetImpactFrame(int _impactIndex) => GetFrame(ImpactStartFrame + _impactIndex);
 
-    /// <summary>
-    /// Improves one value of this spell. Only ever call this on the runtime copy
-    /// held by <see cref="PlayerSpellCaster"/>: writing to the asset itself would
-    /// bake the upgrade into the project file and survive leaving play mode.
-    /// </summary>
     public void ApplyStatUpgrade(SpellStat _stat, float _value)
     {
         switch (_stat)
@@ -204,8 +178,6 @@ public class SpellDefinition : ScriptableObject
                 ImpactRadius = Mathf.Max(0.1f, ImpactRadius + _value);
                 break;
             case SpellStat.Cooldown:
-                // A positive value shortens the cooldown, which is what an upgrade
-                // card means by "faster".
                 Cooldown = Mathf.Max(0.25f, Cooldown - _value);
                 break;
             case SpellStat.PoisonDamage:
@@ -226,13 +198,8 @@ public class SpellDefinition : ScriptableObject
         }
     }
 
-    /// <summary>
-    /// Total time the vortex exists, which the cast needs in order to stagger
-    /// everything it catches for exactly as long as the hole is open.
-    /// </summary>
     public float VortexLifetime => VortexFormDuration + VortexHoldDuration + VortexCollapseDuration;
 
-    /// <summary>How far out the pull reaches, as opposed to how far it damages.</summary>
     public float VortexPullRadius => ImpactRadius * Mathf.Max(1f, VortexPullRangeScale);
 
     private Sprite GetFrame(int _index) =>
@@ -244,8 +211,6 @@ public class SpellDefinition : ScriptableObject
         ProjectileFrame = Mathf.Max(0, ProjectileFrame);
         ImpactFrameRate = Mathf.Max(1f, ImpactFrameRate);
 
-        // A peak past the last frame would leave the hold phase with nothing to
-        // show and the collapse with no frames at all.
         if (Frames != null && Frames.Length > 0)
             VortexPeakFrame = Mathf.Clamp(VortexPeakFrame, 0, Frames.Length - 1);
     }

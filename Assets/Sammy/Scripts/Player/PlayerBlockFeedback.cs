@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Visual confirmation for a successful block. A block prevents all damage, so
-/// without a clear reaction the player cannot tell it worked at all.
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerBlockFeedback : MonoBehaviour
 {
@@ -78,8 +74,6 @@ public class PlayerBlockFeedback : MonoBehaviour
         if (m_flareRemaining <= 0f)
             return;
 
-        // Unscaled, because the flare has to keep reading during the short hit
-        // slow motion that the combat system applies.
         m_flareRemaining -= Time.unscaledDeltaTime;
         ApplyAuraFlare(Mathf.Clamp01(m_flareRemaining / m_flareDuration));
     }
@@ -93,8 +87,6 @@ public class PlayerBlockFeedback : MonoBehaviour
         Vector3 towardsAttacker = _attackerPosition - playerPosition;
         towardsAttacker.y = 0f;
 
-        // A hit without usable direction still deserves a flash, so fall back to
-        // the player's own position instead of dropping the effect.
         Vector3 flashDirection = towardsAttacker.sqrMagnitude > 0.0001f
             ? towardsAttacker.normalized
             : Vector3.zero;
@@ -146,8 +138,6 @@ public class PlayerBlockFeedback : MonoBehaviour
 
         Material spriteMaterial = m_playerSprite.sharedMaterial;
 
-        // The aura flare is a bonus on top of the ring and the callout. Materials
-        // without the aura shader simply skip it instead of erroring.
         if (spriteMaterial == null ||
             !spriteMaterial.HasProperty(OutlineColorId) ||
             !spriteMaterial.HasProperty(OutlineStrengthId))
@@ -176,7 +166,6 @@ public class PlayerBlockFeedback : MonoBehaviour
             return;
         }
 
-        // Ease the tail so the flare snaps in and bleeds out smoothly.
         float eased = _intensity * _intensity;
 
         m_playerSprite.GetPropertyBlock(m_spriteProperties);

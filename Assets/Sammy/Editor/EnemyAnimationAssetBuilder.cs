@@ -6,11 +6,6 @@ using UnityEditor.Animations;
 using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
-/// <summary>
-/// Slices the enemy sprite sheets, rebuilds their clips and controller and wires
-/// the enemy prefab. Mirrors <see cref="PlayerAnimationAssetBuilder"/> so the
-/// enemy setup is just as reproducible instead of assembled by hand.
-/// </summary>
 [InitializeOnLoad]
 public static class EnemyAnimationAssetBuilder
 {
@@ -70,9 +65,6 @@ public static class EnemyAnimationAssetBuilder
             PrefabPath = _prefabPath;
             TargetBodyHeight = _targetBodyHeight;
 
-            // Attack runs at roughly the 0.28s windup and hurt at the 0.24s hit
-            // stun, so the animation lines up with the gameplay it belongs to.
-            // The attack clips are time stretched onto the real windup anyway.
             Sheets = new[]
             {
                 new SheetDefinition(_name, _spritePrefix, _textureFolder, $"{_filePrefix}Idle", "Idle", 6, 8f, true),
@@ -86,26 +78,17 @@ public static class EnemyAnimationAssetBuilder
         public string Name { get; }
         public string PrefabPath { get; }
 
-        /// <summary>Body height in world units, measured from the artwork's own pixels.</summary>
         public float TargetBodyHeight { get; }
 
         public SheetDefinition[] Sheets { get; }
         public string ControllerPath => $"{OutputRoot}/{Name}.controller";
     }
 
-    /// <summary>
-    /// The sprite prefix is part of every sliced sprite's name, and a sprite's id
-    /// is looked up by that name on a reslice. Renaming one would hand out fresh
-    /// ids and leave the existing clips pointing at sprites that no longer exist,
-    /// so "MonsterA" has to stay exactly as it is.
-    /// </summary>
     private static readonly MonsterDefinition[] Monsters =
     {
         new("Monster A", "MonsterA", "Monster A", "Blood Monster_A_",
             "Assets/Sammy/Prefabs/Enemy.prefab", 1.5f, 8, 8),
 
-        // Taller than the player on purpose: this one carries twice the health, and
-        // the size is what tells the player that at a glance.
         new("Monster B", "MonsterB", "Monster B", "Demon_A_",
             "Assets/Sammy/Prefabs/Enemy Variant Strong.prefab", 2f, 7, 7)
     };
@@ -127,9 +110,6 @@ public static class EnemyAnimationAssetBuilder
         if (SessionState.GetBool(SessionKey, false) || EditorApplication.isPlayingOrWillChangePlaymode)
             return;
 
-        // Reslicing while the pipeline is still busy leaves the new sprites
-        // invisible to the AssetDatabase for the rest of this callback, so the
-        // build waits for a quiet tick instead of racing it.
         if (EditorApplication.isCompiling || EditorApplication.isUpdating)
         {
             EditorApplication.delayCall += BuildOncePerSession;
@@ -182,8 +162,6 @@ public static class EnemyAnimationAssetBuilder
         if (importer == null)
             throw new InvalidOperationException($"Enemy animation sheet is missing: {_sheet.TexturePath}");
 
-        // Measured on the source file. An unsliced sheet still counts as a plain
-        // texture, and those are scaled up to the next power of two on import.
         importer.GetSourceTextureWidthAndHeight(out int sourceWidth, out int sourceHeight);
 
         if (sourceHeight != FrameSize || sourceWidth != _sheet.FrameCount * FrameSize)
@@ -194,9 +172,6 @@ public static class EnemyAnimationAssetBuilder
             );
         }
 
-        // Two passes, because the sprite data provider builds its own serialised
-        // view of the importer and would discard the type switch on a sheet that
-        // is still a plain texture.
         if (ApplyImporterSettings(importer))
         {
             PersistImporter(importer, _sheet.TexturePath);
@@ -206,9 +181,6 @@ public static class EnemyAnimationAssetBuilder
                 throw new InvalidOperationException($"Enemy sheet vanished while importing: {_sheet.TexturePath}");
         }
 
-        // The slicing below can only work on a sheet that already imports as a
-        // multiple sprite. Failing loudly here points at the real cause instead
-        // of surfacing later as an empty clip.
         if (importer.textureType != TextureImporterType.Sprite ||
             importer.spriteImportMode != SpriteImportMode.Multiple)
         {
@@ -221,11 +193,6 @@ public static class EnemyAnimationAssetBuilder
         ApplySpriteRects(importer, _sheet);
     }
 
-    /// <summary>
-    /// Writes importer changes out explicitly. SaveAndReimport is supposed to do
-    /// this on its own, but silently keeps them in memory when the pipeline is
-    /// mid-batch, which leaves the sheet looking untouched.
-    /// </summary>
     private static void PersistImporter(TextureImporter _importer, string _assetPath)
     {
         EditorUtility.SetDirty(_importer);
@@ -272,10 +239,6 @@ public static class EnemyAnimationAssetBuilder
         textureSettings.spriteMeshType = SpriteMeshType.FullRect;
         textureSettings.spriteGenerateFallbackPhysicsShape = false;
 
-        // Repeated on the settings block rather than trusted to the properties
-        // above. SetTextureSettings writes this whole block back, and it still
-        // holds the values read before those properties were touched, so the read
-        // would quietly restore the old filter and blur the pixel art.
         textureSettings.filterMode = FilterMode.Point;
         textureSettings.mipmapEnabled = false;
         textureSettings.wrapMode = TextureWrapMode.Clamp;
@@ -309,8 +272,6 @@ public static class EnemyAnimationAssetBuilder
         if (hasExpectedRects)
             return;
 
-        // Existing ids are reused so references already pointing at a frame
-        // survive a reslice instead of turning into missing sprites.
         Dictionary<string, GUID> existingSpriteIds = existingRects
             .GroupBy(rect => rect.name, StringComparer.Ordinal)
             .ToDictionary(group => group.Key, group => group.First().spriteID, StringComparer.Ordinal);
@@ -323,8 +284,6 @@ public static class EnemyAnimationAssetBuilder
             {
                 name = spriteName,
 
-                // Every frame keeps the full cell and a centred pivot, which is
-                // what holds the monster's feet on the same line across clips.
                 rect = new Rect(i * FrameSize, 0f, FrameSize, FrameSize),
                 alignment = SpriteAlignment.Center,
                 pivot = new Vector2(0.5f, 0.5f),
@@ -340,8 +299,6 @@ public static class EnemyAnimationAssetBuilder
         nameProvider?.SetNameFileIdPairs(spriteRects.Select(rect => new SpriteNameFileIdPair(rect.name, rect.spriteID)));
         dataProvider.Apply();
 
-        // Saved through the provider's own importer instance. Apply writes into
-        // that object, so saving the one we started from would drop the slicing.
         AssetImporter providerImporter = dataProvider.targetObject as AssetImporter;
         PersistImporter(
             (providerImporter as TextureImporter) != null ? (TextureImporter)providerImporter : _importer,
@@ -512,16 +469,9 @@ public static class EnemyAnimationAssetBuilder
             if (spriteRenderer == null)
                 throw new InvalidOperationException($"{_monster.PrefabPath} Visual has no SpriteRenderer.");
 
-            // Measured from the collider, not from the prefab's own position: the
-            // spawner drops the enemy at a spawn point and overwrites that, while
-            // the collider bottom is what actually rests on the ground.
             MonsterMetrics metrics = MeasureMonster(_monster);
             float groundBelowRoot = GetColliderBottomOffset(root);
 
-            // The feet rest on the ground line, so the top of the artwork ends up
-            // this far above the root. Everything that hovers over the monster -
-            // damage numbers, warning signs - measures from here rather than from
-            // the sprite bounds, which report the empty frame around the artwork.
             float headAboveRoot = metrics.BodyHeightUnits - groundBelowRoot;
 
             prefabChanged |= ApplyVisual(_monster, visual, spriteRenderer, metrics, groundBelowRoot);
@@ -566,7 +516,6 @@ public static class EnemyAnimationAssetBuilder
         }
     }
 
-    /// <summary>How far the collider reaches below the root, which is the ground line.</summary>
     private static float GetColliderBottomOffset(GameObject _root)
     {
         Collider enemyCollider = _root.GetComponent<Collider>();
@@ -600,8 +549,6 @@ public static class EnemyAnimationAssetBuilder
             changed = true;
         }
 
-        // The placeholder was tinted red. The artwork brings its own colour now,
-        // and a tint would fight the windup flash that multiplies on top of it.
         if (_renderer.color != Color.white)
         {
             _renderer.color = Color.white;
@@ -616,7 +563,6 @@ public static class EnemyAnimationAssetBuilder
             changed = true;
         }
 
-        // Lifted so the measured feet line lands exactly on the ground line.
         float feetBelowPivot = _metrics.FeetOffsetPixels / PixelsPerUnit * _metrics.Scale;
         Vector3 expectedPosition = Vector3.up * (feetBelowPivot - _groundBelowRoot);
 
@@ -677,9 +623,6 @@ public static class EnemyAnimationAssetBuilder
         EnemyAttackTelegraph telegraph = _root.GetComponent<EnemyAttackTelegraph>();
         bool changed = false;
 
-        // EnemyAttack adds this at runtime when it is missing, which would leave
-        // the measured head height nowhere to live. Putting it on the prefab is
-        // also what lets the value be seen and tweaked in the Inspector.
         if (telegraph == null)
         {
             telegraph = _root.AddComponent<EnemyAttackTelegraph>();
@@ -702,11 +645,6 @@ public static class EnemyAnimationAssetBuilder
         return changed;
     }
 
-    /// <summary>
-    /// Damage numbers rise from the top of the enemy, which they normally find by
-    /// scanning the sprite bounds. A padded animation frame reports itself as far
-    /// taller than the monster, so the measured height is handed over instead.
-    /// </summary>
     private static bool ConfigureDamageTextBounds(GameObject _root, float _headAboveRoot)
     {
         EnemyStats stats = _root.GetComponent<EnemyStats>();
@@ -746,32 +684,20 @@ public static class EnemyAnimationAssetBuilder
 
         public float Scale { get; }
 
-        /// <summary>Distance from the centred pivot down to the lowest opaque pixel.</summary>
         public float FeetOffsetPixels { get; }
 
-        /// <summary>Distance from the pivot up to the highest opaque pixel, at scale 1.</summary>
         public float HeadOffsetPixels { get; }
 
-        /// <summary>Height of the artwork itself in world units, padding excluded.</summary>
         public float BodyHeightUnits => (FeetOffsetPixels + HeadOffsetPixels) / PixelsPerUnit * Scale;
     }
 
-    /// <summary>
-    /// Reads the real extent of the artwork out of the idle and walk sheets. The
-    /// frame is mostly transparent padding, so every placement has to come from
-    /// the pixels rather than from the sprite bounds.
-    /// </summary>
     private static MonsterMetrics MeasureMonster(MonsterDefinition _monster)
     {
         int lowestOpaqueRow = int.MaxValue;
         int highestOpaqueRow = int.MinValue;
 
-        // Only the looping sheets. An attack frame reaches out with claws well past
-        // the body, and measuring that would shrink the monster to fit its lunge.
         foreach (SheetDefinition sheet in _monster.Sheets.Where(sheet => sheet.Loop))
         {
-            // Read straight off disk, which sidesteps having to mark the imported
-            // texture readable just to measure it once.
             byte[] fileBytes = System.IO.File.ReadAllBytes(sheet.TexturePath);
 
             Texture2D readable = new(2, 2, TextureFormat.RGBA32, false);
